@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import ParticleField from "./ParticleField";
 
 // Pre-computed star positions (12 nodes on outer ring, rounded to avoid hydration mismatch)
 const RING_STARS = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map(
@@ -46,6 +47,9 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
             "radial-gradient(ellipse at 50% 40%, #0a0f2e 0%, #050a1a 35%, #020510 70%, #010208 100%)",
         }}
       />
+      {/* Constellation particle network */}
+      <ParticleField />
+
       {/* Ancient paper texture filter */}
       <div
         className="absolute inset-0 opacity-[0.025] mix-blend-overlay pointer-events-none"

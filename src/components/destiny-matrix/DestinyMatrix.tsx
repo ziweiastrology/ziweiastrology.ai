@@ -6,6 +6,7 @@ import { useMatrixStore } from "@/stores/useMatrixStore";
 import PalaceNode from "./PalaceNode";
 import CoreVoid from "./CoreVoid";
 import PalaceSidebar from "./PalaceSidebar";
+import ParticleField from "@/components/ParticleField";
 
 const gridSpring = {
   type: "spring" as const,
@@ -27,6 +28,9 @@ export default function DestinyMatrix() {
         background: "linear-gradient(to bottom, #0a0e1a, #1a1f2e)",
       }}
     >
+      {/* Constellation particle network */}
+      <ParticleField id="matrix-particles" />
+
       {/* Ambient star dust */}
       <div
         className="absolute inset-0 pointer-events-none opacity-40"
