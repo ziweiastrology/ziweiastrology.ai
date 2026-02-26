@@ -32,13 +32,13 @@ export default function OrnamentalDivider({ variant = "parchment" }: OrnamentalD
         {/* Diagonal axes */}
         <line x1="194.3" y1="6.3" x2="205.7" y2="17.7" stroke={c.detail} strokeWidth="0.2" />
         <line x1="205.7" y1="6.3" x2="194.3" y2="17.7" stroke={c.detail} strokeWidth="0.2" />
-        {/* Tick marks on outer ring */}
+        {/* Tick marks on outer ring (pre-computed) */}
         {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => {
           const rad = (angle * Math.PI) / 180;
-          const x1 = 200 + 7 * Math.cos(rad);
-          const y1 = 12 + 7 * Math.sin(rad);
-          const x2 = 200 + 9.5 * Math.cos(rad);
-          const y2 = 12 + 9.5 * Math.sin(rad);
+          const x1 = Math.round((200 + 7 * Math.cos(rad)) * 100) / 100;
+          const y1 = Math.round((12 + 7 * Math.sin(rad)) * 100) / 100;
+          const x2 = Math.round((200 + 9.5 * Math.cos(rad)) * 100) / 100;
+          const y2 = Math.round((12 + 9.5 * Math.sin(rad)) * 100) / 100;
           return (
             <line key={angle} x1={x1} y1={y1} x2={x2} y2={y2}
               stroke={c.dot} strokeWidth="0.3" />

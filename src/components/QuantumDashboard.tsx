@@ -258,18 +258,30 @@ function CustomTooltip({ active, payload, label }: any) {
    Background Energy Particles
    ============================================ */
 
+// Deterministic particle positions
+function _seeded(seed: number) {
+  const x = Math.sin(seed * 9301 + 49297) * 49297;
+  return x - Math.floor(x);
+}
+const PARTICLES = Array.from({ length: 20 }, (_, i) => ({
+  left: Math.round(_seeded(i + 1) * 100 * 10) / 10,
+  top: Math.round(_seeded(i + 21) * 100 * 10) / 10,
+  dur: Math.round((4 + _seeded(i + 41) * 6) * 10) / 10,
+  delay: Math.round(_seeded(i + 61) * 5 * 10) / 10,
+}));
+
 function EnergyParticles() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {Array.from({ length: 20 }, (_, i) => (
+      {PARTICLES.map((p, i) => (
         <div
           key={i}
           className="absolute w-1 h-1 rounded-full bg-gold-500/30 animate-float"
           style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            animationDuration: `${4 + Math.random() * 6}s`,
-            animationDelay: `${Math.random() * 5}s`,
+            left: `${p.left}%`,
+            top: `${p.top}%`,
+            animationDuration: `${p.dur}s`,
+            animationDelay: `${p.delay}s`,
           }}
         />
       ))}

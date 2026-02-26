@@ -1,5 +1,36 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
+// Pre-computed star positions (12 nodes on outer ring, rounded to avoid hydration mismatch)
+const RING_STARS = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map(
+  (angle, i) => {
+    const r = 370;
+    const x = Math.round((400 + r * Math.cos((angle * Math.PI) / 180)) * 100) / 100;
+    const y = Math.round((400 + r * Math.sin((angle * Math.PI) / 180)) * 100) / 100;
+    return { x, y, i };
+  }
+);
+
+// Seeded pseudo-random for deterministic background stars
+function seededRandom(seed: number) {
+  const x = Math.sin(seed * 9301 + 49297) * 49297;
+  return x - Math.floor(x);
+}
+
+const BG_STARS = Array.from({ length: 100 }, (_, i) => {
+  const s = i + 1;
+  return {
+    x: Math.round(seededRandom(s) * 800 * 100) / 100,
+    y: Math.round(seededRandom(s + 100) * 800 * 100) / 100,
+    size: Math.round((seededRandom(s + 200) * 1.5 + 0.2) * 100) / 100,
+    isGold: seededRandom(s + 300) > 0.5,
+    opacity: Math.round((seededRandom(s + 400) * 0.4 + 0.05) * 100) / 100,
+    dur: Math.round((3 + seededRandom(s + 500) * 5) * 10) / 10,
+    delay: Math.round(seededRandom(s + 600) * 6 * 10) / 10,
+  };
+});
+
 interface HeroSectionProps {
   onBeginCalibration: () => void;
 }
@@ -262,30 +293,19 @@ function ArmillarySphere() {
           <animate attributeName="opacity" values="0.6;1;0.65;0.9;0.6" dur="2.5s" repeatCount="indefinite" />
         </circle>
 
-        {/* Star nodes on outer ring */}
-        {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((angle, i) => {
-          const r = 370;
-          const x = 400 + r * Math.cos((angle * Math.PI) / 180);
-          const y = 400 + r * Math.sin((angle * Math.PI) / 180);
-          return (
-            <circle key={i} cx={x} cy={y} r="2.5" fill="#d4a528" filter="url(#softGlow)" opacity="0.7"
-              style={{ animation: `star-twinkle ${2.5 + (i % 4)}s ease-in-out ${i * 0.25}s infinite` }} />
-          );
-        })}
+        {/* Star nodes on outer ring (pre-computed) */}
+        {RING_STARS.map(({ x, y, i }) => (
+          <circle key={i} cx={x} cy={y} r="2.5" fill="#d4a528" filter="url(#softGlow)" opacity="0.7"
+            style={{ animation: `star-twinkle ${2.5 + (i % 4)}s ease-in-out ${i * 0.25}s infinite` }} />
+        ))}
 
-        {/* Scattered background stars */}
-        {Array.from({ length: 100 }, (_, i) => {
-          const x = Math.random() * 800;
-          const y = Math.random() * 800;
-          const size = Math.random() * 1.5 + 0.2;
-          const isGold = Math.random() > 0.5;
-          return (
-            <circle key={`s-${i}`} cx={x} cy={y} r={size}
-              fill={isGold ? "#d4a528" : "#b3bfee"}
-              opacity={Math.random() * 0.4 + 0.05}
-              style={{ animation: `star-twinkle ${3 + Math.random() * 5}s ease-in-out ${Math.random() * 6}s infinite` }} />
-          );
-        })}
+        {/* Scattered background stars (deterministic) */}
+        {BG_STARS.map((star, i) => (
+          <circle key={`s-${i}`} cx={star.x} cy={star.y} r={star.size}
+            fill={star.isGold ? "#d4a528" : "#b3bfee"}
+            opacity={star.opacity}
+            style={{ animation: `star-twinkle ${star.dur}s ease-in-out ${star.delay}s infinite` }} />
+        ))}
       </svg>
     </div>
   );
