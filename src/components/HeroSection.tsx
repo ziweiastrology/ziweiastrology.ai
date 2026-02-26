@@ -38,6 +38,48 @@ interface HeroSectionProps {
   onBeginCalibration: () => void;
 }
 
+/* ============================================
+   TypewriterLine — character-by-character reveal + blinking cursor
+   ============================================ */
+
+function TypewriterLine({
+  text,
+  delay = 0,
+  className = "",
+}: {
+  text: string;
+  delay?: number;
+  className?: string;
+}) {
+  const [displayed, setDisplayed] = useState("");
+  const [showCursor, setShowCursor] = useState(true);
+
+  useEffect(() => {
+    const startTimeout = setTimeout(() => {
+      let i = 0;
+      const interval = setInterval(() => {
+        i++;
+        setDisplayed(text.slice(0, i));
+        if (i >= text.length) clearInterval(interval);
+      }, 50);
+      return () => clearInterval(interval);
+    }, delay);
+    return () => clearTimeout(startTimeout);
+  }, [text, delay]);
+
+  useEffect(() => {
+    const interval = setInterval(() => setShowCursor((c) => !c), 530);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <span className={className}>
+      {displayed}
+      <span className={showCursor ? "opacity-100" : "opacity-0"}>_</span>
+    </span>
+  );
+}
+
 export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -82,9 +124,9 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
             </span>
           </div>
           <div className="space-y-1">
-            <StatusLine label="Engine" value="V3.1" />
-            <StatusLine label="Mode" value="Observing Galactic Transits" />
-            <StatusLine label="Uptime" value="∞" />
+            <StatusLine label="Status" value="Dormant 1000yr \u2192 REACTIVATION" />
+            <StatusLine label="Mode" value="Awaiting Calibrant" />
+            <StatusLine label="Uptime" value="\u221E" />
           </div>
         </div>
       </div>
@@ -97,7 +139,7 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
 
         {/* H1 — Primary SEO heading */}
         <motion.h1
-          className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-wide mb-4"
+          className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-wide mb-2"
           style={{
             fontFamily: "var(--font-cinzel)",
             background: "linear-gradient(135deg, #f0d47a 0%, #d4a528 40%, #b8891e 70%, #f0d47a 100%)",
@@ -113,22 +155,37 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
           紫微斗数
         </motion.h1>
 
+        {/* English subtitle — SOVEREIGN CALIBRATION ENGINE */}
+        <motion.p
+          className="text-xs md:text-sm tracking-[0.35em] uppercase mb-6"
+          style={{
+            fontFamily: "var(--font-cinzel)",
+            color: "rgba(212,165,40,0.6)",
+            textShadow: "0 0 12px rgba(212,165,40,0.15)",
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 1.1 }}
+        >
+          Sovereign Calibration Engine
+        </motion.p>
+
         {/* Subtitle — tagline */}
         <motion.div
           className="mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.2 }}
+          transition={{ duration: 0.8, delay: 1.3 }}
         >
           <p
-            className="text-sm md:text-base tracking-[0.25em] uppercase mb-2"
+            className="text-sm md:text-base tracking-[0.2em] uppercase mb-2"
             style={{
               fontFamily: "var(--font-cinzel)",
               color: "rgba(255,215,0,0.7)",
               textShadow: "0 0 12px rgba(255,215,0,0.2)",
             }}
           >
-            From the Forbidden City to Your Sovereign Hands
+            The Emperor&apos;s Forbidden Algorithm — Now Sovereign in Your Hands
           </p>
           <p
             className="text-xs tracking-[0.15em]"
@@ -138,11 +195,11 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
               textShadow: "0 0 10px rgba(0,209,255,0.1)",
             }}
           >
-            从禁城到你的主权
+            帝王禁术 — 今归主权于你
           </p>
         </motion.div>
 
-        {/* Narrative description */}
+        {/* Narrative description — 2 sentences */}
         <motion.p
           className="text-xs md:text-sm max-w-lg mx-auto leading-[1.9] mb-14"
           style={{ fontFamily: "var(--font-serif)", color: "rgba(200,210,230,0.45)" }}
@@ -150,21 +207,33 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1.6 }}
         >
-          紫微 (Zi Wei) — the North Star — was the axis of the ancient sky.
-          For a thousand years, this algorithm was the emperor&apos;s exclusive science (帝王学),
-          locked inside the Forbidden City&apos;s 钦天监.{" "}
-          <span style={{ color: "rgba(212,165,40,0.45)" }}>
-            108 stars. 12 palaces. The first high-precision life operating system,
-            now decoded for your sovereign hands.
+          For a thousand years, this 108-star calibration algorithm was locked inside the
+          Forbidden City&apos;s 钦天监 — the emperor&apos;s exclusive science.{" "}
+          <span style={{ color: "rgba(212,165,40,0.5)" }}>
+            The seal is broken. Your sovereign life-path calibration begins now.
           </span>
         </motion.p>
+
+        {/* Typewriter line */}
+        <motion.div
+          className="mb-8 h-5"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 2.0 }}
+        >
+          <TypewriterLine
+            text="> CALIBRATION ENGINE INITIALIZED. AWAITING NATAL COORDINATES..."
+            delay={2200}
+            className="text-[11px] font-mono text-quantum-green/70 tracking-wider"
+          />
+        </motion.div>
 
         {/* CTA Button with scanning light */}
         <motion.div
           className="relative inline-block"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 2.0 }}
+          transition={{ duration: 0.6, delay: 2.4 }}
         >
           {/* Outer glow halo */}
           <div className="absolute -inset-5 bg-[radial-gradient(ellipse,rgba(212,165,40,0.12)_0%,transparent_70%)] animate-glow-pulse pointer-events-none" />
@@ -182,7 +251,7 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
             }}
           >
             <span className="relative z-10 tracking-[0.25em] uppercase">
-              Initiate Sovereign Calibration
+              Begin Calibration
             </span>
             <span className="absolute inset-0 rounded-sm border border-gold-300/50 animate-glow-pulse" />
             <span className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
@@ -203,7 +272,7 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
             className="mt-4 flex items-center justify-center gap-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 2.5, duration: 0.6 }}
+            transition={{ delay: 2.8, duration: 0.6 }}
           >
             <div className="w-1 h-1 rounded-full bg-quantum-green animate-glow-pulse" />
             <p
@@ -213,7 +282,7 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
                 color: "rgba(100,180,255,0.4)",
               }}
             >
-              Imperial Lineage: 1000+ Years &nbsp;/&nbsp; 108 Stars &nbsp;/&nbsp; 12 Palaces
+              SYSTEM: ACTIVE &nbsp;//&nbsp; 108 PARAMETERS LOADED &nbsp;//&nbsp; AWAITING NATAL COORDINATES
             </p>
           </motion.div>
         </motion.div>
@@ -261,14 +330,14 @@ function StatusLine({ label, value }: { label: string; value: string }) {
    ============================================ */
 
 const TICKER_ITEMS = [
-  { label: "Global Frequency", value: "7.83 Hz", status: "stable" },
-  { label: "Lu/Ji Balance", value: "3:1 Favorable", status: "high" },
-  { label: "Transit Window", value: "Active — 72h", status: "active" },
-  { label: "Zi Wei Position", value: "寅宮 · Yin Palace", status: "stable" },
-  { label: "Resonance Index", value: "0.847", status: "high" },
-  { label: "Active Observers", value: "12,847", status: "stable" },
-  { label: "Fei Xing Cycle", value: "甲級 · Grade A", status: "high" },
-  { label: "Quantum Coherence", value: "94.2%", status: "active" },
+  { label: "SYSTEM", value: "ACTIVE", status: "active" },
+  { label: "STELLAR PARAMETERS", value: "108 LOADED", status: "high" },
+  { label: "AWAITING", value: "NATAL COORDINATES", status: "stable" },
+  { label: "Zi Wei Position", value: "\u5BC5\u5BAE \u00B7 Yin Palace", status: "stable" },
+  { label: "CALIBRATION MODE", value: "SOVEREIGN", status: "high" },
+  { label: "PALACE ARRAY", value: "12 INITIALIZED", status: "stable" },
+  { label: "ENGINE CYCLE", value: "\u7532\u7D1A \u00B7 Grade A", status: "high" },
+  { label: "QUANTUM COHERENCE", value: "94.2%", status: "active" },
 ];
 
 function TickerItem({ label, value, status }: { label: string; value: string; status: string }) {

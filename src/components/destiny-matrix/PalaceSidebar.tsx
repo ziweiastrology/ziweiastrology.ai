@@ -227,47 +227,40 @@ export default function PalaceSidebar() {
                 variants={childVariants}
               />
 
-              {/* Connect buttons */}
+              {/* CTA Button */}
               <motion.div variants={childVariants}>
-                <h4 className="text-xs text-gold-600 uppercase tracking-[0.2em] mb-3">
-                  Connect
-                </h4>
-                <div className="flex gap-3">
+                <button
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-semibold
+                             uppercase tracking-[0.2em] text-celestial-900 rounded-sm cursor-pointer
+                             transition-all duration-300
+                             hover:shadow-[0_0_30px_rgba(212,165,40,0.35),0_0_60px_rgba(212,165,40,0.15)]
+                             active:scale-[0.97]"
+                  style={{
+                    background: "linear-gradient(135deg, #8f6b17, #b8891e, #d4a528, #e6be4a, #d4a528, #b8891e, #8f6b17)",
+                    backgroundSize: "200% 100%",
+                  }}
+                >
+                  Unlock Full Reading
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </button>
+
+                <div className="flex gap-3 mt-4">
                   <a
                     href="https://wa.me/?text=Explore%20my%20Destiny%20Matrix"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-2.5 text-sm text-parchment-200 border border-gold-700/30 rounded-lg hover:border-gold-500/50 hover:bg-gold-500/5 transition-all"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-xs text-parchment-300 border border-gold-700/30 rounded-sm hover:border-gold-500/50 hover:bg-gold-500/5 transition-all"
                   >
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                    >
-                      <path d="M3 21l1.65-3.8a9 9 0 113.4 2.9L3 21" />
-                      <path d="M9 10a.5.5 0 001 0V9a.5.5 0 00-1 0v1zm5 3a.5.5 0 001 0v-1a.5.5 0 00-1 0v1z" />
-                    </svg>
                     WhatsApp
                   </a>
                   <a
                     href="https://t.me/share/url?url=ziweiastrology.ai"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-2.5 text-sm text-parchment-200 border border-gold-700/30 rounded-lg hover:border-gold-500/50 hover:bg-gold-500/5 transition-all"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-xs text-parchment-300 border border-gold-700/30 rounded-sm hover:border-gold-500/50 hover:bg-gold-500/5 transition-all"
                   >
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                    >
-                      <path d="M21 5L2 12.5l7 1.5M21 5l-4.5 15-6.5-7.5M21 5L9 14" />
-                    </svg>
                     Telegram
                   </a>
                 </div>

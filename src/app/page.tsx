@@ -3,15 +3,16 @@
 import { useCallback, useRef } from "react";
 import HeroSection from "@/components/HeroSection";
 import VerificationTimeline from "@/components/VerificationTimeline";
-import QuantumDashboard from "@/components/QuantumDashboard";
+// import QuantumDashboard from "@/components/QuantumDashboard"; // Phase 2 — Free Report
 import AICopilotWidget from "@/components/AICopilotWidget";
 import DestinyMatrix from "@/components/destiny-matrix/DestinyMatrix";
-import ScholarlyFoundation from "@/components/scholarly/ScholarlyFoundation";
+import FreeReport from "@/components/FreeReport";
+// import ScholarlyFoundation from "@/components/scholarly/ScholarlyFoundation";
 import { useDashboardStore } from "@/stores/useDashboardStore";
 
 export default function Home() {
   const timelineRef = useRef<HTMLDivElement>(null);
-  const dashboardRef = useRef<HTMLDivElement>(null);
+  const matrixRef = useRef<HTMLDivElement>(null);
   const setUnlocked = useDashboardStore((s) => s.setUnlocked);
 
   const handleBeginCalibration = useCallback(() => {
@@ -21,30 +22,30 @@ export default function Home() {
   const handleAllVerified = useCallback(() => {
     setUnlocked(true);
     setTimeout(() => {
-      dashboardRef.current?.scrollIntoView({ behavior: "smooth" });
+      matrixRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 500);
   }, [setUnlocked]);
 
   return (
     <main className="min-h-screen">
-      {/* Hero */}
+      {/* Hero (dark) */}
       <HeroSection onBeginCalibration={handleBeginCalibration} />
 
-      {/* Verification Timeline */}
+      {/* Calibration Input + Verification Overlay (dark) */}
       <div ref={timelineRef}>
         <VerificationTimeline onAllVerified={handleAllVerified} />
       </div>
 
-      {/* Quantum Dashboard (unlocks after verification) */}
-      <div ref={dashboardRef}>
-        <QuantumDashboard />
+      {/* Destiny Matrix (dark, gated by isUnlocked) */}
+      <div ref={matrixRef}>
+        <DestinyMatrix />
       </div>
 
-      {/* Destiny Matrix (unlocks after verification) */}
-      <DestinyMatrix />
+      {/* Free Report (dark, gated by isUnlocked inside component) */}
+      <FreeReport />
 
-      {/* Scholarly Foundation */}
-      <ScholarlyFoundation />
+      {/* Scholarly Foundation (light parchment — hidden for V2 funnel) */}
+      {/* <ScholarlyFoundation /> */}
 
       {/* Footer */}
       <footer className="py-12 px-6 text-center celestial-bg border-t border-gold-700/20">
@@ -59,7 +60,7 @@ export default function Home() {
         </p>
       </footer>
 
-      {/* Floating AI Co-pilot */}
+      {/* Floating AI Co-pilot (gated) */}
       <AICopilotWidget />
     </main>
   );

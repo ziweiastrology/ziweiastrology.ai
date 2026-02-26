@@ -20,14 +20,12 @@ export default function DestinyMatrix() {
   const palaces = useMatrixStore((s) => s.palaces);
   const sidebarOpen = useMatrixStore((s) => s.sidebarOpen);
 
-  // Gate temporarily removed for design review
-  // if (!isUnlocked) return null;
-
+  // Matrix always visible — no gate
   return (
     <section
       className="relative py-20 md:py-28 overflow-hidden"
       style={{
-        background: "linear-gradient(to bottom, #0a0e1a, #1a1f2e)",
+        background: "#05070a",
       }}
     >
       {/* Constellation particle network */}
@@ -69,6 +67,13 @@ export default function DestinyMatrix() {
           Twelve palaces, one destiny. Select a palace to unveil its
           consciousness.
         </p>
+        {/* Terminal-style subtitle */}
+        <p
+          className="mt-2 text-[10px] font-mono tracking-[0.2em] uppercase"
+          style={{ color: "rgba(0,220,130,0.5)" }}
+        >
+          [12 PALACES LOADED // AWAITING SELECTION]
+        </p>
       </div>
 
       {/* Grid + Sidebar layout */}
@@ -100,6 +105,26 @@ export default function DestinyMatrix() {
             <CoreVoid />
           </div>
         </motion.div>
+
+        {/* Unlock Full Reading CTA */}
+        <div className="mt-12 text-center">
+          <button
+            className="inline-flex items-center gap-3 px-10 py-4 text-sm font-semibold uppercase tracking-[0.25em]
+                       text-celestial-900 rounded-sm cursor-pointer
+                       transition-all duration-400 ease-out
+                       hover:shadow-[0_0_40px_rgba(212,165,40,0.4),0_0_80px_rgba(212,165,40,0.2)]
+                       active:scale-[0.97]"
+            style={{
+              background: "linear-gradient(135deg, #8f6b17, #b8891e, #d4a528, #e6be4a, #d4a528, #b8891e, #8f6b17)",
+              backgroundSize: "200% 100%",
+            }}
+          >
+            Unlock Full Reading
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Sidebar */}

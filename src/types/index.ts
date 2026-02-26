@@ -56,6 +56,9 @@ export interface BirthDetails {
   birthHour: string;
   birthMinute: string;
   birthLocation: string;
+  trueSolarHour?: string;
+  trueSolarMinute?: string;
+  solarOffsetMinutes?: number;
 }
 
 // === Destiny Matrix Types ===
