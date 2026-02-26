@@ -31,7 +31,7 @@ export default function AICopilotWidget() {
             <div className="flex items-center gap-2">
               <div className={`w-2 h-2 rounded-full ${config.color} ${config.pulse ? "animate-glow-pulse" : ""}`} />
               <span className="text-xs text-gold-400 tracking-widest uppercase">
-                AI Co-pilot: {config.label}
+                ZiWei Sifu: {config.label}
               </span>
             </div>
             <button
@@ -69,7 +69,7 @@ export default function AICopilotWidget() {
             <div className="flex items-center gap-2 bg-celestial-900/50 border border-gold-700/30 rounded-sm px-3 py-2">
               <input
                 type="text"
-                placeholder="Ask the Co-pilot..."
+                placeholder="Ask ZiWei Sifu..."
                 className="flex-1 bg-transparent text-xs text-parchment-200 placeholder:text-parchment-600 outline-none"
                 disabled
               />
