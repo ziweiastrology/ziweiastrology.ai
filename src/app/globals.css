@@ -1,26 +1,452 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ============================================
+   ZIWEI ASTROLOGY AI — Ancient Quantum Theme
+   Tailwind CSS v4 Theme Configuration
+   ============================================ */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* --- Color Palette --- */
+  --color-celestial-900: #020510;
+  --color-celestial-800: #070b24;
+  --color-celestial-700: #0c1338;
+  --color-celestial-600: #131c50;
+  --color-celestial-500: #1e2d7a;
+  --color-celestial-400: #2a3f9e;
+  --color-celestial-300: #4a5fc2;
+  --color-celestial-200: #7b8fdb;
+  --color-celestial-100: #b3bfee;
+
+  --color-gold-900: #3d2e0a;
+  --color-gold-800: #6b5011;
+  --color-gold-700: #8f6b17;
+  --color-gold-600: #b8891e;
+  --color-gold-500: #d4a528;
+  --color-gold-400: #e6be4a;
+  --color-gold-300: #f0d47a;
+  --color-gold-200: #f5e3a3;
+  --color-gold-100: #faf1d0;
+
+  --color-parchment-900: #4a4235;
+  --color-parchment-800: #6b6050;
+  --color-parchment-700: #8c7e6b;
+  --color-parchment-600: #a89982;
+  --color-parchment-500: #c4b69e;
+  --color-parchment-400: #d8ccb4;
+  --color-parchment-300: #e8dece;
+  --color-parchment-200: #f2ece2;
+  --color-parchment-100: #f8f4ed;
+
+  --color-quantum-red: #ff4444;
+  --color-quantum-orange: #ff8844;
+  --color-quantum-cyan: #44ffff;
+  --color-quantum-green: #44ff88;
+
+  --color-background: var(--color-celestial-900);
+  --color-foreground: var(--color-parchment-100);
+  --color-primary: var(--color-gold-500);
+  --color-primary-hover: var(--color-gold-400);
+  --color-accent: var(--color-celestial-400);
+  --color-muted: var(--color-parchment-600);
+  --color-surface: var(--color-celestial-800);
+  --color-surface-light: var(--color-celestial-700);
+  --color-border: var(--color-gold-700);
+  --color-border-glow: var(--color-gold-500);
+
+  --font-heading: "Cinzel Decorative", "Cinzel", "Georgia", serif;
+  --font-serif: "Merriweather", "Georgia", serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --animate-glow-pulse: glow-pulse 3s ease-in-out infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-shimmer: shimmer 8s linear infinite;
+  --animate-orbit: orbit 20s linear infinite;
+  --animate-fade-in: fade-in 0.6s ease-out forwards;
+  --animate-slide-up: slide-up 0.8s ease-out forwards;
+  --animate-energy-flow: energy-flow 4s ease-in-out infinite;
+  --animate-nebula-rotate: nebula-rotate 60s linear infinite;
+  --animate-palace-entrance: palace-entrance 0.5s ease-out forwards;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================
+   Keyframe Animations
+   ============================================ */
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.6; filter: brightness(1); }
+  50% { opacity: 1; filter: brightness(1.4); }
 }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes energy-flow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.02); }
+}
+
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+@keyframes glow-line {
+  0% { stroke-dashoffset: 1000; opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0.3; }
+}
+
+@keyframes rune-rotate {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(3deg); }
+}
+
+@keyframes beam-flow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes scan-sweep {
+  0% { transform: translateX(-100%); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateX(200%); opacity: 0; }
+}
+
+@keyframes heartbeat-glow {
+  0%, 100% { r: 6; opacity: 0.5; }
+  15% { r: 10; opacity: 1; }
+  30% { r: 7; opacity: 0.6; }
+  45% { r: 9; opacity: 0.9; }
+  60% { r: 6; opacity: 0.5; }
+}
+
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes form-scan {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes form-scan-glow {
+  0% { box-shadow: 0 0 20px rgba(212,165,40,0.1), inset 0 0 20px rgba(212,165,40,0.03); }
+  50% { box-shadow: 0 0 40px rgba(212,165,40,0.25), inset 0 0 40px rgba(212,165,40,0.08); }
+  100% { box-shadow: 0 0 20px rgba(212,165,40,0.1), inset 0 0 20px rgba(212,165,40,0.03); }
+}
+
+@keyframes fade-out-up {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-30px); }
+}
+
+@keyframes nebula-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes palace-entrance {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-celestial-900);
+  color: var(--color-parchment-100);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* Select field focus styles */
+.select-field:focus {
+  border-color: rgba(212, 165, 40, 0.4) !important;
+  box-shadow: 0 0 12px rgba(212, 165, 40, 0.08);
+}
+.select-field option {
+  background: #f2ece2;
+  color: #0a0f2e;
+}
+
+/* ============================================
+   COSMIC PARCHMENT — The immersive background
+   Layered: parchment base + aging + stardust + sacred geometry + constellations
+   ============================================ */
+
+.parchment-bg {
+  position: relative;
+  background:
+    radial-gradient(ellipse at 25% 15%, rgba(212, 165, 40, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 75% 85%, rgba(42, 63, 158, 0.03) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 50%, rgba(139, 119, 80, 0.06) 0%, transparent 60%),
+    linear-gradient(175deg, #f0e8d8 0%, #e8dcc8 30%, #f2e8d4 60%, #ebe0cc 100%);
+  color: var(--color-celestial-800);
+}
+
+/* Layer 1: Aged parchment texture — stains, foxing, grain */
+.parchment-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    /* foxing spots */
+    radial-gradient(circle at 15% 25%, rgba(120, 95, 55, 0.12) 0%, transparent 3%),
+    radial-gradient(circle at 82% 18%, rgba(120, 95, 55, 0.08) 0%, transparent 2%),
+    radial-gradient(circle at 45% 72%, rgba(120, 95, 55, 0.1) 0%, transparent 4%),
+    radial-gradient(circle at 70% 55%, rgba(120, 95, 55, 0.06) 0%, transparent 3%),
+    radial-gradient(circle at 30% 90%, rgba(120, 95, 55, 0.09) 0%, transparent 2.5%),
+    /* water stain edges */
+    radial-gradient(ellipse at 10% 50%, rgba(160, 130, 80, 0.08) 0%, transparent 25%),
+    radial-gradient(ellipse at 90% 30%, rgba(160, 130, 80, 0.05) 0%, transparent 20%),
+    /* grain texture */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='6' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Layer 2: Cosmic overlay — stardust, constellations, sacred geometry */
+.parchment-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    /* sacred geometry — faint hexagonal grid */
+    url("data:image/svg+xml,%3Csvg width='60' height='52' viewBox='0 0 60 52' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l30 17.3v17.4L30 52 0 34.7V17.3z' fill='none' stroke='rgba(143,107,23,0.04)' stroke-width='0.4'/%3E%3C/svg%3E"),
+    /* stardust — scattered glow points */
+    radial-gradient(circle at 12% 8%, rgba(212, 165, 40, 0.15) 0%, transparent 1.5%),
+    radial-gradient(circle at 88% 12%, rgba(179, 191, 238, 0.12) 0%, transparent 1%),
+    radial-gradient(circle at 35% 22%, rgba(212, 165, 40, 0.08) 0%, transparent 0.8%),
+    radial-gradient(circle at 67% 35%, rgba(179, 191, 238, 0.1) 0%, transparent 1.2%),
+    radial-gradient(circle at 20% 65%, rgba(212, 165, 40, 0.06) 0%, transparent 0.6%),
+    radial-gradient(circle at 78% 58%, rgba(179, 191, 238, 0.08) 0%, transparent 0.9%),
+    radial-gradient(circle at 50% 80%, rgba(212, 165, 40, 0.1) 0%, transparent 1.1%),
+    radial-gradient(circle at 92% 75%, rgba(179, 191, 238, 0.07) 0%, transparent 0.7%),
+    radial-gradient(circle at 8% 90%, rgba(212, 165, 40, 0.09) 0%, transparent 1%),
+    /* constellation lines */
+    url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='50' y1='80' x2='120' y2='45' stroke='rgba(143,107,23,0.06)' stroke-width='0.3'/%3E%3Cline x1='120' y1='45' x2='180' y2='90' stroke='rgba(143,107,23,0.06)' stroke-width='0.3'/%3E%3Cline x1='250' y1='120' x2='310' y2='85' stroke='rgba(74,95,194,0.05)' stroke-width='0.3'/%3E%3Cline x1='310' y1='85' x2='350' y2='150' stroke='rgba(74,95,194,0.05)' stroke-width='0.3'/%3E%3Cline x1='80' y1='280' x2='150' y2='310' stroke='rgba(143,107,23,0.05)' stroke-width='0.3'/%3E%3Cline x1='150' y1='310' x2='200' y2='270' stroke='rgba(143,107,23,0.05)' stroke-width='0.3'/%3E%3Ccircle cx='50' cy='80' r='1.5' fill='rgba(212,165,40,0.12)'/%3E%3Ccircle cx='120' cy='45' r='1' fill='rgba(212,165,40,0.1)'/%3E%3Ccircle cx='180' cy='90' r='1.5' fill='rgba(212,165,40,0.12)'/%3E%3Ccircle cx='250' cy='120' r='1' fill='rgba(74,95,194,0.1)'/%3E%3Ccircle cx='310' cy='85' r='1.5' fill='rgba(74,95,194,0.12)'/%3E%3Ccircle cx='350' cy='150' r='1' fill='rgba(74,95,194,0.1)'/%3E%3Ccircle cx='80' cy='280' r='1' fill='rgba(212,165,40,0.1)'/%3E%3Ccircle cx='150' cy='310' r='1.5' fill='rgba(212,165,40,0.12)'/%3E%3Ccircle cx='200' cy='270' r='1' fill='rgba(212,165,40,0.1)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+.parchment-bg > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* ============================================
+   DEEP CELESTIAL VOID — Hero & Dashboard bg
+   ============================================ */
+
+.celestial-bg {
+  background:
+    /* nebula pools */
+    radial-gradient(ellipse at 20% 15%, rgba(42, 63, 158, 0.2) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 85%, rgba(30, 45, 122, 0.15) 0%, transparent 35%),
+    radial-gradient(ellipse at 60% 30%, rgba(75, 50, 130, 0.08) 0%, transparent 30%),
+    radial-gradient(ellipse at 35% 70%, rgba(20, 30, 80, 0.12) 0%, transparent 45%),
+    /* deep void gradient */
+    linear-gradient(175deg, #020510 0%, #050a1a 40%, #070b24 70%, #020510 100%);
+}
+
+/* ============================================
+   ETCHED GOLD FRAME — For cards & panels
+   ============================================ */
+
+.gold-frame {
+  border: 1px solid rgba(212, 165, 40, 0.35);
+  background-image:
+    linear-gradient(135deg, rgba(212, 165, 40, 0.03) 0%, transparent 50%, rgba(212, 165, 40, 0.02) 100%);
+  box-shadow:
+    0 0 15px rgba(212, 165, 40, 0.08),
+    0 0 30px rgba(212, 165, 40, 0.04),
+    inset 0 0 20px rgba(212, 165, 40, 0.06),
+    inset 0 1px 0 rgba(212, 165, 40, 0.15);
+  transition: all 0.4s ease;
+}
+
+.gold-frame:hover {
+  border-color: rgba(212, 165, 40, 0.5);
+  box-shadow:
+    0 0 25px rgba(212, 165, 40, 0.15),
+    0 0 50px rgba(212, 165, 40, 0.08),
+    0 0 80px rgba(212, 165, 40, 0.04),
+    inset 0 0 30px rgba(212, 165, 40, 0.1),
+    inset 0 1px 0 rgba(212, 165, 40, 0.2);
+}
+
+/* Etched gold frame for parchment sections */
+.etched-frame {
+  border: 1px solid rgba(143, 107, 23, 0.25);
+  background:
+    linear-gradient(135deg, rgba(212, 165, 40, 0.03) 0%, transparent 40%, rgba(212, 165, 40, 0.02) 100%),
+    radial-gradient(ellipse at 50% 0%, rgba(212, 165, 40, 0.04) 0%, transparent 60%),
+    rgba(248, 244, 237, 0.4);
+  box-shadow:
+    0 0 12px rgba(143, 107, 23, 0.06),
+    0 2px 8px rgba(0, 0, 0, 0.03),
+    inset 0 0 15px rgba(212, 165, 40, 0.04),
+    inset 0 1px 0 rgba(212, 165, 40, 0.1);
+  transition: all 0.4s ease;
+}
+
+.etched-frame:hover {
+  border-color: rgba(143, 107, 23, 0.4);
+  box-shadow:
+    0 0 20px rgba(143, 107, 23, 0.1),
+    0 4px 16px rgba(0, 0, 0, 0.04),
+    inset 0 0 25px rgba(212, 165, 40, 0.07),
+    inset 0 1px 0 rgba(212, 165, 40, 0.15);
+}
+
+/* ============================================
+   GOLDEN GRADIENT TEXT — Metallic headings
+   ============================================ */
+
+.gold-gradient-text {
+  background: linear-gradient(
+    135deg,
+    #8f6b17 0%,
+    #d4a528 25%,
+    #f0d47a 50%,
+    #d4a528 75%,
+    #8f6b17 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animated shimmer variant */
+.gold-gradient-text-shimmer {
+  background: linear-gradient(
+    90deg,
+    #8f6b17 0%,
+    #d4a528 20%,
+    #f5e3a3 40%,
+    #d4a528 60%,
+    #8f6b17 80%,
+    #d4a528 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 6s linear infinite;
+}
+
+/* ============================================
+   GLOW EFFECTS
+   ============================================ */
+
+.glow-text {
+  text-shadow:
+    0 0 8px rgba(212, 165, 40, 0.5),
+    0 0 20px rgba(212, 165, 40, 0.3),
+    0 0 40px rgba(212, 165, 40, 0.15),
+    0 0 80px rgba(212, 165, 40, 0.08);
+}
+
+.glow-text-blue {
+  text-shadow:
+    0 0 8px rgba(74, 95, 194, 0.5),
+    0 0 20px rgba(74, 95, 194, 0.3),
+    0 0 40px rgba(74, 95, 194, 0.15);
+}
+
+.glow-border {
+  position: relative;
+}
+
+.glow-border::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(212, 165, 40, 0.4),
+    rgba(42, 63, 158, 0.3),
+    rgba(212, 165, 40, 0.4)
+  );
+  z-index: -1;
+  filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.glow-border:hover::after {
+  opacity: 1;
+}
+
+/* Inner glow for dark containers */
+.inner-glow {
+  box-shadow:
+    inset 0 0 30px rgba(212, 165, 40, 0.05),
+    inset 0 0 60px rgba(42, 63, 158, 0.03);
+}
+
+/* ============================================
+   ORNAMENTAL DIVIDER (applied via CSS)
+   ============================================ */
+
+.ornamental-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.ornamental-divider::before,
+.ornamental-divider::after {
+  content: "";
+  flex: 1;
+  max-width: 180px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(143, 107, 23, 0.25), transparent);
+}
+
+/* ============================================
+   Scrollbar & Selection
+   ============================================ */
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--color-celestial-900); }
+::-webkit-scrollbar-thumb { background: var(--color-gold-700); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-gold-600); }
+
+::selection {
+  background-color: rgba(212, 165, 40, 0.3);
+  color: var(--color-parchment-100);
 }
