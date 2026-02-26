@@ -11,18 +11,18 @@ interface Palace {
 }
 
 const PALACES: Palace[] = [
-  { name: "命宮", western: "Self", meaning: "Core identity, innate disposition, and the lens through which all other palaces are interpreted.", x: 3, y: 1 },
-  { name: "兄弟", western: "Siblings", meaning: "Peer relationships, fraternal bonds, and the dynamics of equal-status alliances.", x: 3, y: 0 },
-  { name: "夫妻", western: "Spouse", meaning: "Marriage, partnership, and the nature of one's most intimate contractual bond.", x: 2, y: 0 },
-  { name: "子女", western: "Children", meaning: "Offspring, creative output, and the legacy one generates into the world.", x: 1, y: 0 },
-  { name: "財帛", western: "Wealth", meaning: "Earned income, liquid assets, and one's relationship with material resources.", x: 0, y: 0 },
-  { name: "疾厄", western: "Health", meaning: "Constitution, illness predisposition, and the body as a field of probabilities.", x: 0, y: 1 },
-  { name: "遷移", western: "Travel", meaning: "External environment, mobility, and the quality of one's public-facing existence.", x: 0, y: 2 },
-  { name: "交友", western: "Friends", meaning: "Social networks, subordinates, and the wider fabric of non-familial connections.", x: 0, y: 3 },
-  { name: "官祿", western: "Career", meaning: "Professional trajectory, vocation, and the domain of worldly accomplishment.", x: 1, y: 3 },
-  { name: "田宅", western: "Property", meaning: "Real estate, inheritance, and the stability of one's material foundation.", x: 2, y: 3 },
-  { name: "福德", western: "Fortune", meaning: "Inner happiness, spiritual life, and the subjective experience of contentment.", x: 3, y: 3 },
-  { name: "父母", western: "Parents", meaning: "Elders, authority figures, education, and the institutions that shape early formation.", x: 3, y: 2 },
+  { name: "命宮", western: "Self", meaning: "The Life CPU. Your core identity, innate disposition, and the lens through which all other palaces are interpreted.", x: 3, y: 1 },
+  { name: "兄弟", western: "Siblings", meaning: "The First Alliance. Resource-sharing, competition, and the primal pattern of cooperation among equals.", x: 3, y: 0 },
+  { name: "夫妻", western: "Spouse", meaning: "The Partnership Mirror. The alchemy of two destinies merging — your highest-quality contractual bond.", x: 2, y: 0 },
+  { name: "子女", western: "Children", meaning: "The Creation Engine. Your output from every act of conception and nurturing — offspring, ideas, investments.", x: 1, y: 0 },
+  { name: "財帛", western: "Wealth", meaning: "The Financial Frequency. Cash-flow logic, risk tolerance, and your relationship with material resources.", x: 0, y: 0 },
+  { name: "疾厄", western: "Health", meaning: "The Stress Monitor. A real-time readout of your subconscious pressure and your body's most vulnerable logic gaps.", x: 0, y: 1 },
+  { name: "遷移", western: "Travel", meaning: "The Horizon Shift. Your adaptability to change, travel, and survival odds in unfamiliar territory.", x: 0, y: 2 },
+  { name: "交友", western: "Friends", meaning: "The Social Synapse. How your network drains or amplifies your energy across non-familial connections.", x: 0, y: 3 },
+  { name: "官祿", western: "Career", meaning: "The Sovereign Impact. How you build order and achievement in the external world through action.", x: 1, y: 3 },
+  { name: "田宅", western: "Property", meaning: "The Foundational Base. Real estate, family legacy, and your deepest sense of belonging.", x: 2, y: 3 },
+  { name: "福德", western: "Fortune", meaning: "The Spiritual Vault. Karma, mindset, and the invisible 'luck score' accumulated in unseen realms.", x: 3, y: 3 },
+  { name: "父母", western: "Parents", meaning: "The Ancestral Input. Superiors, elders, and the power structures that existed before you and shaped your formation.", x: 3, y: 2 },
 ];
 
 export default function GeometryOfDestiny() {

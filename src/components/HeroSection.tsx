@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import ParticleField from "./ParticleField";
 import BigDipperOverlay from "./BigDipperOverlay";
 
@@ -94,45 +95,84 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px]
                         bg-[radial-gradient(ellipse,rgba(212,165,40,0.1)_0%,transparent_65%)] pointer-events-none" />
 
-        {/* Title */}
-        <h1
-          className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-wide mb-6 animate-fade-in"
-          style={{ fontFamily: "var(--font-cinzel)" }}
+        {/* H1 — Primary SEO heading */}
+        <motion.h1
+          className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-wide mb-4"
+          style={{
+            fontFamily: "var(--font-cinzel)",
+            background: "linear-gradient(135deg, #f0d47a 0%, #d4a528 40%, #b8891e 70%, #f0d47a 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+            filter: "drop-shadow(0 0 20px rgba(212,165,40,0.25))",
+          }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.8 }}
         >
-          <span className="gold-gradient-text-shimmer">ziwei</span>
-          <span className="text-parchment-200/90">astrology</span>
-          <span className="text-celestial-300 glow-text-blue">.ai</span>
-        </h1>
+          紫微斗数
+        </motion.h1>
 
-        {/* New subtitle — multi-line with emphasis */}
-        <div className="animate-slide-up mb-16" style={{ animationDelay: "0.3s" }}>
+        {/* Subtitle — tagline */}
+        <motion.div
+          className="mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.2 }}
+        >
           <p
-            className="text-lg md:text-xl text-gold-400/90 tracking-[0.15em] uppercase mb-3 font-semibold"
-            style={{ fontFamily: "var(--font-cinzel)" }}
+            className="text-sm md:text-base tracking-[0.25em] uppercase mb-2"
+            style={{
+              fontFamily: "var(--font-cinzel)",
+              color: "rgba(255,215,0,0.7)",
+              textShadow: "0 0 12px rgba(255,215,0,0.2)",
+            }}
           >
-            Beyond Prediction.
+            From the Forbidden City to Your Sovereign Hands
           </p>
           <p
-            className="text-sm md:text-base text-parchment-300/70 max-w-xl mx-auto leading-relaxed"
-            style={{ fontFamily: "var(--font-merriweather)" }}
+            className="text-xs tracking-[0.15em]"
+            style={{
+              fontFamily: "var(--font-serif)",
+              color: "rgba(100,180,255,0.45)",
+              textShadow: "0 0 10px rgba(0,209,255,0.1)",
+            }}
           >
-            A Quantum Decision Engine rooted in Ancient Mastery.
-            <br />
-            <span className="text-parchment-400/50">
-              Verify your past to calibrate your future.
-            </span>
+            从禁城到你的主权
           </p>
-        </div>
+        </motion.div>
+
+        {/* Narrative description */}
+        <motion.p
+          className="text-xs md:text-sm max-w-lg mx-auto leading-[1.9] mb-14"
+          style={{ fontFamily: "var(--font-serif)", color: "rgba(200,210,230,0.45)" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 1.6 }}
+        >
+          紫微 (Zi Wei) — the North Star — was the axis of the ancient sky.
+          For a thousand years, this algorithm was the emperor&apos;s exclusive science (帝王学),
+          locked inside the Forbidden City&apos;s 钦天监.{" "}
+          <span style={{ color: "rgba(212,165,40,0.45)" }}>
+            108 stars. 12 palaces. The first high-precision life operating system,
+            now decoded for your sovereign hands.
+          </span>
+        </motion.p>
 
         {/* CTA Button with scanning light */}
-        <div className="relative inline-block animate-slide-up" style={{ animationDelay: "0.6s" }}>
+        <motion.div
+          className="relative inline-block"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 2.0 }}
+        >
           {/* Outer glow halo */}
           <div className="absolute -inset-5 bg-[radial-gradient(ellipse,rgba(212,165,40,0.12)_0%,transparent_70%)] animate-glow-pulse pointer-events-none" />
 
           <button
             onClick={onBeginCalibration}
             className="group relative inline-flex items-center gap-3 px-14 py-5 text-base font-semibold
-                       text-celestial-900 rounded-sm overflow-hidden
+                       text-celestial-900 rounded-sm overflow-hidden cursor-pointer
                        transition-all duration-400 ease-out
                        hover:shadow-[0_0_40px_rgba(212,165,40,0.45),0_0_80px_rgba(212,165,40,0.2),0_0_120px_rgba(212,165,40,0.1)]
                        active:scale-[0.97]"
@@ -142,13 +182,10 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
             }}
           >
             <span className="relative z-10 tracking-[0.25em] uppercase">
-              Begin Calibration
+              Initiate Sovereign Calibration
             </span>
-            {/* Animated border glow */}
             <span className="absolute inset-0 rounded-sm border border-gold-300/50 animate-glow-pulse" />
-            {/* Inner shine */}
             <span className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
-            {/* Scanning light sweep — every 5s */}
             <span
               className="absolute inset-y-0 w-[60px] pointer-events-none"
               style={{
@@ -156,12 +193,30 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
                 animation: "scan-sweep 5s ease-in-out infinite",
               }}
             />
-            {/* Arrow */}
             <svg className="w-5 h-5 relative z-10 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </button>
-        </div>
+
+          {/* Dynamic status ticker below CTA */}
+          <motion.div
+            className="mt-4 flex items-center justify-center gap-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2.5, duration: 0.6 }}
+          >
+            <div className="w-1 h-1 rounded-full bg-quantum-green animate-glow-pulse" />
+            <p
+              className="text-[10px] tracking-[0.2em] uppercase"
+              style={{
+                fontFamily: "var(--font-mono)",
+                color: "rgba(100,180,255,0.4)",
+              }}
+            >
+              Imperial Lineage: 1000+ Years &nbsp;/&nbsp; 108 Stars &nbsp;/&nbsp; 12 Palaces
+            </p>
+          </motion.div>
+        </motion.div>
       </div>
 
       {/* === Probability Ticker — bottom === */}
@@ -228,6 +283,42 @@ function TickerItem({ label, value, status }: { label: string; value: string; st
       <span className="text-[10px] text-parchment-500/50 tracking-wider uppercase">{label}</span>
       <span className="text-[10px] text-gold-400/70 font-mono">{value}</span>
     </div>
+  );
+}
+
+/* ============================================
+   Etched Text — letter-by-letter reveal
+   ============================================ */
+
+function EtchedText({
+  text,
+  className = "",
+  delay = 0,
+}: {
+  text: string;
+  className?: string;
+  delay?: number;
+}) {
+  return (
+    <span className={className}>
+      {text.split("").map((char, i) => (
+        <motion.span
+          key={`${char}-${i}`}
+          className="inline-block"
+          initial={{ opacity: 0, y: 12, scale: 0.8, filter: "blur(4px)" }}
+          animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+          transition={{
+            duration: 0.5,
+            delay: delay + i * 0.06,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+        >
+          {char}
+        </motion.span>
+      ))}
+      {/* Space after each word segment */}
+      <span>&nbsp;</span>
+    </span>
   );
 }
 

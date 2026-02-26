@@ -5,9 +5,10 @@ export const DEFAULT_PALACES: PalaceDetail[] = [
     id: "wealth",
     name: "Wealth",
     nameCn: "财帛",
+    subtitle: "The Financial Frequency",
     icon: "wealth",
     consciousness:
-      "The river of abundance flows not from grasping, but from understanding the tides of fortune. This palace mirrors your relationship with material reality — the gravitational pull between desire and detachment.",
+      "你的财务频率。现金流逻辑与风险承受力。",
     fable:
       "A merchant once counted coins under moonlight, only to find they had turned to seeds. By morning, his garden fed the entire village.",
     gridCol: 1,
@@ -20,9 +21,10 @@ export const DEFAULT_PALACES: PalaceDetail[] = [
     id: "children",
     name: "Children",
     nameCn: "子女",
+    subtitle: "The Creation Engine",
     icon: "children",
     consciousness:
-      "Creation extends beyond biology — every idea, every act of nurturing, every spark passed forward is a child of consciousness. This palace governs your legacy through what you bring to life.",
+      "你的创造、传承与投资回报。每一个构想和培育行为的产出。",
     fable:
       "The old painter had no heirs, yet a thousand villages bore murals from her brush. She lived in every wall that told a story.",
     gridCol: 2,
@@ -35,9 +37,10 @@ export const DEFAULT_PALACES: PalaceDetail[] = [
     id: "spouse",
     name: "Spouse",
     nameCn: "夫妻",
+    subtitle: "The Partnership Mirror",
     icon: "spouse",
     consciousness:
-      "The mirror of the soul appears first in the beloved. This palace reveals how you merge with another — the alchemy of two destinies intertwined, and the courage to be truly seen.",
+      "你最高质量的合伙关系镜像。两个命运交融的炼金术。",
     fable:
       "Two rivers refused to join for centuries, each proud of its own course. When they finally merged, they became the sea.",
     gridCol: 3,
@@ -50,9 +53,10 @@ export const DEFAULT_PALACES: PalaceDetail[] = [
     id: "siblings",
     name: "Siblings",
     nameCn: "兄弟",
+    subtitle: "The First Alliance",
     icon: "siblings",
     consciousness:
-      "The first bonds we form outside ourselves shape the geometry of all relationships to come. This palace speaks to kinship, alliance, and the invisible threads between those who share an origin.",
+      "你的第一个同盟。资源共享、竞争与合作的原始模式。",
     fable:
       "Three brothers divided the inheritance equally, but only the one who gave his share away found what their father truly left behind.",
     gridCol: 4,
@@ -65,9 +69,10 @@ export const DEFAULT_PALACES: PalaceDetail[] = [
     id: "health",
     name: "Health",
     nameCn: "疾厄",
+    subtitle: "The Stress Monitor",
     icon: "health",
     consciousness:
-      "The body is the first instrument of destiny. This palace maps the terrain of vitality and vulnerability — not as punishment, but as the language through which the cosmos communicates its deepest lessons.",
+      "你潜意识压力的实时监控器，显示你身体最脆弱的逻辑漏洞。",
     fable:
       "A healer who cured thousands could not cure herself. In her stillness, she discovered the illness was the teaching.",
     gridCol: 1,
@@ -80,9 +85,10 @@ export const DEFAULT_PALACES: PalaceDetail[] = [
     id: "travel",
     name: "Travel",
     nameCn: "迁移",
+    subtitle: "The Horizon Shift",
     icon: "travel",
     consciousness:
-      "Movement is the breath of destiny. This palace governs the spaces between — journeys taken and untaken, the transformation that occurs only when you leave the familiar behind.",
+      "你的环境适应力。代表你在变动、旅行和陌生领域中的「生存胜率」。",
     fable:
       "A monk walked a thousand miles seeking enlightenment. He found it in the dust on his sandals — it had been with him all along.",
     gridCol: 1,
@@ -95,9 +101,10 @@ export const DEFAULT_PALACES: PalaceDetail[] = [
     id: "friends",
     name: "Friends",
     nameCn: "交友",
+    subtitle: "The Social Synapse",
     icon: "friends",
     consciousness:
-      "The constellation of souls who orbit your life defines the shape of your sky. This palace reveals the quality of bonds freely chosen — the resonance between kindred spirits across the void.",
+      "你的社会突触。你所处的网络如何消耗或增强你的能量。",
     fable:
       "A lone star was dim until it joined a constellation. Together, sailors navigated by their light for a thousand years.",
     gridCol: 1,
@@ -110,9 +117,10 @@ export const DEFAULT_PALACES: PalaceDetail[] = [
     id: "career",
     name: "Career",
     nameCn: "官禄",
+    subtitle: "The Sovereign Impact",
     icon: "career",
     consciousness:
-      "Purpose is not discovered — it is remembered. This palace illuminates the path of worldly contribution, where inner calling meets outer action and labor becomes devotion.",
+      "你的社会主权。你如何通过行动在外部世界建立秩序与成就。",
     fable:
       "The emperor asked the carpenter why he sang while working. 'Because,' he replied, 'each joint I cut is a prayer the building will remember.'",
     gridCol: 2,
@@ -125,9 +133,10 @@ export const DEFAULT_PALACES: PalaceDetail[] = [
     id: "property",
     name: "Property",
     nameCn: "田宅",
+    subtitle: "The Foundational Base",
     icon: "property",
     consciousness:
-      "Home is the anchor of the wandering soul. This palace speaks to rootedness — the places, spaces, and sanctuaries that hold your essence when the world demands you be elsewhere.",
+      "你的安全基座。代表不动产、家庭传承以及你内心最深处的归属感。",
     fable:
       "A woman built her house from stones others had discarded. It stood for three hundred years, the strongest in the valley.",
     gridCol: 3,
@@ -140,9 +149,10 @@ export const DEFAULT_PALACES: PalaceDetail[] = [
     id: "fortune",
     name: "Fortune",
     nameCn: "福德",
+    subtitle: "The Spiritual Vault",
     icon: "fortune",
     consciousness:
-      "Inner peace is the ultimate wealth. This palace measures not what you have, but how deeply you can receive — the capacity for joy, contentment, and the silent gratitude that needs no reason.",
+      "你的精神仓库。它关乎因果、心态和你在看不见的领域积攒的「幸运值」。",
     fable:
       "An old woman owned nothing but smiled so brightly that strangers left coins at her door. She gave them all away by nightfall.",
     gridCol: 4,
@@ -155,9 +165,10 @@ export const DEFAULT_PALACES: PalaceDetail[] = [
     id: "self",
     name: "Self",
     nameCn: "命宫",
+    subtitle: "The Life CPU",
     icon: "self",
     consciousness:
-      "The first palace is the last mystery. Here resides the essence that precedes all roles, all masks, all stories. This is the palace of pure being — the observer behind every observation.",
+      "命盘的CPU。你的核心身份、先天气质，以及解读其他所有宫位的镜头。",
     fable:
       "A scholar searched every library in the empire for the Book of Self. On his deathbed, he opened his hand and found it written on his palm.",
     gridCol: 4,
@@ -170,9 +181,10 @@ export const DEFAULT_PALACES: PalaceDetail[] = [
     id: "parents",
     name: "Parents",
     nameCn: "父母",
+    subtitle: "The Ancestral Input",
     icon: "parents",
     consciousness:
-      "Before you chose your path, a path was chosen for you. This palace holds the karmic inheritance — the gifts and wounds passed down through bloodlines, shaping destiny before consciousness awakens.",
+      "你的源头输入。它代表上司、长辈以及那些先于你存在、并深刻影响你的权力结构。",
     fable:
       "A daughter planted a tree where her mother's tears once fell. Centuries later, the forest was named after them both.",
     gridCol: 4,

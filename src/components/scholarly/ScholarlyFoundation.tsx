@@ -5,6 +5,8 @@ import GeometryOfDestiny from "./GeometryOfDestiny";
 import FourTransformers from "./FourTransformers";
 import FractalTimeLogic from "./FractalTimeLogic";
 import LogicCheckBlock from "./LogicCheckBlock";
+import StarLibrary from "./StarLibrary";
+import BinaryAncestry from "./BinaryAncestry";
 import OrnamentalDivider from "../OrnamentalDivider";
 
 interface SectionDef {
@@ -19,6 +21,8 @@ const SECTIONS: SectionDef[] = [
   { id: "transformers", number: "II", label: "The Four Transformers", sublabel: "化祿 · 化權 · 化科 · 化忌" },
   { id: "fractal", number: "III", label: "Fractal Time Logic", sublabel: "Self-Similar Temporal Structure" },
   { id: "logic-check", number: "IV", label: "Logic Certification", sublabel: "Verification of Fidelity" },
+  { id: "star-library", number: "V", label: "Star Library", sublabel: "108 Stellar Parameters" },
+  { id: "binary-ancestry", number: "VI", label: "Binary Ancestry", sublabel: "From Yin-Yang to Bits" },
 ];
 
 export default function ScholarlyFoundation() {
@@ -153,13 +157,37 @@ export default function ScholarlyFoundation() {
         <OrnamentalDivider variant="parchment" />
 
         {/* IV. Logic Certification */}
-        <div ref={setRef("logic-check")} id="logic-check" className="pt-24 pb-32 scroll-mt-14">
+        <div ref={setRef("logic-check")} id="logic-check" className="pt-24 pb-28 scroll-mt-14">
           <SectionHeader
             number="IV"
             title="Logic Certification"
             subtitle="An account of algorithmic verification against canonical sources."
           />
           <LogicCheckBlock />
+        </div>
+
+        <OrnamentalDivider variant="parchment" />
+
+        {/* V. Star Library */}
+        <div ref={setRef("star-library")} id="star-library" className="pt-24 pb-28 scroll-mt-14">
+          <SectionHeader
+            number="V"
+            title="The 108 Star Library"
+            subtitle="The stellar parameters that populate the twelve palaces — the vocabulary of destiny."
+          />
+          <StarLibrary />
+        </div>
+
+        <OrnamentalDivider variant="parchment" />
+
+        {/* VI. Binary Ancestry */}
+        <div ref={setRef("binary-ancestry")} id="binary-ancestry" className="pt-24 pb-32 scroll-mt-14">
+          <SectionHeader
+            number="VI"
+            title="The Binary Ancestry"
+            subtitle="3,000 years before silicon — the I Ching's Yin-Yang logic as the world's first binary system."
+          />
+          <BinaryAncestry />
         </div>
       </div>
 

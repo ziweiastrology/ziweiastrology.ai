@@ -64,6 +64,7 @@ export interface PalaceDetail {
   id: string;
   name: string;
   nameCn: string;
+  subtitle: string;
   icon: string;
   consciousness: string;
   fable: string;

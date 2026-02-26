@@ -129,6 +129,11 @@ export default function PalaceSidebar() {
                   >
                     {palace.nameCn}宫
                   </p>
+                  {palace.subtitle && (
+                    <p className="text-xs text-celestial-300/60 tracking-[0.15em] uppercase mt-1">
+                      {palace.subtitle}
+                    </p>
+                  )}
                 </div>
               </motion.div>
 
