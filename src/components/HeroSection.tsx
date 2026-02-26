@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import ParticleField from "./ParticleField";
+import BigDipperOverlay from "./BigDipperOverlay";
 
 // Pre-computed star positions (12 nodes on outer ring, rounded to avoid hydration mismatch)
 const RING_STARS = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map(
@@ -49,6 +50,7 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
       />
       {/* Constellation particle network */}
       <ParticleField id="hero-particles" />
+      <BigDipperOverlay />
 
       {/* Ancient paper texture filter */}
       <div

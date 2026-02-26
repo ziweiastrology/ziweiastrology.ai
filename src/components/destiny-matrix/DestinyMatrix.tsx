@@ -7,6 +7,7 @@ import PalaceNode from "./PalaceNode";
 import CoreVoid from "./CoreVoid";
 import PalaceSidebar from "./PalaceSidebar";
 import ParticleField from "@/components/ParticleField";
+import BigDipperOverlay from "@/components/BigDipperOverlay";
 
 const gridSpring = {
   type: "spring" as const,
@@ -31,6 +32,7 @@ export default function DestinyMatrix() {
     >
       {/* Constellation particle network */}
       <ParticleField id="matrix-particles" />
+      <BigDipperOverlay />
 
       {/* Ambient star dust */}
       <div
