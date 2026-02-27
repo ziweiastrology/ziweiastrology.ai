@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://ziweiastrology.ai";
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://ziweiastrology.ai").trim();
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
