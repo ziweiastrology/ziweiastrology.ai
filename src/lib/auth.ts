@@ -1,24 +1,18 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import Credentials from "next-auth/providers/credentials";
-import Google from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
 import { rateLimit } from "./rateLimit";
+import { authConfig } from "./auth.config";
 import type { Role, Tier } from "@prisma/client";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  ...authConfig,
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt" },
-  pages: {
-    signIn: "/auth/login",
-    newUser: "/auth/register",
-  },
   providers: [
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET,
-    }),
+    // Keep the shared providers (Google) but override Credentials with real authorize()
+    ...authConfig.providers.filter((p) => (p as { name?: string }).name !== "credentials"),
     Credentials({
       name: "credentials",
       credentials: {
@@ -56,6 +50,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
+    ...authConfig.callbacks,
     async jwt({ token, user }) {
       if (user) {
         token.role = (user as { role: Role }).role;

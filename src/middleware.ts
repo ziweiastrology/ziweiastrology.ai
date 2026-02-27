@@ -1,5 +1,8 @@
-import { auth } from "@/lib/auth";
+import NextAuth from "next-auth";
+import { authConfig } from "@/lib/auth.config";
 import { NextResponse } from "next/server";
+
+const { auth } = NextAuth(authConfig);
 
 // Routes that require at least BASIC tier (read access)
 const BASIC_ROUTES = [
@@ -18,7 +21,7 @@ const AUTH_ROUTES = [...BASIC_ROUTES, ...PREMIUM_ROUTES];
 export default auth((req) => {
   const { pathname } = req.nextUrl;
   const isLoggedIn = !!req.auth;
-  const tier = req.auth?.user?.tier || "FREE";
+  const tier = (req.auth?.user as Record<string, unknown>)?.tier as string || "FREE";
 
   // Redirect logged-in users away from auth pages
   if (pathname.startsWith("/auth/") && isLoggedIn) {
