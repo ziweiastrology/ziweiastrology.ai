@@ -47,7 +47,7 @@ export default function Navbar() {
               alt="Ziwei Astrology"
               width={120}
               height={120}
-              className="rounded-full mix-blend-screen"
+              className="h-14 w-14 sm:h-16 sm:w-16 md:h-[120px] md:w-[120px] rounded-full mix-blend-screen"
             />
             <span
               className="hidden text-sm font-bold tracking-wider text-gold-400 sm:inline"

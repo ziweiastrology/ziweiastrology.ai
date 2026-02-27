@@ -80,8 +80,7 @@ export default function DestinyMatrix() {
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         {/* Grid container — shifts RIGHT when left sidebar opens */}
         <motion.div
-          className="mx-auto"
-          style={{ maxWidth: 640 }}
+          className="mx-auto max-w-[340px] sm:max-w-[480px] md:max-w-[640px]"
           animate={{
             scale: sidebarOpen ? 0.95 : 1,
             x: sidebarOpen ? 40 : 0,

@@ -59,7 +59,7 @@ export default function QuantumDashboard({ data: externalData }: QuantumDashboar
             <h3 className="text-gold-400 text-sm tracking-widest uppercase mb-6">
               Energy Flow Analysis
             </h3>
-            <div className="h-[350px]">
+            <div className="h-[250px] sm:h-[350px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={data.energyFlow}>
                   <defs>

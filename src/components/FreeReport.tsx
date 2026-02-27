@@ -313,7 +313,7 @@ export default function FreeReport() {
           </p>
           <div className="relative rounded-lg border border-gold-700/20 overflow-hidden">
             {/* Blurred grid */}
-            <div className="grid grid-cols-3 sm:grid-cols-3 gap-3 p-5 blur-[6px] select-none pointer-events-none">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-5 blur-[6px] select-none pointer-events-none">
               {remainingPalaces.map((palace) => (
                 <div
                   key={palace.id}

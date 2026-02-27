@@ -134,7 +134,7 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
       {/* === Main Content === */}
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
         {/* Golden halo behind title */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px]
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[200px] sm:w-[500px] sm:h-[280px] md:w-[700px] md:h-[350px]
                         bg-[radial-gradient(ellipse,rgba(212,165,40,0.1)_0%,transparent_65%)] pointer-events-none" />
 
         {/* H1 — Primary SEO heading */}
