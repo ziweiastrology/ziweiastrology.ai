@@ -48,10 +48,10 @@ export default function PalaceNode({ palace, index }: PalaceNodeProps) {
       style={{
         gridColumn: palace.gridCol,
         gridRow: palace.gridRow,
-        background: "rgba(20, 30, 50, 0.6)",
+        background: "rgba(16, 8, 38, 0.88)",
         boxShadow: isActive && borderGlow
-          ? `inset 0 0 20px rgba(100,150,255,0.05), ${borderGlow}`
-          : "inset 0 0 20px rgba(100,150,255,0.05)",
+          ? `inset 0 0 20px rgba(140,100,255,0.06), inset 0 1px 0 rgba(212,165,40,0.08), ${borderGlow}`
+          : "inset 0 0 20px rgba(140,100,255,0.06), inset 0 1px 0 rgba(212,165,40,0.08)",
       }}
       initial={{ opacity: 0, scale: 0.85 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -122,8 +122,8 @@ export default function PalaceNode({ palace, index }: PalaceNodeProps) {
       <span
         className="relative z-10 text-[10px] md:text-xs uppercase tracking-widest"
         style={{
-          color: "rgba(180,220,255,0.8)",
-          textShadow: "0 0 6px rgba(100,180,255,0.2)",
+          color: "rgba(200,180,255,0.8)",
+          textShadow: "0 0 6px rgba(160,120,255,0.2)",
         }}
       >
         {palace.name}

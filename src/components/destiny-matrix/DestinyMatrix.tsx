@@ -25,7 +25,7 @@ export default function DestinyMatrix() {
     <section
       className="relative py-20 md:py-28 overflow-hidden"
       style={{
-        background: "#05070a",
+        background: "#08041a",
       }}
     >
       {/* Constellation particle network */}
@@ -38,11 +38,11 @@ export default function DestinyMatrix() {
         style={{
           backgroundImage: `
             radial-gradient(circle at 15% 20%, rgba(255,215,0,0.08) 0%, transparent 2%),
-            radial-gradient(circle at 75% 10%, rgba(100,180,255,0.06) 0%, transparent 1.5%),
+            radial-gradient(circle at 75% 10%, rgba(160,120,255,0.06) 0%, transparent 1.5%),
             radial-gradient(circle at 40% 80%, rgba(255,215,0,0.05) 0%, transparent 1%),
-            radial-gradient(circle at 85% 70%, rgba(100,180,255,0.07) 0%, transparent 1.2%),
+            radial-gradient(circle at 85% 70%, rgba(160,120,255,0.07) 0%, transparent 1.2%),
             radial-gradient(circle at 25% 55%, rgba(255,215,0,0.04) 0%, transparent 0.8%),
-            radial-gradient(circle at 60% 40%, rgba(100,180,255,0.05) 0%, transparent 1%)
+            radial-gradient(circle at 60% 40%, rgba(160,120,255,0.05) 0%, transparent 1%)
           `,
         }}
       />
@@ -88,21 +88,163 @@ export default function DestinyMatrix() {
           }}
           transition={gridSpring}
         >
-          {/* Glowing golden filament grid */}
-          <div
-            className="grid grid-cols-4 grid-rows-4 rounded-lg overflow-hidden"
-            style={{
-              gap: 1,
-              background:
-                "linear-gradient(135deg, rgba(255,215,0,0.25), rgba(255,215,0,0.1))",
-              boxShadow:
-                "0 0 40px rgba(255,215,0,0.06), 0 0 80px rgba(10,14,26,0.5), inset 0 0 60px rgba(255,215,0,0.03)",
-            }}
-          >
-            {palaces.map((palace, i) => (
-              <PalaceNode key={palace.id} palace={palace} index={i} />
-            ))}
-            <CoreVoid />
+          {/* === Imperial Ornate Frame === */}
+          <div className="relative">
+            {/* Ambient glow halo behind frame */}
+            <div
+              className="absolute -inset-8 pointer-events-none"
+              style={{
+                background:
+                  "radial-gradient(ellipse at center, rgba(212,165,40,0.05) 0%, transparent 70%)",
+              }}
+            />
+
+            {/* Outer gold border */}
+            <div
+              className="relative p-[3px] rounded-xl"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(240,212,122,0.7) 0%, rgba(143,107,23,0.35) 25%, rgba(212,165,40,0.55) 50%, rgba(143,107,23,0.35) 75%, rgba(240,212,122,0.7) 100%)",
+                boxShadow:
+                  "0 0 30px rgba(212,165,40,0.12), 0 0 80px rgba(42,22,84,0.5), 0 8px 50px rgba(0,0,0,0.7)",
+              }}
+            >
+              {/* Dark moat between double borders */}
+              <div
+                className="p-[4px] rounded-[10px]"
+                style={{
+                  background:
+                    "linear-gradient(135deg, rgba(10,5,21,0.92), rgba(20,10,42,0.88), rgba(10,5,21,0.92))",
+                }}
+              >
+                {/* Inner gold border */}
+                <div
+                  className="p-[2px] rounded-lg"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, rgba(212,165,40,0.5) 0%, rgba(143,107,23,0.2) 30%, rgba(212,165,40,0.35) 50%, rgba(143,107,23,0.2) 70%, rgba(212,165,40,0.5) 100%)",
+                  }}
+                >
+                  {/* Inner vignette shell */}
+                  <div
+                    className="rounded-[6px] overflow-hidden"
+                    style={{
+                      boxShadow:
+                        "inset 0 0 60px rgba(10,5,21,0.4), inset 0 0 120px rgba(10,5,21,0.15)",
+                    }}
+                  >
+                    {/* Golden filament grid */}
+                    <div
+                      className="grid grid-cols-4 grid-rows-4"
+                      style={{
+                        gap: 2,
+                        background:
+                          "linear-gradient(135deg, rgba(255,215,0,0.3), rgba(212,165,40,0.15))",
+                      }}
+                    >
+                      {palaces.map((palace, i) => (
+                        <PalaceNode
+                          key={palace.id}
+                          palace={palace}
+                          index={i}
+                        />
+                      ))}
+                      <CoreVoid />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Corner ornaments — double L-brackets with gold jewel */}
+              <svg
+                className="absolute w-10 h-10 pointer-events-none"
+                style={{ top: -6, left: -6 }}
+                viewBox="0 0 40 40"
+                fill="none"
+              >
+                <path
+                  d="M5 35V12C5 8 8 5 12 5H35"
+                  stroke="rgba(240,212,122,0.7)"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M9 30V16C9 12 12 9 16 9H30"
+                  stroke="rgba(212,165,40,0.3)"
+                  strokeWidth="0.6"
+                  strokeLinecap="round"
+                />
+                <circle cx="8" cy="8" r="2.5" fill="rgba(240,212,122,0.4)" />
+                <circle cx="8" cy="8" r="1.2" fill="rgba(255,215,0,0.7)" />
+              </svg>
+              <svg
+                className="absolute w-10 h-10 pointer-events-none"
+                style={{ top: -6, right: -6, transform: "scaleX(-1)" }}
+                viewBox="0 0 40 40"
+                fill="none"
+              >
+                <path
+                  d="M5 35V12C5 8 8 5 12 5H35"
+                  stroke="rgba(240,212,122,0.7)"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M9 30V16C9 12 12 9 16 9H30"
+                  stroke="rgba(212,165,40,0.3)"
+                  strokeWidth="0.6"
+                  strokeLinecap="round"
+                />
+                <circle cx="8" cy="8" r="2.5" fill="rgba(240,212,122,0.4)" />
+                <circle cx="8" cy="8" r="1.2" fill="rgba(255,215,0,0.7)" />
+              </svg>
+              <svg
+                className="absolute w-10 h-10 pointer-events-none"
+                style={{ bottom: -6, left: -6, transform: "scaleY(-1)" }}
+                viewBox="0 0 40 40"
+                fill="none"
+              >
+                <path
+                  d="M5 35V12C5 8 8 5 12 5H35"
+                  stroke="rgba(240,212,122,0.7)"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M9 30V16C9 12 12 9 16 9H30"
+                  stroke="rgba(212,165,40,0.3)"
+                  strokeWidth="0.6"
+                  strokeLinecap="round"
+                />
+                <circle cx="8" cy="8" r="2.5" fill="rgba(240,212,122,0.4)" />
+                <circle cx="8" cy="8" r="1.2" fill="rgba(255,215,0,0.7)" />
+              </svg>
+              <svg
+                className="absolute w-10 h-10 pointer-events-none"
+                style={{
+                  bottom: -6,
+                  right: -6,
+                  transform: "scale(-1,-1)",
+                }}
+                viewBox="0 0 40 40"
+                fill="none"
+              >
+                <path
+                  d="M5 35V12C5 8 8 5 12 5H35"
+                  stroke="rgba(240,212,122,0.7)"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M9 30V16C9 12 12 9 16 9H30"
+                  stroke="rgba(212,165,40,0.3)"
+                  strokeWidth="0.6"
+                  strokeLinecap="round"
+                />
+                <circle cx="8" cy="8" r="2.5" fill="rgba(240,212,122,0.4)" />
+                <circle cx="8" cy="8" r="1.2" fill="rgba(255,215,0,0.7)" />
+              </svg>
+            </div>
           </div>
         </motion.div>
 

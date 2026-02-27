@@ -28,7 +28,7 @@ const MONTHS = [
 const darkSelectStyle: React.CSSProperties = {
   width: "100%",
   padding: "0.625rem 1rem",
-  fontSize: "0.8125rem",
+  fontSize: "1rem",
   color: "rgba(220,215,200,0.9)",
   backgroundColor: "rgba(10,15,46,0.6)",
   border: "1px solid rgba(212,165,40,0.2)",
@@ -234,7 +234,7 @@ export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps)
                 <circle cx="12" cy="12" r="10" />
                 <path d="M12 6v6l4 2" />
               </svg>
-              <span className="text-[10px] text-gold-400 tracking-[0.3em] uppercase font-mono">
+              <span className="text-xs text-gold-400 tracking-[0.3em] uppercase font-mono">
                 NATAL COORDINATE INPUT
               </span>
               <svg className="w-4 h-4 text-gold-500/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
@@ -243,7 +243,7 @@ export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps)
               </svg>
             </div>
             <p
-              className="text-xs text-parchment-400/60 leading-relaxed"
+              className="text-sm text-parchment-400/60 leading-relaxed"
               style={{ fontFamily: "var(--font-merriweather)" }}
             >
               Provide your celestial coordinates for precise engine calibration.
@@ -252,7 +252,7 @@ export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps)
 
           {/* Name field — optional */}
           <div className="mb-5">
-            <label className="block text-[10px] text-gold-500/70 tracking-[0.2em] uppercase mb-1.5 font-mono">
+            <label className="block text-xs text-gold-500/70 tracking-[0.2em] uppercase mb-1.5 font-mono">
               Full Name <span className="text-parchment-500/50 normal-case tracking-normal">(optional)</span>
             </label>
             <input
@@ -260,7 +260,7 @@ export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps)
               value={form.fullName}
               onChange={(e) => update("fullName", e.target.value)}
               placeholder="To personalize your reading"
-              className="w-full px-4 py-2.5 text-sm text-parchment-200 bg-celestial-900/60 border border-gold-700/20
+              className="w-full px-4 py-2.5 text-base text-parchment-200 bg-celestial-900/60 border border-gold-700/20
                          rounded-sm outline-none placeholder:text-parchment-600/40
                          focus:border-gold-500/40 focus:shadow-[0_0_12px_rgba(212,165,40,0.08)]
                          transition-all duration-300"
@@ -270,7 +270,7 @@ export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps)
 
           {/* Gender toggle */}
           <div className="mb-5">
-            <label className="block text-[10px] text-gold-500/70 tracking-[0.2em] uppercase mb-1.5 font-mono">
+            <label className="block text-xs text-gold-500/70 tracking-[0.2em] uppercase mb-1.5 font-mono">
               Gender <span className="text-quantum-red text-[8px]">*</span>
             </label>
             <div className="flex gap-3">
@@ -291,7 +291,7 @@ export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps)
 
           {/* Date of Birth — 3 columns */}
           <div className="mb-5">
-            <label className="block text-[10px] text-gold-500/70 tracking-[0.2em] uppercase mb-1.5 font-mono">
+            <label className="block text-xs text-gold-500/70 tracking-[0.2em] uppercase mb-1.5 font-mono">
               Date of Birth <span className="text-quantum-red text-[8px]">*</span>
             </label>
             <div className="grid grid-cols-3 gap-3">
@@ -332,7 +332,7 @@ export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps)
 
           {/* Time of Birth — 2 columns */}
           <div className="mb-5">
-            <label className="block text-[10px] text-gold-500/70 tracking-[0.2em] uppercase mb-1.5 font-mono">
+            <label className="block text-xs text-gold-500/70 tracking-[0.2em] uppercase mb-1.5 font-mono">
               Exact Time of Birth <span className="text-quantum-red text-[8px]">*</span>
               <span className="text-parchment-500/50 normal-case tracking-normal ml-1">(critical)</span>
             </label>
@@ -369,7 +369,7 @@ export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps)
 
           {/* Birth Location — with city autocomplete */}
           <div className="mb-8">
-            <label className="block text-[10px] text-gold-500/70 tracking-[0.2em] uppercase mb-1.5 font-mono">
+            <label className="block text-xs text-gold-500/70 tracking-[0.2em] uppercase mb-1.5 font-mono">
               Birth Location
               <span className="text-parchment-500/50 normal-case tracking-normal ml-1">(for true solar time)</span>
             </label>
@@ -381,8 +381,8 @@ export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps)
                 onFocus={() => {
                   if (suggestions.length > 0 && !resolvedCity) setShowSuggestions(true);
                 }}
-                placeholder="City name (e.g. Beijing, 北京)"
-                className="w-full px-4 py-2.5 pr-10 text-sm text-parchment-200 bg-celestial-900/60 border border-gold-700/20
+                placeholder="City name (e.g. California)"
+                className="w-full px-4 py-2.5 pr-10 text-base text-parchment-200 bg-celestial-900/60 border border-gold-700/20
                            rounded-sm outline-none placeholder:text-parchment-600/40
                            focus:border-gold-500/40 focus:shadow-[0_0_12px_rgba(212,165,40,0.08)]
                            transition-all duration-300"

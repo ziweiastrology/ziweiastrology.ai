@@ -72,7 +72,7 @@ export default function PalaceSidebar() {
             className="fixed top-0 left-0 z-50 h-full w-full max-w-md overflow-hidden"
             style={{
               background:
-                "linear-gradient(180deg, rgba(7,11,36,0.98) 0%, rgba(2,5,16,0.99) 100%)",
+                "linear-gradient(180deg, rgba(12,6,30,0.98) 0%, rgba(8,4,20,0.99) 100%)",
             }}
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
@@ -84,7 +84,7 @@ export default function PalaceSidebar() {
               className="absolute top-0 right-0 w-px h-full pointer-events-none"
               style={{
                 background:
-                  "linear-gradient(180deg, transparent 5%, rgba(212,165,40,0.4) 30%, rgba(42,63,158,0.3) 50%, rgba(212,165,40,0.4) 70%, transparent 95%)",
+                  "linear-gradient(180deg, transparent 5%, rgba(212,165,40,0.4) 30%, rgba(90,53,168,0.3) 50%, rgba(212,165,40,0.4) 70%, transparent 95%)",
                 boxShadow:
                   "0 0 12px rgba(212,165,40,0.2), 0 0 30px rgba(212,165,40,0.08)",
               }}

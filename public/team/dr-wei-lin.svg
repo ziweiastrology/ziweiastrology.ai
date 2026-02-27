@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="bg2" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#1f2a4e"/>
+      <stop offset="100%" stop-color="#0a0f1f"/>
+    </radialGradient>
+    <linearGradient id="gold2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a853"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#bg2)"/>
+  <!-- Face -->
+  <ellipse cx="100" cy="88" rx="36" ry="42" fill="#e8c9a0"/>
+  <!-- Hair - short modern -->
+  <ellipse cx="100" cy="58" rx="38" ry="20" fill="#2a2a2a"/>
+  <rect x="62" y="52" width="76" height="12" rx="4" fill="#2a2a2a"/>
+  <!-- Glasses -->
+  <rect x="72" y="78" width="22" height="16" rx="8" stroke="#d4a853" stroke-width="1.8" fill="none"/>
+  <rect x="106" y="78" width="22" height="16" rx="8" stroke="#d4a853" stroke-width="1.8" fill="none"/>
+  <line x1="94" y1="84" x2="106" y2="84" stroke="#d4a853" stroke-width="1.5"/>
+  <!-- Eyes behind glasses -->
+  <ellipse cx="83" cy="86" rx="4" ry="3" fill="#2a1a0a"/>
+  <ellipse cx="117" cy="86" rx="4" ry="3" fill="#2a1a0a"/>
+  <!-- Eyebrows -->
+  <path d="M74 76 Q82 72 92 76" stroke="#3a3a3a" stroke-width="1.8" fill="none"/>
+  <path d="M108 76 Q118 72 126 76" stroke="#3a3a3a" stroke-width="1.8" fill="none"/>
+  <!-- Nose -->
+  <path d="M97 90 Q100 98 103 90" stroke="#c4a882" stroke-width="1.5" fill="none"/>
+  <!-- Mouth - slight smile -->
+  <path d="M90 106 Q100 112 110 106" stroke="#a07060" stroke-width="1.5" fill="none"/>
+  <!-- Collar - modern shirt -->
+  <path d="M62 138 Q100 155 138 138" fill="#f0f0f0"/>
+  <path d="M74 138 L100 158 L126 138" fill="#1a2840"/>
+  <!-- Tie -->
+  <path d="M97 148 L100 170 L103 148" fill="url(#gold2)"/>
+  <!-- Suit jacket -->
+  <path d="M48 155 Q100 180 152 155 L165 200 L35 200 Z" fill="#1a2840"/>
+  <!-- Lapels -->
+  <path d="M72 155 L92 170" stroke="#243250" stroke-width="2"/>
+  <path d="M128 155 L108 170" stroke="#243250" stroke-width="2"/>
+  <!-- Math symbols decoration -->
+  <text x="22" y="38" fill="#d4a853" opacity="0.4" font-size="14" font-family="serif">&#x03C3;</text>
+  <text x="165" y="42" fill="#d4a853" opacity="0.3" font-size="12" font-family="serif">&#x222B;</text>
+  <text x="170" y="65" fill="#d4a853" opacity="0.35" font-size="11" font-family="serif">&#x03C0;</text>
+</svg>

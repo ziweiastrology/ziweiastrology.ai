@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="bg1" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#2a1f4e"/>
+      <stop offset="100%" stop-color="#0f0a1f"/>
+    </radialGradient>
+    <linearGradient id="gold1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a853"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#bg1)"/>
+  <!-- Face shape -->
+  <ellipse cx="100" cy="90" rx="38" ry="44" fill="#e8c9a0"/>
+  <!-- Hair - long tied back -->
+  <ellipse cx="100" cy="58" rx="40" ry="22" fill="#c0c0c0"/>
+  <rect x="94" y="36" width="12" height="14" rx="6" fill="#c0c0c0"/>
+  <!-- Hair bun -->
+  <circle cx="100" cy="34" r="10" fill="#a0a0a0"/>
+  <!-- Eyebrows -->
+  <path d="M76 78 Q84 73 92 78" stroke="#5a4a3a" stroke-width="2" fill="none"/>
+  <path d="M108 78 Q116 73 124 78" stroke="#5a4a3a" stroke-width="2" fill="none"/>
+  <!-- Eyes -->
+  <ellipse cx="84" cy="84" rx="5" ry="3.5" fill="#2a1a0a"/>
+  <ellipse cx="116" cy="84" rx="5" ry="3.5" fill="#2a1a0a"/>
+  <!-- Nose -->
+  <path d="M97 90 Q100 98 103 90" stroke="#c4a882" stroke-width="1.5" fill="none"/>
+  <!-- Beard -->
+  <path d="M82 108 Q100 135 118 108" stroke="#b0b0b0" stroke-width="1.5" fill="none"/>
+  <path d="M86 108 Q100 130 114 108" stroke="#c0c0c0" stroke-width="1" fill="none"/>
+  <path d="M100 110 L100 138" stroke="#b0b0b0" stroke-width="1.5"/>
+  <path d="M96 112 L94 132" stroke="#c0c0c0" stroke-width="1"/>
+  <path d="M104 112 L106 132" stroke="#c0c0c0" stroke-width="1"/>
+  <!-- Mouth -->
+  <path d="M92 104 Q100 108 108 104" stroke="#a07060" stroke-width="1.5" fill="none"/>
+  <!-- Robe collar -->
+  <path d="M62 140 Q100 160 138 140" fill="#1a1035"/>
+  <path d="M72 140 L100 165 L128 140" stroke="url(#gold1)" stroke-width="1.5" fill="none"/>
+  <!-- Bottom robe -->
+  <path d="M50 160 Q100 185 150 160 L160 200 L40 200 Z" fill="#1a1035"/>
+  <!-- Gold accent on robe -->
+  <path d="M90 165 L100 180 L110 165" stroke="url(#gold1)" stroke-width="1" fill="none"/>
+  <!-- Stars decoration -->
+  <circle cx="30" cy="30" r="1.5" fill="#d4a853" opacity="0.8"/>
+  <circle cx="165" cy="25" r="1" fill="#d4a853" opacity="0.6"/>
+  <circle cx="170" cy="50" r="1.5" fill="#d4a853" opacity="0.7"/>
+  <circle cx="25" cy="55" r="1" fill="#d4a853" opacity="0.5"/>
+</svg>

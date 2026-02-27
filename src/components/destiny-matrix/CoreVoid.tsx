@@ -16,7 +16,7 @@ export default function CoreVoid() {
         gridColumn: "2 / 4",
         gridRow: "2 / 4",
         background:
-          "radial-gradient(ellipse at center, rgba(5,8,20,0.95) 0%, rgba(10,14,26,1) 100%)",
+          "radial-gradient(ellipse at center, rgba(8,4,26,0.95) 0%, rgba(12,6,30,1) 100%)",
       }}
     >
       {/* Deep space ambient glow */}
@@ -60,8 +60,8 @@ export default function CoreVoid() {
               className="text-sm md:text-base mt-1 tracking-widest uppercase"
               style={{
                 fontFamily: "var(--font-heading)",
-                color: "rgba(180,220,255,0.8)",
-                textShadow: "0 0 10px rgba(100,180,255,0.2)",
+                color: "rgba(200,180,255,0.8)",
+                textShadow: "0 0 10px rgba(160,120,255,0.2)",
               }}
             >
               {selected.name} Palace
@@ -236,7 +236,7 @@ export default function CoreVoid() {
             {/* Standby text */}
             <motion.p
               className="mt-4 text-[10px] tracking-[0.3em] uppercase"
-              style={{ color: "rgba(180,220,255,0.4)" }}
+              style={{ color: "rgba(200,180,255,0.4)" }}
               animate={{
                 opacity: [0.4, 0.7, 0.4],
               }}

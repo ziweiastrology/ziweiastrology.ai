@@ -7,15 +7,15 @@
 
 @theme inline {
   /* --- Color Palette --- */
-  --color-celestial-900: #020510;
-  --color-celestial-800: #070b24;
-  --color-celestial-700: #0c1338;
-  --color-celestial-600: #131c50;
-  --color-celestial-500: #1e2d7a;
-  --color-celestial-400: #2a3f9e;
-  --color-celestial-300: #4a5fc2;
-  --color-celestial-200: #7b8fdb;
-  --color-celestial-100: #b3bfee;
+  --color-celestial-900: #0a0515;
+  --color-celestial-800: #120826;
+  --color-celestial-700: #1c0f3a;
+  --color-celestial-600: #2a1654;
+  --color-celestial-500: #3d2278;
+  --color-celestial-400: #5a35a8;
+  --color-celestial-300: #7b52c9;
+  --color-celestial-200: #a87edf;
+  --color-celestial-100: #d0b5f0;
 
   --color-gold-900: #3d2e0a;
   --color-gold-800: #6b5011;
@@ -270,12 +270,12 @@ body {
 .celestial-bg {
   background:
     /* nebula pools */
-    radial-gradient(ellipse at 20% 15%, rgba(42, 63, 158, 0.2) 0%, transparent 40%),
-    radial-gradient(ellipse at 80% 85%, rgba(30, 45, 122, 0.15) 0%, transparent 35%),
-    radial-gradient(ellipse at 60% 30%, rgba(75, 50, 130, 0.08) 0%, transparent 30%),
-    radial-gradient(ellipse at 35% 70%, rgba(20, 30, 80, 0.12) 0%, transparent 45%),
+    radial-gradient(ellipse at 20% 15%, rgba(90, 53, 168, 0.2) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 85%, rgba(61, 34, 120, 0.15) 0%, transparent 35%),
+    radial-gradient(ellipse at 60% 30%, rgba(123, 82, 201, 0.08) 0%, transparent 30%),
+    radial-gradient(ellipse at 35% 70%, rgba(42, 22, 84, 0.12) 0%, transparent 45%),
     /* deep void gradient */
-    linear-gradient(175deg, #020510 0%, #050a1a 40%, #070b24 70%, #020510 100%);
+    linear-gradient(175deg, #0a0515 0%, #0e0620 40%, #120826 70%, #0a0515 100%);
 }
 
 /* ============================================
@@ -449,4 +449,107 @@ body {
 ::selection {
   background-color: rgba(212, 165, 40, 0.3);
   color: var(--color-parchment-100);
+}
+
+/* ============================================
+   Markdown Prose — Ancient Quantum Style
+   ============================================ */
+
+.prose-ancient {
+  color: var(--color-parchment-400);
+  font-family: var(--font-serif);
+  line-height: 1.8;
+}
+
+.prose-ancient h1,
+.prose-ancient h2,
+.prose-ancient h3,
+.prose-ancient h4 {
+  font-family: var(--font-heading);
+  color: var(--color-parchment-100);
+  margin-top: 2em;
+  margin-bottom: 0.75em;
+}
+
+.prose-ancient h2 { font-size: 1.5rem; color: var(--color-gold-400); }
+.prose-ancient h3 { font-size: 1.25rem; }
+
+.prose-ancient p { margin-bottom: 1.25em; }
+
+.prose-ancient strong { color: var(--color-parchment-200); }
+
+.prose-ancient a {
+  color: var(--color-gold-400);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose-ancient a:hover { color: var(--color-gold-300); }
+
+.prose-ancient ul,
+.prose-ancient ol {
+  margin-bottom: 1.25em;
+  padding-left: 1.5em;
+}
+
+.prose-ancient li { margin-bottom: 0.5em; }
+.prose-ancient ol { list-style-type: decimal; }
+.prose-ancient ul { list-style-type: disc; }
+
+.prose-ancient blockquote {
+  border-left: 3px solid var(--color-gold-700);
+  padding-left: 1em;
+  color: var(--color-parchment-500);
+  font-style: italic;
+  margin: 1.5em 0;
+}
+
+.prose-ancient code {
+  font-family: var(--font-mono);
+  background: rgba(7, 11, 36, 0.6);
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  font-size: 0.9em;
+  color: var(--color-quantum-cyan);
+}
+
+.prose-ancient pre {
+  background: rgba(7, 11, 36, 0.8);
+  border: 1px solid rgba(143, 107, 23, 0.15);
+  border-radius: 8px;
+  padding: 1em;
+  overflow-x: auto;
+  margin: 1.5em 0;
+}
+
+.prose-ancient pre code {
+  background: none;
+  padding: 0;
+}
+
+.prose-ancient hr {
+  border: none;
+  border-top: 1px solid rgba(143, 107, 23, 0.2);
+  margin: 2em 0;
+}
+
+.prose-ancient table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+}
+
+.prose-ancient th,
+.prose-ancient td {
+  border: 1px solid rgba(143, 107, 23, 0.2);
+  padding: 0.5em 0.75em;
+  text-align: left;
+}
+
+.prose-ancient th {
+  background: rgba(7, 11, 36, 0.6);
+  color: var(--color-gold-400);
+  font-family: var(--font-heading);
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="bg4" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#1f2e3e"/>
+      <stop offset="100%" stop-color="#0a1520"/>
+    </radialGradient>
+    <linearGradient id="gold4" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a853"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#bg4)"/>
+  <!-- Face -->
+  <ellipse cx="100" cy="88" rx="36" ry="42" fill="#e0c0a0"/>
+  <!-- Hair - neat short -->
+  <ellipse cx="100" cy="58" rx="38" ry="20" fill="#2a1a0a"/>
+  <path d="M64 62 Q100 48 136 62" fill="#2a1a0a"/>
+  <!-- Eyebrows - friendly -->
+  <path d="M76 78 Q84 75 92 79" stroke="#3a2a1a" stroke-width="1.8" fill="none"/>
+  <path d="M108 79 Q116 75 124 78" stroke="#3a2a1a" stroke-width="1.8" fill="none"/>
+  <!-- Eyes - warm friendly -->
+  <ellipse cx="84" cy="85" rx="5" ry="3.5" fill="#2a1a0a"/>
+  <circle cx="82.5" cy="84" r="1.2" fill="#fff" opacity="0.5"/>
+  <ellipse cx="116" cy="85" rx="5" ry="3.5" fill="#2a1a0a"/>
+  <circle cx="114.5" cy="84" r="1.2" fill="#fff" opacity="0.5"/>
+  <!-- Nose -->
+  <path d="M97 90 Q100 98 103 90" stroke="#c4a882" stroke-width="1.5" fill="none"/>
+  <!-- Smile - wide friendly -->
+  <path d="M88 105 Q100 114 112 105" stroke="#a07060" stroke-width="1.8" fill="none"/>
+  <!-- Dimples -->
+  <path d="M86 107 Q84 109 86 110" stroke="#c4a882" stroke-width="0.8" fill="none"/>
+  <path d="M114 107 Q116 109 114 110" stroke="#c4a882" stroke-width="0.8" fill="none"/>
+  <!-- Collar - casual smart -->
+  <path d="M62 138 Q100 152 138 138" fill="#f5f0e8"/>
+  <!-- Mandarin collar / Chinese-style top -->
+  <rect x="95" y="130" width="10" height="16" rx="2" fill="#f5f0e8" stroke="url(#gold4)" stroke-width="0.8"/>
+  <!-- Chinese-style jacket -->
+  <path d="M48 152 Q100 178 152 152 L165 200 L35 200 Z" fill="#1a2530"/>
+  <!-- Frog button decorations -->
+  <circle cx="100" cy="170" r="2.5" stroke="url(#gold4)" stroke-width="1" fill="none"/>
+  <circle cx="100" cy="182" r="2.5" stroke="url(#gold4)" stroke-width="1" fill="none"/>
+  <!-- Book decoration -->
+  <text x="22" y="38" fill="#d4a853" opacity="0.35" font-size="14" font-family="serif">&#x66F8;</text>
+  <text x="165" y="45" fill="#d4a853" opacity="0.3" font-size="12" font-family="serif">&#x5B66;</text>
+</svg>

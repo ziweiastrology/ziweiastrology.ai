@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Cinzel_Decorative, Merriweather } from "next/font/google";
+import Providers from "@/components/Providers";
+import Analytics from "@/components/Analytics";
+import CookieConsent from "@/components/CookieConsent";
 import "./globals.css";
 
 const inter = Inter({
@@ -22,8 +25,13 @@ const merriweather = Merriweather({
   display: "swap",
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://ziweiastrology.ai";
+
 export const metadata: Metadata = {
-  title: "ziweiastrology.ai — Decode Your Reality",
+  title: {
+    default: "ziweiastrology.ai — Decode Your Reality",
+    template: "%s | ziweiastrology.ai",
+  },
   description:
     "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling. Decode your reality. Optimize your future.",
   keywords: [
@@ -33,6 +41,24 @@ export const metadata: Metadata = {
     "purple star astrology",
     "紫微斗数",
   ],
+  metadataBase: new URL(SITE_URL),
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: SITE_URL,
+    siteName: "ziweiastrology.ai",
+    title: "ziweiastrology.ai — Decode Your Reality",
+    description:
+      "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling. Decode your reality. Optimize your future.",
+    images: [{ url: "/logo.jpg", width: 512, height: 512, alt: "ziweiastrology.ai" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ziweiastrology.ai — Decode Your Reality",
+    description:
+      "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling.",
+    images: ["/logo.jpg"],
+  },
 };
 
 export default function RootLayout({
@@ -45,7 +71,17 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${cinzel.variable} ${merriweather.variable} font-sans antialiased`}
       >
-        {children}
+        <Analytics />
+        <Providers>
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-gold-500 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-celestial-900"
+          >
+            Skip to main content
+          </a>
+          <div id="main-content">{children}</div>
+        </Providers>
+        <CookieConsent />
       </body>
     </html>
   );

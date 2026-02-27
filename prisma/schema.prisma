@@ -1,0 +1,331 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================
+// Auth Models (NextAuth)
+// ========================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          Role      @default(FREE)
+  tier          Tier      @default(FREE)
+
+  accounts       Account[]
+  sessions       Session[]
+  posts          Post[]
+  comments       Comment[]
+  votes          Vote[]
+  groupMembers   GroupMember[]
+  enrollments    Enrollment[]
+  subscription   Subscription?
+  stripeCustomerId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ========================
+// Enums
+// ========================
+
+enum Role {
+  FREE
+  MEMBER
+  INSTRUCTOR
+  ADMIN
+}
+
+enum Tier {
+  FREE
+  BASIC
+  PREMIUM
+  SIFU
+}
+
+enum ResourceType {
+  PDF
+  ARTICLE
+  DATASET
+  CASE_STUDY
+}
+
+enum PostType {
+  DISCUSSION
+  PILLAR_DATA
+  EVENT_ANALYSIS
+  CHART_ANALYSIS
+}
+
+enum CaseCategory {
+  FAMILY
+  CAREER
+  LOVE
+  PARTNERSHIPS
+  HEALTH
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  MASTER
+}
+
+// ========================
+// Resources
+// ========================
+
+model Resource {
+  id        String       @id @default(cuid())
+  title     String
+  slug      String       @unique
+  type      ResourceType
+  category  String
+  excerpt   String?
+  content   String       @db.Text
+  fileUrl   String?
+  published Boolean      @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ========================
+// Community
+// ========================
+
+model Post {
+  id       String   @id @default(cuid())
+  title    String
+  content  String   @db.Text
+  type     PostType
+  category String?
+  pinned   Boolean  @default(false)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  groupId String?
+  group   Group?  @relation(fields: [groupId], references: [id], onDelete: SetNull)
+
+  comments Comment[]
+  votes    Vote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Comment {
+  id      String @id @default(cuid())
+  content String @db.Text
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  parentId String?
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: SetNull)
+  replies  Comment[] @relation("CommentReplies")
+
+  votes Vote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Vote {
+  id    String @id @default(cuid())
+  value Int // +1 or -1
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  postId    String?
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  commentId String?
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+  @@unique([userId, commentId])
+}
+
+model Group {
+  id          String  @id @default(cuid())
+  name        String
+  slug        String  @unique
+  description String? @db.Text
+  isPrivate   Boolean @default(false)
+
+  members GroupMember[]
+  posts   Post[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GroupMember {
+  id   String          @id @default(cuid())
+  role GroupMemberRole @default(MEMBER)
+
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  groupId String
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  joinedAt DateTime @default(now())
+
+  @@unique([userId, groupId])
+}
+
+enum GroupMemberRole {
+  MEMBER
+  MODERATOR
+  ADMIN
+}
+
+model CaseStudy {
+  id       String       @id @default(cuid())
+  title    String
+  slug     String       @unique
+  category CaseCategory
+  excerpt  String?
+  content  String       @db.Text
+  chartData String?     @db.Text // JSON string of ZiWei chart data
+  outcome  String?      @db.Text
+  accuracy Float?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ========================
+// Academy
+// ========================
+
+model Course {
+  id          String      @id @default(cuid())
+  title       String
+  slug        String      @unique
+  description String?     @db.Text
+  level       CourseLevel
+  price       Float       @default(0)
+  published   Boolean     @default(false)
+
+  lessons     Lesson[]
+  enrollments Enrollment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Lesson {
+  id       String  @id @default(cuid())
+  title    String
+  content  String  @db.Text
+  videoUrl String?
+  order    Int
+
+  courseId String
+  course  Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Enrollment {
+  id       String           @id @default(cuid())
+  status   EnrollmentStatus @default(ACTIVE)
+  progress Float            @default(0)
+
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  enrolledAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([userId, courseId])
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  PAUSED
+}
+
+// ========================
+// Payments
+// ========================
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  stripeSubscriptionId String             @unique
+  tier                 Tier
+  status               SubscriptionStatus
+  currentPeriodEnd     DateTime
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  INCOMPLETE
+}
