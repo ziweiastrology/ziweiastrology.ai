@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#2a1f4e"/>
+      <stop offset="100%" stop-color="#0f0a1f"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a853"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
+  <!-- Face silhouette -->
+  <ellipse cx="100" cy="85" rx="34" ry="40" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Short feathered hair -->
+  <path d="M66 72 Q60 55 70 48 Q80 40 100 38 Q120 40 130 48 Q140 55 134 72" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <path d="M68 65 Q62 50 72 45" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.5"/>
+  <path d="M132 65 Q138 50 128 45" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.5"/>
+  <!-- Tiara/Crown -->
+  <path d="M72 52 L78 42 L84 50 L90 40 L96 48 L100 36 L104 48 L110 40 L116 50 L122 42 L128 52" stroke="url(#gold)" stroke-width="2" fill="none"/>
+  <!-- Elegant necklace -->
+  <path d="M72 125 Q100 140 128 125" stroke="url(#gold)" stroke-width="1.5" fill="none"/>
+  <circle cx="100" cy="138" r="3" fill="url(#gold)" opacity="0.6"/>
+  <circle cx="90" cy="135" r="2" fill="url(#gold)" opacity="0.4"/>
+  <circle cx="110" cy="135" r="2" fill="url(#gold)" opacity="0.4"/>
+  <!-- Dress -->
+  <path d="M68 125 Q100 145 132 125 L145 200 L55 200 Z" fill="#1a1035" stroke="url(#gold)" stroke-width="1"/>
+  <!-- Stars -->
+  <circle cx="30" cy="28" r="1.5" fill="#d4a853" opacity="0.7"/>
+  <circle cx="170" cy="35" r="1" fill="#d4a853" opacity="0.6"/>
+  <circle cx="165" cy="60" r="1.5" fill="#d4a853" opacity="0.5"/>
+</svg>

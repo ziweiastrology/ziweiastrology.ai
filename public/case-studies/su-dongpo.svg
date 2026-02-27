@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#2a1f4e"/>
+      <stop offset="100%" stop-color="#0f0a1f"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a853"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
+  <!-- Head silhouette -->
+  <ellipse cx="100" cy="80" rx="34" ry="40" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Scholar hat - looser, more casual style -->
+  <path d="M68 58 Q100 35 132 58" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <rect x="78" y="40" width="44" height="12" rx="3" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Relaxed eyes with smile lines -->
+  <path d="M80 78 Q86 74 92 78" stroke="url(#gold)" stroke-width="1.5" fill="none"/>
+  <path d="M108 78 Q114 74 120 78" stroke="url(#gold)" stroke-width="1.5" fill="none"/>
+  <!-- Warm smile -->
+  <path d="M90 95 Q100 102 110 95" stroke="url(#gold)" stroke-width="1.5" fill="none"/>
+  <!-- Short beard -->
+  <path d="M90 102 Q100 115 110 102" stroke="url(#gold)" stroke-width="1" fill="none"/>
+  <!-- Flowing robe -->
+  <path d="M66 118 Q100 138 134 118 L142 200 L58 200 Z" fill="#1a1035" stroke="url(#gold)" stroke-width="1"/>
+  <!-- Wine cup accent -->
+  <path d="M160 55 L155 70 Q160 73 165 70 Z" fill="none" stroke="url(#gold)" stroke-width="1.5" opacity="0.5"/>
+  <!-- Brush/calligraphy accent -->
+  <line x1="30" y1="140" x2="35" y2="170" stroke="url(#gold)" stroke-width="2" opacity="0.4"/>
+  <circle cx="33" cy="138" r="2" fill="url(#gold)" opacity="0.3"/>
+  <!-- Stars -->
+  <circle cx="170" cy="28" r="1.5" fill="#d4a853" opacity="0.7"/>
+  <circle cx="28" cy="30" r="1" fill="#d4a853" opacity="0.6"/>
+</svg>

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#2a1f4e"/>
+      <stop offset="100%" stop-color="#0f0a1f"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a853"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
+  <!-- Head silhouette -->
+  <ellipse cx="100" cy="80" rx="34" ry="40" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Scholar's cap (幞头) -->
+  <rect x="72" y="42" width="56" height="18" rx="4" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <path d="M72 50 L58 46" stroke="url(#gold)" stroke-width="2"/>
+  <path d="M128 50 L142 46" stroke="url(#gold)" stroke-width="2"/>
+  <!-- Wise eyes -->
+  <ellipse cx="86" cy="78" rx="4" ry="2.5" fill="none" stroke="url(#gold)" stroke-width="1.5"/>
+  <ellipse cx="114" cy="78" rx="4" ry="2.5" fill="none" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Thin beard -->
+  <path d="M88 100 Q100 118 112 100" stroke="url(#gold)" stroke-width="1" fill="none"/>
+  <path d="M96 105 Q100 120 104 105" stroke="url(#gold)" stroke-width="1" fill="none"/>
+  <!-- Scholar's robe -->
+  <path d="M66 118 Q100 135 134 118 L140 200 L60 200 Z" fill="#1a1035" stroke="url(#gold)" stroke-width="1"/>
+  <path d="M80 120 L100 155 L120 120" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.5"/>
+  <!-- Scroll accent -->
+  <rect x="22" y="140" width="8" height="35" rx="4" fill="none" stroke="url(#gold)" stroke-width="1.5" opacity="0.4"/>
+  <path d="M22 145 Q18 148 22 151" stroke="url(#gold)" stroke-width="1" opacity="0.4"/>
+  <!-- Stars -->
+  <circle cx="170" cy="30" r="1.5" fill="#d4a853" opacity="0.7"/>
+  <circle cx="175" cy="55" r="1" fill="#d4a853" opacity="0.5"/>
+</svg>

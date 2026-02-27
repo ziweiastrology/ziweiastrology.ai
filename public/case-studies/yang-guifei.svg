@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#2a1f4e"/>
+      <stop offset="100%" stop-color="#0f0a1f"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a853"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
+  <!-- Face silhouette - round, full -->
+  <ellipse cx="100" cy="82" rx="36" ry="42" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Elaborate Tang hairstyle (高髻) -->
+  <ellipse cx="100" cy="38" rx="22" ry="18" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <path d="M78 45 Q70 35 80 30 Q90 25 100 28" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.5"/>
+  <!-- Flower hairpin -->
+  <circle cx="115" cy="32" r="5" fill="none" stroke="url(#gold)" stroke-width="1.5"/>
+  <circle cx="115" cy="32" r="2" fill="url(#gold)" opacity="0.5"/>
+  <line x1="115" y1="37" x2="118" y2="45" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Elegant eyes -->
+  <path d="M82 78 Q88 74 94 78" stroke="url(#gold)" stroke-width="1.5" fill="none"/>
+  <path d="M106 78 Q112 74 118 78" stroke="url(#gold)" stroke-width="1.5" fill="none"/>
+  <!-- Small lips -->
+  <ellipse cx="100" cy="96" rx="5" ry="3" fill="url(#gold)" opacity="0.3"/>
+  <!-- Ornate necklace -->
+  <path d="M70 122 Q100 140 130 122" stroke="url(#gold)" stroke-width="2" fill="none"/>
+  <circle cx="100" cy="136" r="4" fill="url(#gold)" opacity="0.5"/>
+  <circle cx="88" cy="132" r="2.5" fill="url(#gold)" opacity="0.3"/>
+  <circle cx="112" cy="132" r="2.5" fill="url(#gold)" opacity="0.3"/>
+  <!-- Flowing robes -->
+  <path d="M65 122 Q100 148 135 122 L148 200 L52 200 Z" fill="#1a1035" stroke="url(#gold)" stroke-width="1"/>
+  <!-- Peony accent -->
+  <circle cx="32" cy="160" r="6" fill="none" stroke="url(#gold)" stroke-width="1" opacity="0.3"/>
+  <circle cx="32" cy="160" r="3" fill="url(#gold)" opacity="0.15"/>
+  <!-- Stars -->
+  <circle cx="170" cy="28" r="1.5" fill="#d4a853" opacity="0.7"/>
+  <circle cx="30" cy="30" r="1" fill="#d4a853" opacity="0.6"/>
+</svg>

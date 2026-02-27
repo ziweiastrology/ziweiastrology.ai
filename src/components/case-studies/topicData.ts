@@ -1,7 +1,16 @@
+export interface CaseSubject {
+  name: string;
+  nameCn: string;
+  era: string;
+  title?: string;
+  avatar: string;
+}
+
 export interface CaseExample {
   id: string;
   title: string;
   titleCn: string;
+  subject: CaseSubject;
   chartConfig: string;
   stars: string[];
   transformers: string[];
@@ -47,6 +56,13 @@ export const TOPICS: TopicData[] = [
         id: "health-1",
         title: "Chronic Fatigue at Age 35",
         titleCn: "35岁慢性疲劳",
+        subject: {
+          name: "Steve Jobs",
+          nameCn: "史蒂夫·乔布斯",
+          era: "1955–2011",
+          title: "Apple Co-founder",
+          avatar: "/case-studies/steve-jobs.svg",
+        },
         chartConfig: "天机 (平) + 巨门 (得) in 疾厄宫",
         stars: ["天机 Tian Ji", "巨门 Ju Men"],
         transformers: ["化忌 Ji on 巨门"],
@@ -61,6 +77,13 @@ export const TOPICS: TopicData[] = [
         id: "health-2",
         title: "Unexpected Surgery at Age 42",
         titleCn: "42岁意外手术",
+        subject: {
+          name: "Guan Yu",
+          nameCn: "关羽",
+          era: "Three Kingdoms",
+          title: "God of War",
+          avatar: "/case-studies/guan-yu.svg",
+        },
         chartConfig: "七杀 (旺) + 擎羊 in 疾厄宫",
         stars: ["七杀 Qi Sha", "擎羊 Qing Yang"],
         transformers: ["流年化忌 Annual Ji on 廉贞"],
@@ -75,6 +98,13 @@ export const TOPICS: TopicData[] = [
         id: "health-3",
         title: "Lifelong Respiratory Weakness",
         titleCn: "终身呼吸系统弱势",
+        subject: {
+          name: "Princess Diana",
+          nameCn: "戴安娜王妃",
+          era: "1961–1997",
+          title: "Princess of Wales",
+          avatar: "/case-studies/princess-diana.svg",
+        },
         chartConfig: "太阴 (陷) in 疾厄宫",
         stars: ["太阴 Tai Yin"],
         transformers: ["化忌 Ji on 太阴 (natal)"],
@@ -109,6 +139,13 @@ export const TOPICS: TopicData[] = [
         id: "career-1",
         title: "Corporate to Entrepreneur at Age 38",
         titleCn: "38岁从企业转型创业",
+        subject: {
+          name: "Elon Musk",
+          nameCn: "埃隆·马斯克",
+          era: "1971–",
+          title: "Tech Visionary",
+          avatar: "/case-studies/elon-musk.svg",
+        },
         chartConfig: "紫微 (旺) + 破军 (得) in 官禄宫",
         stars: ["紫微 Zi Wei", "破军 Po Jun"],
         transformers: ["化权 Quan on 紫微", "大限化忌 Decade Ji on 武曲"],
@@ -123,6 +160,13 @@ export const TOPICS: TopicData[] = [
         id: "career-2",
         title: "Academic Career with Late Recognition",
         titleCn: "学术事业大器晚成",
+        subject: {
+          name: "Zhu Xi",
+          nameCn: "朱熹",
+          era: "Song Dynasty",
+          title: "Neo-Confucian Master",
+          avatar: "/case-studies/zhu-xi.svg",
+        },
         chartConfig: "天梁 (旺) + 天同 (得) in 官禄宫",
         stars: ["天梁 Tian Liang", "天同 Tian Tong"],
         transformers: ["化科 Ke on 天梁"],
@@ -137,6 +181,13 @@ export const TOPICS: TopicData[] = [
         id: "career-3",
         title: "Serial Career Changes Before Finding Fit",
         titleCn: "多次转行终找到方向",
+        subject: {
+          name: "Su Dongpo",
+          nameCn: "苏东坡",
+          era: "Song Dynasty",
+          title: "Poet & Statesman",
+          avatar: "/case-studies/su-dongpo.svg",
+        },
         chartConfig: "贪狼 (旺) in 官禄宫",
         stars: ["贪狼 Tan Lang"],
         transformers: ["化禄 Lu on 贪狼", "天马 Tian Ma co-located"],
@@ -171,6 +222,13 @@ export const TOPICS: TopicData[] = [
         id: "rel-1",
         title: "Late Marriage After Multiple Heartbreaks",
         titleCn: "历经坎坷终得良缘",
+        subject: {
+          name: "Yang Guifei",
+          nameCn: "杨贵妃",
+          era: "Tang Dynasty",
+          title: "Imperial Consort",
+          avatar: "/case-studies/yang-guifei.svg",
+        },
         chartConfig: "廉贞 (平) + 天相 (得) in 夫妻宫",
         stars: ["廉贞 Lian Zhen", "天相 Tian Xiang"],
         transformers: ["化忌 Ji on 廉贞 (natal)"],
@@ -185,6 +243,13 @@ export const TOPICS: TopicData[] = [
         id: "rel-2",
         title: "Successful Long-Distance Relationship",
         titleCn: "异地恋修成正果",
+        subject: {
+          name: "Napoleon",
+          nameCn: "拿破仑",
+          era: "1769–1821",
+          title: "Emperor of France",
+          avatar: "/case-studies/napoleon.svg",
+        },
         chartConfig: "太阳 (旺) in 夫妻宫",
         stars: ["太阳 Tai Yang"],
         transformers: ["天马 Tian Ma co-located", "化禄 Lu on 太阳"],
@@ -199,6 +264,13 @@ export const TOPICS: TopicData[] = [
         id: "rel-3",
         title: "Divorce and Remarriage — A Better Second Chapter",
         titleCn: "离婚再嫁更幸福",
+        subject: {
+          name: "Elizabeth Taylor",
+          nameCn: "伊丽莎白·泰勒",
+          era: "1932–2011",
+          title: "Hollywood Icon",
+          avatar: "/case-studies/elizabeth-taylor.svg",
+        },
         chartConfig: "天机 (得) + 太阴 (陷) in 夫妻宫",
         stars: ["天机 Tian Ji", "太阴 Tai Yin"],
         transformers: ["化忌 Ji on 太阴", "大限化禄 Decade Lu on 天机 (age 38+)"],
@@ -233,6 +305,13 @@ export const TOPICS: TopicData[] = [
         id: "child-1",
         title: "Fertility Struggle Resolved at 34",
         titleCn: "34岁求子成功",
+        subject: {
+          name: "Wu Zetian",
+          nameCn: "武则天",
+          era: "Tang Dynasty",
+          title: "Empress Regnant",
+          avatar: "/case-studies/wu-zetian.svg",
+        },
         chartConfig: "天府 (旺) in 子女宫, blocked by 地空+地劫",
         stars: ["天府 Tian Fu", "地空 Di Kong", "地劫 Di Jie"],
         transformers: ["大限化禄 Decade Lu on 天府 (age 32+)"],
@@ -247,6 +326,13 @@ export const TOPICS: TopicData[] = [
         id: "child-2",
         title: "Gifted but Rebellious Child",
         titleCn: "天才叛逆儿",
+        subject: {
+          name: "Emperor Kangxi",
+          nameCn: "康熙帝",
+          era: "Qing Dynasty",
+          title: "Longest-reigning Emperor",
+          avatar: "/case-studies/emperor-kangxi.svg",
+        },
         chartConfig: "破军 (旺) in 子女宫",
         stars: ["破军 Po Jun", "文昌 Wen Chang"],
         transformers: ["化权 Quan on 破军"],
@@ -261,6 +347,13 @@ export const TOPICS: TopicData[] = [
         id: "child-3",
         title: "Choosing to Be Childfree — Chart Confirmation",
         titleCn: "命盘确认丁克选择",
+        subject: {
+          name: "Li Bai",
+          nameCn: "李白",
+          era: "Tang Dynasty",
+          title: "Immortal Poet",
+          avatar: "/case-studies/li-bai.svg",
+        },
         chartConfig: "天机 (平) + 巨门 (陷) in 子女宫",
         stars: ["天机 Tian Ji", "巨门 Ju Men"],
         transformers: ["化忌 Ji on 巨门", "地空 Di Kong"],
@@ -295,6 +388,13 @@ export const TOPICS: TopicData[] = [
         id: "prop-1",
         title: "Real Estate Fortune Through Precise Timing",
         titleCn: "精准择时的房产投资",
+        subject: {
+          name: "Fan Li",
+          nameCn: "范蠡",
+          era: "Spring & Autumn",
+          title: "Merchant Sage",
+          avatar: "/case-studies/fan-li.svg",
+        },
         chartConfig: "武曲 (旺) + 天府 (旺) in 田宅宫",
         stars: ["武曲 Wu Qu", "天府 Tian Fu"],
         transformers: ["化禄 Lu on 武曲", "化权 Quan on 天府"],
@@ -309,6 +409,13 @@ export const TOPICS: TopicData[] = [
         id: "prop-2",
         title: "Family Property Dispute Resolution",
         titleCn: "家产纠纷化解",
+        subject: {
+          name: "Cao Pi & Cao Zhi",
+          nameCn: "曹丕/曹植",
+          era: "Three Kingdoms",
+          title: "Rival Princes",
+          avatar: "/case-studies/cao-brothers.svg",
+        },
         chartConfig: "巨门 (陷) in 田宅宫",
         stars: ["巨门 Ju Men"],
         transformers: ["化忌 Ji on 巨门", "大限化权 Decade Quan on 太阳 (age 42+)"],
@@ -323,6 +430,13 @@ export const TOPICS: TopicData[] = [
         id: "prop-3",
         title: "Nomadic Lifestyle by Chart Design",
         titleCn: "命中注定的游牧生活",
+        subject: {
+          name: "Xu Xiake",
+          nameCn: "徐霞客",
+          era: "Ming Dynasty",
+          title: "Explorer Extraordinaire",
+          avatar: "/case-studies/xu-xiake.svg",
+        },
         chartConfig: "天马 (自化忌) + 天同 (平) in 田宅宫",
         stars: ["天马 Tian Ma", "天同 Tian Tong"],
         transformers: ["自化忌 Self-Ji on Property Palace", "化禄 Lu in 迁移宫"],

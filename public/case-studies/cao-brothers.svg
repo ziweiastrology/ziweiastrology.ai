@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#2a1f4e"/>
+      <stop offset="100%" stop-color="#0f0a1f"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a853"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
+  <!-- Two overlapping silhouettes - brothers -->
+  <!-- Cao Pi (left, slightly forward) -->
+  <ellipse cx="80" cy="78" rx="28" ry="34" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Cao Pi's crown -->
+  <path d="M55 58 Q80 40 105 58" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <rect x="65" y="42" width="30" height="8" rx="2" fill="#1a1035" stroke="url(#gold)" stroke-width="1"/>
+  <!-- Cao Pi's stern eye -->
+  <line x1="68" y1="74" x2="78" y2="74" stroke="url(#gold)" stroke-width="1.5"/>
+  <line x1="82" y1="74" x2="92" y2="74" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Cao Zhi (right, slightly behind) -->
+  <ellipse cx="120" cy="82" rx="28" ry="34" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5" opacity="0.8"/>
+  <!-- Cao Zhi's looser scholar hat -->
+  <path d="M95 62 Q120 45 145 62" fill="#1a1035" stroke="url(#gold)" stroke-width="1" opacity="0.7"/>
+  <!-- Cao Zhi's softer eyes -->
+  <path d="M110 78 Q116 75 122 78" stroke="url(#gold)" stroke-width="1.5" fill="none" opacity="0.8"/>
+  <path d="M126 78 Q132 75 138 78" stroke="url(#gold)" stroke-width="1.5" fill="none" opacity="0.8"/>
+  <!-- Dividing line between them - tension -->
+  <line x1="100" y1="55" x2="100" y2="115" stroke="url(#gold)" stroke-width="0.5" opacity="0.3" stroke-dasharray="3,3"/>
+  <!-- Combined robes -->
+  <path d="M48 112 Q100 140 152 112 L160 200 L40 200 Z" fill="#1a1035" stroke="url(#gold)" stroke-width="1"/>
+  <!-- Seven-step poem accent (七步诗) -->
+  <path d="M160 145 L165 155 L170 145 L175 155" stroke="url(#gold)" stroke-width="1" opacity="0.3"/>
+  <!-- Stars -->
+  <circle cx="28" cy="28" r="1.5" fill="#d4a853" opacity="0.7"/>
+  <circle cx="172" cy="30" r="1" fill="#d4a853" opacity="0.5"/>
+</svg>

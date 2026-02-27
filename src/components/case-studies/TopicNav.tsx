@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Users, Send } from "lucide-react";
 import {
   HealthIcon,
   CareerIcon,
@@ -73,6 +74,27 @@ export default function TopicNav() {
             </button>
           );
         })}
+
+        {/* Divider */}
+        <div className="mx-1 h-5 w-px shrink-0 bg-gold-700/20" />
+
+        {/* Community */}
+        <button
+          onClick={() => scrollTo("community-pulse")}
+          className="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-parchment-500 transition-all hover:text-parchment-300"
+        >
+          <Users className="h-4 w-4" />
+          <span className="whitespace-nowrap">Community</span>
+        </button>
+
+        {/* Submit */}
+        <button
+          onClick={() => scrollTo("suggest-case")}
+          className="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-parchment-500 transition-all hover:text-parchment-300"
+        >
+          <Send className="h-4 w-4" />
+          <span className="whitespace-nowrap">Submit</span>
+        </button>
       </div>
     </div>
   );

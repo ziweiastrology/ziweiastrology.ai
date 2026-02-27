@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#2a1f4e"/>
+      <stop offset="100%" stop-color="#0f0a1f"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a853"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
+  <!-- Head silhouette -->
+  <ellipse cx="100" cy="80" rx="34" ry="40" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Ancient scholar topknot -->
+  <path d="M78 50 Q100 30 122 50" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <ellipse cx="100" cy="32" rx="10" ry="8" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Hairpin -->
+  <line x1="88" y1="32" x2="112" y2="32" stroke="url(#gold)" stroke-width="2"/>
+  <!-- Wise eyes -->
+  <ellipse cx="86" cy="78" rx="4" ry="2.5" fill="none" stroke="url(#gold)" stroke-width="1.5"/>
+  <ellipse cx="114" cy="78" rx="4" ry="2.5" fill="none" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Knowing smile -->
+  <path d="M90 95 Q100 100 110 95" stroke="url(#gold)" stroke-width="1.5" fill="none"/>
+  <!-- Thin beard -->
+  <path d="M94 102 Q100 112 106 102" stroke="url(#gold)" stroke-width="1" fill="none"/>
+  <!-- Merchant's robe -->
+  <path d="M62 118 Q100 138 138 118 L145 200 L55 200 Z" fill="#1a1035" stroke="url(#gold)" stroke-width="1"/>
+  <path d="M82 120 L100 155 L118 120" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.5"/>
+  <!-- Gold ingot accent (元宝) -->
+  <path d="M155 50 Q160 42 170 42 Q180 42 185 50 Q175 48 165 48 Z" fill="url(#gold)" opacity="0.4"/>
+  <path d="M160 50 Q170 55 180 50" stroke="url(#gold)" stroke-width="1" opacity="0.5"/>
+  <!-- Abacus accent -->
+  <rect x="22" y="140" width="16" height="25" rx="2" fill="none" stroke="url(#gold)" stroke-width="1" opacity="0.3"/>
+  <line x1="26" y1="140" x2="26" y2="165" stroke="url(#gold)" stroke-width="0.5" opacity="0.3"/>
+  <line x1="34" y1="140" x2="34" y2="165" stroke="url(#gold)" stroke-width="0.5" opacity="0.3"/>
+  <!-- Stars -->
+  <circle cx="30" cy="30" r="1.5" fill="#d4a853" opacity="0.7"/>
+  <circle cx="170" cy="28" r="1" fill="#d4a853" opacity="0.5"/>
+</svg>

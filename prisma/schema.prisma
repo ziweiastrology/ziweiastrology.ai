@@ -31,6 +31,12 @@ model User {
   subscription   Subscription?
   stripeCustomerId String?
 
+  caseReactions        CaseReaction[]
+  caseComments         CaseComment[]
+  casePollsCreated     CasePoll[]
+  casePollVotes        CasePollVote[]
+  celebritySubmissions CelebritySubmission[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -109,6 +115,23 @@ enum CaseCategory {
   LOVE
   PARTNERSHIPS
   HEALTH
+  CHILDREN
+  PROPERTY
+}
+
+enum ReactionType {
+  INSIGHTFUL
+  MIND_BLOWN
+  RELATABLE
+  WANT_MORE
+}
+
+enum SubmissionStatus {
+  PENDING
+  IN_REVIEW
+  PROCESSING
+  PUBLISHED
+  REJECTED
 }
 
 enum CourseLevel {
@@ -328,4 +351,99 @@ enum SubscriptionStatus {
   PAST_DUE
   CANCELED
   INCOMPLETE
+}
+
+// ========================
+// Case Study Interactions
+// ========================
+
+model CaseReaction {
+  id     String       @id @default(cuid())
+  caseId String
+  type   ReactionType
+
+  userId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, caseId])
+}
+
+model CaseComment {
+  id      String @id @default(cuid())
+  caseId  String
+  content String @db.Text
+
+  authorId String
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  parentId String?
+  parent   CaseComment?  @relation("CaseCommentReplies", fields: [parentId], references: [id], onDelete: SetNull)
+  replies  CaseComment[] @relation("CaseCommentReplies")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CasePoll {
+  id       String    @id @default(cuid())
+  question String
+  caseId   String?
+  closesAt DateTime?
+
+  createdById String
+  createdBy   User @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  options CasePollOption[]
+  votes   CasePollVote[]
+
+  createdAt DateTime @default(now())
+}
+
+model CasePollOption {
+  id    String @id @default(cuid())
+  label String
+
+  pollId String
+  poll   CasePoll @relation(fields: [pollId], references: [id], onDelete: Cascade)
+
+  votes CasePollVote[]
+}
+
+model CasePollVote {
+  id String @id @default(cuid())
+
+  userId   String
+  user     User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  optionId String
+  option   CasePollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  pollId String
+  poll   CasePoll @relation(fields: [pollId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, pollId])
+}
+
+model CelebritySubmission {
+  id                String           @id @default(cuid())
+  subjectName       String
+  subjectNameCn     String?
+  birthDate         DateTime
+  birthTime         String?
+  birthLocation     String?
+  birthTimeVerified Boolean          @default(false)
+  category          String
+  context           String?          @db.Text
+  sourceUrl         String?
+  status            SubmissionStatus @default(PENDING)
+
+  submittedById String
+  submittedBy   User @relation(fields: [submittedById], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#2a1f4e"/>
+      <stop offset="100%" stop-color="#0f0a1f"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a853"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
+  <!-- Face silhouette -->
+  <ellipse cx="100" cy="82" rx="35" ry="42" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Voluminous hair -->
+  <path d="M62 75 Q58 50 72 40 Q85 32 100 30 Q115 32 128 40 Q142 50 138 75" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <path d="M65 68 Q62 55 72 48" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.4"/>
+  <path d="M135 68 Q138 55 128 48" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.4"/>
+  <!-- Famous violet eyes -->
+  <ellipse cx="86" cy="78" rx="6" ry="4" fill="none" stroke="url(#gold)" stroke-width="1.5"/>
+  <ellipse cx="114" cy="78" rx="6" ry="4" fill="none" stroke="url(#gold)" stroke-width="1.5"/>
+  <circle cx="86" cy="78" r="2" fill="url(#gold)" opacity="0.4"/>
+  <circle cx="114" cy="78" r="2" fill="url(#gold)" opacity="0.4"/>
+  <!-- Diamond necklace -->
+  <path d="M70 122 Q100 138 130 122" stroke="url(#gold)" stroke-width="2" fill="none"/>
+  <path d="M82 128 L86 133 L90 128" fill="url(#gold)" opacity="0.5"/>
+  <path d="M95 132 L100 138 L105 132" fill="url(#gold)" opacity="0.6"/>
+  <path d="M110 128 L114 133 L118 128" fill="url(#gold)" opacity="0.5"/>
+  <!-- Evening gown -->
+  <path d="M66 122 Q100 145 134 122 L148 200 L52 200 Z" fill="#1a1035" stroke="url(#gold)" stroke-width="1"/>
+  <!-- Stars -->
+  <circle cx="28" cy="28" r="1.5" fill="#d4a853" opacity="0.7"/>
+  <circle cx="172" cy="32" r="1" fill="#d4a853" opacity="0.6"/>
+  <circle cx="170" cy="60" r="1.5" fill="#d4a853" opacity="0.5"/>
+</svg>

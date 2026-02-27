@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#2a1f4e"/>
+      <stop offset="100%" stop-color="#0f0a1f"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a853"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
+  <!-- Face silhouette -->
+  <ellipse cx="100" cy="82" rx="34" ry="40" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Qing dynasty imperial hat -->
+  <ellipse cx="100" cy="48" rx="30" ry="12" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <ellipse cx="100" cy="42" rx="20" ry="8" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Hat jewel -->
+  <circle cx="100" cy="32" r="5" fill="url(#gold)" opacity="0.5"/>
+  <circle cx="100" cy="32" r="2.5" fill="url(#gold)" opacity="0.8"/>
+  <!-- Wise but young eyes -->
+  <ellipse cx="86" cy="78" rx="5" ry="3" fill="none" stroke="url(#gold)" stroke-width="1.5"/>
+  <ellipse cx="114" cy="78" rx="5" ry="3" fill="none" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Slight smile -->
+  <path d="M92 95 Q100 100 108 95" stroke="url(#gold)" stroke-width="1.5" fill="none"/>
+  <!-- Dragon robe -->
+  <path d="M62 118 Q100 140 138 118 L148 200 L52 200 Z" fill="#1a1035" stroke="url(#gold)" stroke-width="1"/>
+  <!-- Collar ornaments -->
+  <path d="M72 118 Q100 128 128 118" stroke="url(#gold)" stroke-width="2" fill="none"/>
+  <!-- Dragon pattern on robe -->
+  <path d="M88 145 Q95 138 100 145 Q105 138 112 145" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.4"/>
+  <path d="M90 155 Q100 148 110 155" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.3"/>
+  <!-- Imperial seal accent -->
+  <rect x="158" y="145" width="14" height="14" rx="2" fill="none" stroke="url(#gold)" stroke-width="1.5" opacity="0.4"/>
+  <!-- Stars -->
+  <circle cx="28" cy="28" r="1.5" fill="#d4a853" opacity="0.7"/>
+  <circle cx="30" cy="55" r="1" fill="#d4a853" opacity="0.5"/>
+</svg>

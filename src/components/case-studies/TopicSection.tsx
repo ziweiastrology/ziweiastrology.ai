@@ -25,9 +25,10 @@ const ICON_MAP: Record<string, React.FC<{ stroke?: string }>> = {
 interface TopicSectionProps {
   topic: TopicData;
   index: number;
+  activeCaseId?: string | null;
 }
 
-export default function TopicSection({ topic, index }: TopicSectionProps) {
+export default function TopicSection({ topic, index, activeCaseId }: TopicSectionProps) {
   const Icon = ICON_MAP[topic.id];
   const [introOpen, setIntroOpen] = useState(false);
 
@@ -163,15 +164,18 @@ export default function TopicSection({ topic, index }: TopicSectionProps) {
         </button>
       </div>
 
-      {/* Case cards */}
+      {/* Case cards with scroll-target IDs */}
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
         {topic.cases.map((c) => (
-          <CaseCard
-            key={c.id}
-            case_={c}
-            colorClass={topic.colorClass}
-            borderClass={topic.borderClass}
-          />
+          <div key={c.id} id={c.id} className="scroll-mt-36">
+            <CaseCard
+              case_={c}
+              colorClass={topic.colorClass}
+              borderClass={topic.borderClass}
+              autoExpand={activeCaseId === c.id}
+              isHighlighted={activeCaseId === c.id}
+            />
+          </div>
         ))}
       </div>
     </motion.section>

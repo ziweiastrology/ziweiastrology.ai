@@ -74,7 +74,7 @@ function ArticleCard({ article, index }: { article: PillarArticle; index: number
       {/* Headline */}
       <div className="space-y-3">
         <h2
-          className={`text-2xl font-bold sm:text-3xl ${article.color}`}
+          className={`text-xl font-bold sm:text-2xl ${article.color}`}
           style={{ fontFamily: "var(--font-heading)" }}
         >
           {article.headline}
@@ -101,17 +101,19 @@ function ArticleCard({ article, index }: { article: PillarArticle; index: number
             transition={{ duration: 0.5, delay: i * 0.08 }}
             className="space-y-3"
           >
-            <h3
-              className="text-lg font-bold text-parchment-100"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              {section.heading}
-            </h3>
-            {section.headingCn && (
-              <p className="text-sm text-parchment-500">
-                {section.headingCn}
-              </p>
-            )}
+            <div className="flex items-baseline gap-3">
+              <div className="mt-1 h-4 w-1 flex-shrink-0 rounded-full bg-gold-500/50" />
+              <div>
+                <h3 className="text-base font-semibold tracking-wide text-parchment-100 sm:text-lg">
+                  {section.heading}
+                </h3>
+                {section.headingCn && (
+                  <p className="mt-0.5 text-xs tracking-wider text-parchment-600">
+                    {section.headingCn}
+                  </p>
+                )}
+              </div>
+            </div>
             <p
               className="leading-relaxed text-parchment-400"
               style={{ fontFamily: "var(--font-serif)" }}

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#2a1f4e"/>
+      <stop offset="100%" stop-color="#0f0a1f"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a853"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
+  <!-- Head silhouette -->
+  <ellipse cx="100" cy="82" rx="36" ry="42" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Glasses - iconic round frames -->
+  <circle cx="84" cy="80" r="12" fill="none" stroke="url(#gold)" stroke-width="2"/>
+  <circle cx="116" cy="80" r="12" fill="none" stroke="url(#gold)" stroke-width="2"/>
+  <line x1="96" y1="80" x2="104" y2="80" stroke="url(#gold)" stroke-width="1.5"/>
+  <line x1="72" y1="80" x2="65" y2="76" stroke="url(#gold)" stroke-width="1.5"/>
+  <line x1="128" y1="80" x2="135" y2="76" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Turtleneck -->
+  <path d="M64 124 Q100 140 136 124 L145 200 L55 200 Z" fill="#1a1035" stroke="url(#gold)" stroke-width="1"/>
+  <path d="M82 120 Q100 128 118 120" stroke="url(#gold)" stroke-width="1.5" fill="none"/>
+  <path d="M84 125 Q100 133 116 125" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.6"/>
+  <!-- Apple silhouette accent -->
+  <path d="M160 35 Q165 28 170 32 Q175 36 172 42 Q168 48 162 46 Q156 44 158 38 Z" fill="url(#gold)" opacity="0.4"/>
+  <path d="M166 32 Q168 26 170 28" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.5"/>
+  <!-- Stars -->
+  <circle cx="30" cy="28" r="1.5" fill="#d4a853" opacity="0.7"/>
+  <circle cx="25" cy="55" r="1" fill="#d4a853" opacity="0.5"/>
+  <circle cx="175" cy="60" r="1" fill="#d4a853" opacity="0.6"/>
+</svg>

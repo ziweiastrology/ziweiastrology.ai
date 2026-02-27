@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#2a1f4e"/>
+      <stop offset="100%" stop-color="#0f0a1f"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a853"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
+  <!-- Head silhouette -->
+  <ellipse cx="100" cy="82" rx="35" ry="42" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Short angular hair -->
+  <path d="M65 68 Q80 42 100 40 Q120 42 135 68" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Eyes - determined look -->
+  <line x1="80" y1="78" x2="92" y2="78" stroke="url(#gold)" stroke-width="2"/>
+  <line x1="108" y1="78" x2="120" y2="78" stroke="url(#gold)" stroke-width="2"/>
+  <!-- Suit jacket -->
+  <path d="M65 124 Q100 140 135 124 L148 200 L52 200 Z" fill="#1a1035" stroke="url(#gold)" stroke-width="1"/>
+  <path d="M90 124 L100 145 L110 124" stroke="url(#gold)" stroke-width="1.5" fill="none"/>
+  <!-- Rocket silhouette accent -->
+  <path d="M165 30 L170 60 L175 30 Z" fill="url(#gold)" opacity="0.3"/>
+  <path d="M167 60 L163 70 M173 60 L177 70" stroke="url(#gold)" stroke-width="1" opacity="0.3"/>
+  <circle cx="170" cy="25" r="3" fill="none" stroke="url(#gold)" stroke-width="1" opacity="0.4"/>
+  <!-- Stars -->
+  <circle cx="28" cy="30" r="1.5" fill="#d4a853" opacity="0.7"/>
+  <circle cx="25" cy="55" r="1" fill="#d4a853" opacity="0.5"/>
+  <circle cx="32" cy="170" r="1" fill="#d4a853" opacity="0.4"/>
+</svg>

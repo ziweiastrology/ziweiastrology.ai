@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#2a1f4e"/>
+      <stop offset="100%" stop-color="#0f0a1f"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a853"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
+  <!-- Head silhouette -->
+  <ellipse cx="100" cy="80" rx="34" ry="42" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Flowing loose hair - free spirit -->
+  <path d="M66 65 Q60 40 78 32 Q90 28 100 30 Q110 28 122 32 Q140 40 134 65" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <path d="M64 70 Q58 80 55 100" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.4"/>
+  <path d="M136 70 Q142 80 145 100" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.4"/>
+  <!-- Dreamy half-closed eyes -->
+  <path d="M80 78 Q86 75 92 78" stroke="url(#gold)" stroke-width="1.5" fill="none"/>
+  <path d="M108 78 Q114 75 120 78" stroke="url(#gold)" stroke-width="1.5" fill="none"/>
+  <!-- Slight smile -->
+  <path d="M90 96 Q100 102 110 96" stroke="url(#gold)" stroke-width="1.5" fill="none"/>
+  <!-- Flowing robe - casual, untied -->
+  <path d="M60 120 Q100 142 140 120 L150 200 L50 200 Z" fill="#1a1035" stroke="url(#gold)" stroke-width="1"/>
+  <path d="M85 122 L95 150" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.5"/>
+  <path d="M115 122 L105 150" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.5"/>
+  <!-- Wine jug accent -->
+  <path d="M160 50 Q155 55 155 65 Q155 72 162 72 Q168 72 168 65 Q168 55 163 50 Z" fill="none" stroke="url(#gold)" stroke-width="1.5" opacity="0.5"/>
+  <path d="M158 50 Q160 45 162 50" stroke="url(#gold)" stroke-width="1" opacity="0.5"/>
+  <!-- Moon accent -->
+  <circle cx="35" cy="35" r="10" fill="none" stroke="url(#gold)" stroke-width="1" opacity="0.3"/>
+  <circle cx="38" cy="33" r="8" fill="url(#bg)"/>
+  <!-- Stars -->
+  <circle cx="170" cy="28" r="1.5" fill="#d4a853" opacity="0.7"/>
+  <circle cx="55" cy="25" r="1" fill="#d4a853" opacity="0.5"/>
+</svg>

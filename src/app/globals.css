@@ -462,17 +462,37 @@ body {
 }
 
 .prose-ancient h1,
-.prose-ancient h2,
-.prose-ancient h3,
-.prose-ancient h4 {
+.prose-ancient h2 {
   font-family: var(--font-heading);
-  color: var(--color-parchment-100);
-  margin-top: 2em;
+  color: var(--color-gold-400);
+  margin-top: 2.5em;
   margin-bottom: 0.75em;
 }
 
-.prose-ancient h2 { font-size: 1.5rem; color: var(--color-gold-400); }
-.prose-ancient h3 { font-size: 1.25rem; }
+.prose-ancient h3,
+.prose-ancient h4 {
+  font-family: var(--font-sans);
+  color: var(--color-parchment-100);
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+  letter-spacing: 0.02em;
+}
+
+.prose-ancient h1 { font-size: 1.75rem; }
+.prose-ancient h2 { font-size: 1.4rem; }
+.prose-ancient h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding-bottom: 0.4em;
+  border-bottom: 1px solid rgba(143, 107, 23, 0.15);
+}
+.prose-ancient h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-gold-500);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
 
 .prose-ancient p { margin-bottom: 1.25em; }
 

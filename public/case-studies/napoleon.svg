@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#2a1f4e"/>
+      <stop offset="100%" stop-color="#0f0a1f"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a853"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
+  <!-- Head silhouette -->
+  <ellipse cx="100" cy="82" rx="34" ry="40" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Iconic bicorne hat -->
+  <path d="M55 60 Q100 35 145 60 Q130 55 100 58 Q70 55 55 60 Z" fill="#1a1035" stroke="url(#gold)" stroke-width="2"/>
+  <path d="M60 60 L55 58 M140 60 L145 58" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Cockade on hat -->
+  <circle cx="100" cy="50" r="4" fill="url(#gold)" opacity="0.5"/>
+  <!-- Stern eyes -->
+  <line x1="80" y1="78" x2="92" y2="80" stroke="url(#gold)" stroke-width="2"/>
+  <line x1="108" y1="80" x2="120" y2="78" stroke="url(#gold)" stroke-width="2"/>
+  <!-- Military uniform with high collar -->
+  <path d="M66 120 Q100 140 134 120 L145 200 L55 200 Z" fill="#1a1035" stroke="url(#gold)" stroke-width="1"/>
+  <rect x="88" y="120" width="24" height="40" fill="none" stroke="url(#gold)" stroke-width="1" opacity="0.5"/>
+  <!-- Epaulettes -->
+  <path d="M66 120 Q60 115 55 120 Q60 125 66 122" fill="url(#gold)" opacity="0.3"/>
+  <path d="M134 120 Q140 115 145 120 Q140 125 134 122" fill="url(#gold)" opacity="0.3"/>
+  <!-- Medals -->
+  <circle cx="78" cy="140" r="3" fill="url(#gold)" opacity="0.4"/>
+  <circle cx="78" cy="150" r="2.5" fill="url(#gold)" opacity="0.3"/>
+  <!-- Stars -->
+  <circle cx="28" cy="30" r="1.5" fill="#d4a853" opacity="0.7"/>
+  <circle cx="172" cy="35" r="1" fill="#d4a853" opacity="0.5"/>
+</svg>

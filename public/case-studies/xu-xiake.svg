@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#2a1f4e"/>
+      <stop offset="100%" stop-color="#0f0a1f"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a853"/>
+      <stop offset="100%" stop-color="#b8860b"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
+  <!-- Head silhouette -->
+  <ellipse cx="100" cy="80" rx="32" ry="38" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Wide-brimmed traveler's hat (斗笠) -->
+  <ellipse cx="100" cy="52" rx="42" ry="10" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <path d="M72 52 Q100 35 128 52" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- Weathered eyes -->
+  <path d="M82 76 Q88 73 94 76" stroke="url(#gold)" stroke-width="1.5" fill="none"/>
+  <path d="M106 76 Q112 73 118 76" stroke="url(#gold)" stroke-width="1.5" fill="none"/>
+  <!-- Light beard -->
+  <path d="M92 98 Q100 108 108 98" stroke="url(#gold)" stroke-width="1" fill="none"/>
+  <!-- Travel robe with pack -->
+  <path d="M65 115 Q100 135 135 115 L142 200 L58 200 Z" fill="#1a1035" stroke="url(#gold)" stroke-width="1"/>
+  <!-- Walking staff -->
+  <line x1="45" y1="60" x2="40" y2="195" stroke="url(#gold)" stroke-width="2.5" opacity="0.5"/>
+  <!-- Backpack/travel bundle -->
+  <ellipse cx="140" cy="105" rx="12" ry="15" fill="#1a1035" stroke="url(#gold)" stroke-width="1.5" opacity="0.5"/>
+  <!-- Mountain silhouette accent -->
+  <path d="M155 170 L165 145 L175 160 L185 135 L195 155" stroke="url(#gold)" stroke-width="1" fill="none" opacity="0.3"/>
+  <!-- Stars -->
+  <circle cx="30" cy="28" r="1.5" fill="#d4a853" opacity="0.7"/>
+  <circle cx="170" cy="28" r="1" fill="#d4a853" opacity="0.6"/>
+  <circle cx="25" cy="170" r="1" fill="#d4a853" opacity="0.4"/>
+</svg>
