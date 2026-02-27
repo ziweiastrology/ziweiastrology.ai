@@ -61,6 +61,51 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: "ziweiastrology.ai",
+      url: SITE_URL,
+      logo: {
+        "@type": "ImageObject",
+        "@id": `${SITE_URL}/#logo`,
+        url: `${SITE_URL}/logo.jpg`,
+        width: 512,
+        height: 512,
+        caption: "ziweiastrology.ai",
+      },
+      image: { "@id": `${SITE_URL}/#logo` },
+      description:
+        "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling. Decode your reality. Optimize your future.",
+      sameAs: [],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: "ziweiastrology.ai",
+      description:
+        "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling.",
+      publisher: { "@id": `${SITE_URL}/#organization` },
+      inLanguage: "en-US",
+    },
+    {
+      "@type": "WebPage",
+      "@id": `${SITE_URL}/#webpage`,
+      url: SITE_URL,
+      name: "ziweiastrology.ai — Decode Your Reality",
+      isPartOf: { "@id": `${SITE_URL}/#website` },
+      about: { "@id": `${SITE_URL}/#organization` },
+      description:
+        "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling. Decode your reality. Optimize your future.",
+      inLanguage: "en-US",
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -68,6 +113,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className={`${inter.variable} ${cinzel.variable} ${merriweather.variable} font-sans antialiased`}
       >
