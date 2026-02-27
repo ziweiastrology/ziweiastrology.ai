@@ -6,11 +6,11 @@ import { caseReactionSchema } from "@/lib/validations";
 
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ caseId: string }> }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     const session = await auth();
-    const { caseId } = await params;
+    const { slug: caseId } = await params;
 
     const reactions = await prisma.caseReaction.groupBy({
       by: ["type"],
@@ -48,7 +48,7 @@ export async function GET(
 
 export async function POST(
   request: Request,
-  { params }: { params: Promise<{ caseId: string }> }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     const session = await auth();
@@ -73,7 +73,7 @@ export async function POST(
       );
     }
 
-    const { caseId } = await params;
+    const { slug: caseId } = await params;
     const { type } = parsed.data;
 
     const existing = await prisma.caseReaction.findUnique({

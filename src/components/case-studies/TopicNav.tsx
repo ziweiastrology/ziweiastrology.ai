@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Users, Send } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import {
   HealthIcon,
   CareerIcon,
@@ -78,22 +78,13 @@ export default function TopicNav() {
         {/* Divider */}
         <div className="mx-1 h-5 w-px shrink-0 bg-gold-700/20" />
 
-        {/* Community */}
-        <button
-          onClick={() => scrollTo("community-pulse")}
-          className="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-parchment-500 transition-all hover:text-parchment-300"
-        >
-          <Users className="h-4 w-4" />
-          <span className="whitespace-nowrap">Community</span>
-        </button>
-
-        {/* Submit */}
+        {/* Suggest — glowing golden CTA */}
         <button
           onClick={() => scrollTo("suggest-case")}
-          className="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-parchment-500 transition-all hover:text-parchment-300"
+          className="animate-glow-pulse flex shrink-0 items-center gap-1.5 rounded-full bg-gold-500/15 px-3.5 py-1.5 text-sm font-semibold text-gold-400 ring-1 ring-gold-500/40 transition-all hover:scale-105 hover:bg-gold-500/25 hover:text-gold-300 hover:ring-gold-400/60"
         >
-          <Send className="h-4 w-4" />
-          <span className="whitespace-nowrap">Submit</span>
+          <Sparkles className="h-4 w-4" />
+          <span className="whitespace-nowrap">Suggest</span>
         </button>
       </div>
     </div>

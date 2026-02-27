@@ -6,10 +6,10 @@ import { caseCommentSchema } from "@/lib/validations";
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ caseId: string }> }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { caseId } = await params;
+    const { slug: caseId } = await params;
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");
@@ -51,7 +51,7 @@ export async function GET(
 
 export async function POST(
   request: Request,
-  { params }: { params: Promise<{ caseId: string }> }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     const session = await auth();
@@ -76,7 +76,7 @@ export async function POST(
       );
     }
 
-    const { caseId } = await params;
+    const { slug: caseId } = await params;
     const { content, parentId } = parsed.data;
 
     // Validate parent exists and belongs to same case

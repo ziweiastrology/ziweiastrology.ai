@@ -5,7 +5,6 @@ import Image from "next/image";
 import TopicNav from "@/components/case-studies/TopicNav";
 import TopicSection from "@/components/case-studies/TopicSection";
 import PortraitSidebar from "@/components/case-studies/PortraitSidebar";
-import CommunityPollSection from "@/components/case-studies/CommunityPollSection";
 import CelebritySubmissionForm from "@/components/case-studies/CelebritySubmissionForm";
 import { TOPICS } from "@/components/case-studies/topicData";
 
@@ -112,30 +111,7 @@ export default function CaseStudiesPage() {
       <div className="flex items-center gap-4 py-4">
         <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gold-500/30 to-transparent" />
         <span className="text-xs text-gold-500/50" style={{ fontFamily: "var(--font-cinzel)" }}>
-          Community
-        </span>
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gold-500/30 to-transparent" />
-      </div>
-
-      {/* Community Pulse — Polls */}
-      <section id="community-pulse" className="py-8">
-        <h2
-          className="mb-2 text-2xl font-bold text-parchment-100"
-          style={{ fontFamily: "var(--font-cinzel)" }}
-        >
-          Community Pulse
-        </h2>
-        <p className="mb-6 text-sm text-parchment-500">
-          Vote on questions about Zi Wei Dou Shu and see what others think.
-        </p>
-        <CommunityPollSection />
-      </section>
-
-      {/* Ornamental divider */}
-      <div className="flex items-center gap-4 py-4">
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gold-500/30 to-transparent" />
-        <span className="text-xs text-gold-500/50" style={{ fontFamily: "var(--font-cinzel)" }}>
-          Submit
+          Suggest
         </span>
         <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gold-500/30 to-transparent" />
       </div>
@@ -149,8 +125,9 @@ export default function CaseStudiesPage() {
           Suggest a Case Study
         </h2>
         <p className="mb-6 text-sm text-parchment-500">
-          Know a historical or public figure whose destiny chart deserves analysis?
-          Submit their details and our team will investigate.
+          Submit a public figure&apos;s birth details. Our AI agent will analyze their
+          Zi Wei chart and publish a live case study — think of it as destiny
+          verification in real-time.
         </p>
         <div className="mx-auto max-w-2xl">
           <CelebritySubmissionForm />
