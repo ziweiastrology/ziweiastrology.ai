@@ -31,6 +31,10 @@ model User {
   subscription   Subscription?
   stripeCustomerId String?
 
+  credits          Int       @default(0)
+  lastDailyGrant   DateTime?
+  creditHistory    CreditTransaction[]
+
   caseReactions        CaseReaction[]
   caseComments         CaseComment[]
   casePollsCreated     CasePoll[]
@@ -95,6 +99,19 @@ enum Tier {
   SIFU
 }
 
+enum CreditActionType {
+  DAILY_GRANT
+  VERIFICATION_BONUS
+  SOCIAL_SHARE
+  RESOURCE_READ
+  COMMUNITY_POST
+  REFERRAL
+  PALACE_UNLOCK
+  CHATBOT_MESSAGE
+  FULL_READING
+  PURCHASE
+}
+
 enum ResourceType {
   PDF
   ARTICLE
@@ -139,6 +156,24 @@ enum CourseLevel {
   INTERMEDIATE
   ADVANCED
   MASTER
+}
+
+// ========================
+// Credits
+// ========================
+
+model CreditTransaction {
+  id        String           @id @default(cuid())
+  amount    Int
+  type      CreditActionType
+  metadata  Json?
+
+  userId    String
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([userId, type, createdAt])
 }
 
 // ========================

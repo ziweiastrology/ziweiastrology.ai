@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
+import { Lock } from "lucide-react";
 import { useMatrixStore } from "@/stores/useMatrixStore";
 import { PALACE_ICON_MAP } from "./palaceIcons";
 import type { PalaceDetail } from "@/types";
@@ -23,9 +24,16 @@ const STATE_BORDER_GLOW: Record<string, string> = {
 interface PalaceNodeProps {
   palace: PalaceDetail;
   index: number;
+  locked?: boolean;
+  onLockedClick?: (palaceId: string) => void;
 }
 
-export default function PalaceNode({ palace, index }: PalaceNodeProps) {
+export default function PalaceNode({
+  palace,
+  index,
+  locked = false,
+  onLockedClick,
+}: PalaceNodeProps) {
   const selectPalace = useMatrixStore((s) => s.selectPalace);
   const selectedPalaceId = useMatrixStore((s) => s.selectedPalaceId);
   const [pulseKey, setPulseKey] = useState(0);
@@ -37,9 +45,13 @@ export default function PalaceNode({ palace, index }: PalaceNodeProps) {
   const borderGlow = STATE_BORDER_GLOW[palace.state];
 
   const handleClick = useCallback(() => {
+    if (locked) {
+      onLockedClick?.(palace.id);
+      return;
+    }
     setPulseKey((k) => k + 1);
     selectPalace(palace.id);
-  }, [selectPalace, palace.id]);
+  }, [locked, onLockedClick, selectPalace, palace.id]);
 
   return (
     <motion.button
@@ -48,8 +60,10 @@ export default function PalaceNode({ palace, index }: PalaceNodeProps) {
       style={{
         gridColumn: palace.gridCol,
         gridRow: palace.gridRow,
-        background: "rgba(16, 8, 38, 0.88)",
-        boxShadow: isActive && borderGlow
+        background: locked
+          ? "rgba(16, 8, 38, 0.95)"
+          : "rgba(16, 8, 38, 0.88)",
+        boxShadow: isActive && borderGlow && !locked
           ? `inset 0 0 20px rgba(140,100,255,0.06), inset 0 1px 0 rgba(212,165,40,0.08), ${borderGlow}`
           : "inset 0 0 20px rgba(140,100,255,0.06), inset 0 1px 0 rgba(212,165,40,0.08)",
       }}
@@ -59,22 +73,24 @@ export default function PalaceNode({ palace, index }: PalaceNodeProps) {
       whileTap={{ scale: 0.97 }}
     >
       {/* Golden pulse on click */}
-      <motion.div
-        key={pulseKey}
-        className="absolute inset-0 pointer-events-none"
-        initial={{
-          opacity: 0.8,
-          boxShadow: "inset 0 0 40px rgba(255,215,0,0.6)",
-        }}
-        animate={{
-          opacity: 0,
-          boxShadow: "inset 0 0 80px rgba(255,215,0,0)",
-        }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-      />
+      {!locked && (
+        <motion.div
+          key={pulseKey}
+          className="absolute inset-0 pointer-events-none"
+          initial={{
+            opacity: 0.8,
+            boxShadow: "inset 0 0 40px rgba(255,215,0,0.6)",
+          }}
+          animate={{
+            opacity: 0,
+            boxShadow: "inset 0 0 80px rgba(255,215,0,0)",
+          }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        />
+      )}
 
       {/* Active state glow overlay */}
-      {isActive && glowColor && (
+      {isActive && glowColor && !locked && (
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -85,7 +101,7 @@ export default function PalaceNode({ palace, index }: PalaceNodeProps) {
       )}
 
       {/* Selected ring */}
-      {isSelected && (
+      {isSelected && !locked && (
         <motion.div
           className="absolute inset-0 pointer-events-none"
           initial={{ opacity: 0 }}
@@ -98,9 +114,19 @@ export default function PalaceNode({ palace, index }: PalaceNodeProps) {
         />
       )}
 
+      {/* Locked overlay */}
+      {locked && (
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-celestial-900/40 backdrop-blur-[2px]">
+          <Lock className="h-4 w-4 text-gold-500/50 mb-1" />
+          <span className="text-[8px] font-mono text-gold-500/40 tracking-wider">
+            1 CREDIT
+          </span>
+        </div>
+      )}
+
       {/* Icon — bright gold */}
       <div
-        className="relative z-10 transition-all duration-200 group-hover:drop-shadow-[0_0_6px_rgba(255,215,0,0.5)]"
+        className={`relative z-10 transition-all duration-200 group-hover:drop-shadow-[0_0_6px_rgba(255,215,0,0.5)] ${locked ? "opacity-30" : ""}`}
         style={{ color: "#FFD700" }}
       >
         {IconComponent && <IconComponent />}
@@ -108,11 +134,11 @@ export default function PalaceNode({ palace, index }: PalaceNodeProps) {
 
       {/* Chinese name — bright gold */}
       <span
-        className="relative z-10 text-sm md:text-base tracking-wider"
+        className={`relative z-10 text-sm md:text-base tracking-wider ${locked ? "opacity-30" : ""}`}
         style={{
           fontFamily: "var(--font-heading)",
           color: "#FFD700",
-          textShadow: "0 0 8px rgba(255,215,0,0.3)",
+          textShadow: locked ? "none" : "0 0 8px rgba(255,215,0,0.3)",
         }}
       >
         {palace.nameCn}
@@ -120,17 +146,17 @@ export default function PalaceNode({ palace, index }: PalaceNodeProps) {
 
       {/* English name — glowing white/cyan */}
       <span
-        className="relative z-10 text-[10px] md:text-xs uppercase tracking-widest"
+        className={`relative z-10 text-[10px] md:text-xs uppercase tracking-widest ${locked ? "opacity-30" : ""}`}
         style={{
           color: "rgba(200,180,255,0.8)",
-          textShadow: "0 0 6px rgba(160,120,255,0.2)",
+          textShadow: locked ? "none" : "0 0 6px rgba(160,120,255,0.2)",
         }}
       >
         {palace.name}
       </span>
 
       {/* State badge */}
-      {isActive && (
+      {isActive && !locked && (
         <span
           className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full z-10"
           style={{

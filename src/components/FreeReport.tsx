@@ -1,10 +1,15 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { motion } from "framer-motion";
+import { Coins, Unlock } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useMatrixStore } from "@/stores/useMatrixStore";
 import { useVerificationStore } from "@/stores/useVerificationStore";
 import { useDashboardStore } from "@/stores/useDashboardStore";
+import { useCredits, useSpendCredits } from "@/hooks/useCredits";
+import { CREDIT_COSTS } from "@/lib/credits";
+import InsufficientCreditsModal from "@/components/credits/InsufficientCreditsModal";
 import type { PalaceDetail } from "@/types";
 
 /* ─── Helpers ─── */
@@ -131,6 +136,12 @@ export default function FreeReport() {
   const deductions = useVerificationStore((s) => s.deductions);
   const responses = useVerificationStore((s) => s.responses);
 
+  const { data: session } = useSession();
+  const { data: creditsData } = useCredits();
+  const spendMutation = useSpendCredits();
+  const [unlockedIds, setUnlockedIds] = useState<Set<string>>(new Set());
+  const [showModal, setShowModal] = useState(false);
+
   const topPalaces = useMemo(() => getTopPalaces(palaces, 3), [palaces]);
   const statesPalaces = useMemo(() => getStatesPalaces(palaces), [palaces]);
   const narrative = useMemo(
@@ -141,6 +152,40 @@ export default function FreeReport() {
     const topIds = new Set(topPalaces.map((p) => p.id));
     return palaces.filter((p) => !topIds.has(p.id));
   }, [palaces, topPalaces]);
+
+  const handleUnlockPalace = useCallback(
+    async (palaceId: string) => {
+      const credits = creditsData?.credits ?? 0;
+      if (credits < CREDIT_COSTS.PALACE_UNLOCK) {
+        setShowModal(true);
+        return;
+      }
+      const result = await spendMutation.mutateAsync({
+        action: "PALACE_UNLOCK",
+        palaceId,
+      });
+      if (result.success) {
+        setUnlockedIds((prev) => new Set([...prev, palaceId]));
+      } else {
+        setShowModal(true);
+      }
+    },
+    [creditsData, spendMutation]
+  );
+
+  const handleUnlockAll = useCallback(async () => {
+    const credits = creditsData?.credits ?? 0;
+    if (credits < CREDIT_COSTS.FULL_READING) {
+      setShowModal(true);
+      return;
+    }
+    const result = await spendMutation.mutateAsync({ action: "FULL_READING" });
+    if (result.success) {
+      setUnlockedIds(new Set(remainingPalaces.map((p) => p.id)));
+    } else {
+      setShowModal(true);
+    }
+  }, [creditsData, spendMutation, remainingPalaces]);
 
   // Build user display info
   const displayName = birthDetails?.fullName || "Calibrant";
@@ -300,7 +345,7 @@ export default function FreeReport() {
           </p>
         </motion.div>
 
-        {/* ─── 1E: Blurred Teaser ─── */}
+        {/* ─── 1E: Remaining Palaces (unlock with credits) ─── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -308,61 +353,90 @@ export default function FreeReport() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="relative"
         >
-          <p className="text-[10px] font-mono tracking-[0.3em] uppercase text-gold-500/50 mb-4">
-            REMAINING PALACES
-          </p>
-          <div className="relative rounded-lg border border-gold-700/20 overflow-hidden">
-            {/* Blurred grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-5 blur-[6px] select-none pointer-events-none">
-              {remainingPalaces.map((palace) => (
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-[10px] font-mono tracking-[0.3em] uppercase text-gold-500/50">
+              REMAINING PALACES
+            </p>
+            {session && remainingPalaces.some((p) => !unlockedIds.has(p.id)) && (
+              <button
+                onClick={handleUnlockAll}
+                disabled={spendMutation.isPending}
+                className="flex items-center gap-1.5 rounded-md border border-gold-700/30 bg-gold-500/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gold-400 transition-all hover:border-gold-500/50 hover:bg-gold-500/20 disabled:opacity-50"
+              >
+                <Unlock className="h-3 w-3" />
+                Unlock All
+                <span className="flex items-center gap-0.5">
+                  <Coins className="h-2.5 w-2.5" />
+                  {CREDIT_COSTS.FULL_READING}
+                </span>
+              </button>
+            )}
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {remainingPalaces.map((palace) => {
+              const isRevealed = !session || unlockedIds.has(palace.id);
+              return (
                 <div
                   key={palace.id}
-                  className="p-3 rounded border border-gold-700/20 bg-celestial-900/40"
+                  className="relative rounded-lg border border-gold-700/20 bg-celestial-900/40 overflow-hidden"
                 >
-                  <p className="text-xs font-semibold text-gold-400">
-                    {palace.nameCn} {palace.name}
-                  </p>
-                  <p className="text-[10px] text-gold-500/40 mt-1">
-                    Energy: {palace.energy}%
-                  </p>
-                  <p className="text-[10px] text-parchment-400/50 mt-1">
-                    {palace.consciousness.slice(0, 60)}...
-                  </p>
+                  {isRevealed ? (
+                    <div className="p-4">
+                      <p className="text-xs font-semibold text-gold-400">
+                        {palace.nameCn} {palace.name}
+                      </p>
+                      <p className="text-[10px] text-gold-500/40 mt-1">
+                        Energy: {palace.energy}%
+                      </p>
+                      <p className="text-[10px] text-parchment-400/60 mt-2 leading-relaxed">
+                        {palace.consciousness}
+                      </p>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => handleUnlockPalace(palace.id)}
+                      disabled={spendMutation.isPending}
+                      className="w-full p-4 text-left group transition-all hover:bg-celestial-800/40 disabled:opacity-50"
+                    >
+                      <div className="blur-[4px] select-none pointer-events-none">
+                        <p className="text-xs font-semibold text-gold-400">
+                          {palace.nameCn} {palace.name}
+                        </p>
+                        <p className="text-[10px] text-gold-500/40 mt-1">
+                          Energy: {palace.energy}%
+                        </p>
+                        <p className="text-[10px] text-parchment-400/50 mt-1">
+                          {palace.consciousness.slice(0, 60)}...
+                        </p>
+                      </div>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-celestial-900/50">
+                        <svg
+                          viewBox="0 0 24 24"
+                          className="w-5 h-5 text-gold-500/50 mb-1 group-hover:text-gold-400 transition-colors"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={1.5}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
+                          />
+                        </svg>
+                        <span className="flex items-center gap-1 text-[10px] font-mono text-gold-500/60 group-hover:text-gold-400 transition-colors">
+                          <Coins className="h-2.5 w-2.5" />
+                          {CREDIT_COSTS.PALACE_UNLOCK} credit
+                        </span>
+                      </div>
+                    </button>
+                  )}
                 </div>
-              ))}
-            </div>
-
-            {/* Overlay */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-celestial-900/60 backdrop-blur-[2px]">
-              <div className="w-10 h-10 rounded-full border border-gold-500/30 flex items-center justify-center mb-3">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="w-5 h-5 text-gold-500/60"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
-                  />
-                </svg>
-              </div>
-              <p
-                className="text-sm font-semibold text-gold-300/80"
-                style={{ fontFamily: "var(--font-cinzel)" }}
-              >
-                {remainingPalaces.length} additional palaces analyzed
-              </p>
-              <p className="text-xs text-gold-500/50 mt-1 font-mono">
-                Full reading available below
-              </p>
-            </div>
+              );
+            })}
           </div>
         </motion.div>
 
-        {/* ─── 1F: Contact Collection CTA ─── */}
+        {/* ─── 1F: CTA ─── */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -381,21 +455,26 @@ export default function FreeReport() {
             Unlock Your Full Sovereign Reading
           </h3>
           <p className="text-sm text-parchment-400/70 max-w-md mx-auto mb-8">
-            Connect with your personal Life Strategist for a complete 12-palace analysis,
-            decade-by-decade forecast, and personalized action plan.
+            Use credits to unlock palaces and chat with ZiWei Sifu AI.
+            Credits refresh daily — or upgrade for more.
           </p>
 
-          {/* Coming Soon */}
-          <div className="mb-6 rounded-lg border border-quantum-cyan/20 bg-quantum-cyan/5 px-6 py-4">
-            <p className="text-sm font-medium text-quantum-cyan/80">
-              Coming Soon — AI Consultation
-            </p>
-            <p className="mt-1 text-xs text-parchment-500">
-              Our agentic AI life strategist is being calibrated. Stay tuned for
-              personalized 12-palace sovereign readings.
-            </p>
-          </div>
+          {session && (
+            <div className="mb-6 flex items-center justify-center gap-2 text-sm text-gold-300">
+              <Coins className="h-4 w-4" />
+              <span className="font-semibold">{creditsData?.credits ?? 0}</span>
+              <span className="text-parchment-500">credits remaining</span>
+            </div>
+          )}
         </motion.div>
+
+        {/* Insufficient Credits Modal */}
+        <InsufficientCreditsModal
+          open={showModal}
+          onClose={() => setShowModal(false)}
+          credits={creditsData?.credits ?? 0}
+          needed={CREDIT_COSTS.PALACE_UNLOCK}
+        />
       </div>
     </section>
   );

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UserMenu from "@/components/auth/UserMenu";
+import CreditBadge from "@/components/credits/CreditBadge";
 
 const NAV_LINKS = [
   { href: "/about", label: "About", icon: Info },
@@ -47,7 +48,7 @@ export default function Navbar() {
               alt="Ziwei Astrology"
               width={120}
               height={120}
-              className="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 rounded-full object-cover mix-blend-screen"
+              className="rounded-full mix-blend-screen"
             />
             <span
               className="hidden text-sm font-bold tracking-wider text-gold-400 sm:inline"
@@ -82,6 +83,7 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
+            {session && <CreditBadge />}
             {session ? (
               <UserMenu />
             ) : (

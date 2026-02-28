@@ -1,6 +1,12 @@
 "use client";
 
+import { useState, useCallback } from "react";
+import { Coins } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useDashboardStore } from "@/stores/useDashboardStore";
+import { useCredits, useSpendCredits } from "@/hooks/useCredits";
+import { CREDIT_COSTS } from "@/lib/credits";
+import InsufficientCreditsModal from "@/components/credits/InsufficientCreditsModal";
 import type { CopilotStatus } from "@/types";
 
 const STATUS_CONFIG: Record<CopilotStatus, { label: string; color: string; pulse: boolean }> = {
@@ -10,12 +16,71 @@ const STATUS_CONFIG: Record<CopilotStatus, { label: string; color: string; pulse
   idle: { label: "Standby", color: "bg-parchment-500", pulse: false },
 };
 
+interface ChatMessage {
+  role: "assistant" | "user";
+  content: string;
+}
+
 export default function AICopilotWidget() {
   const { copilotStatus, copilotOpen, toggleCopilot, isUnlocked } = useDashboardStore();
+  const { data: session } = useSession();
+  const { data: creditsData } = useCredits();
+  const spendMutation = useSpendCredits();
+
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      role: "assistant",
+      content:
+        "Quantum probability field calibrated. I'm monitoring your energy flows in real-time. Ask me anything about your chart.",
+    },
+  ]);
+  const [sending, setSending] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   if (!isUnlocked) return null;
 
   const config = STATUS_CONFIG[copilotStatus];
+  const credits = creditsData?.credits ?? 0;
+
+  const handleSend = useCallback(async () => {
+    const text = input.trim();
+    if (!text || sending) return;
+
+    // Check credits
+    if (credits < CREDIT_COSTS.CHATBOT_MESSAGE) {
+      setShowModal(true);
+      return;
+    }
+
+    // Spend credit first
+    const result = await spendMutation.mutateAsync({
+      action: "CHATBOT_MESSAGE",
+    });
+
+    if (!result.success) {
+      setShowModal(true);
+      return;
+    }
+
+    // Add user message
+    setMessages((prev) => [...prev, { role: "user", content: text }]);
+    setInput("");
+    setSending(true);
+
+    // Placeholder AI response (no actual API call yet)
+    setTimeout(() => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content:
+            "The ZiWei Sifu AI is being calibrated. Your question has been received and will be answered once our agentic system comes online. Thank you for your patience.",
+        },
+      ]);
+      setSending(false);
+    }, 1200);
+  }, [input, sending, credits, spendMutation]);
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
@@ -45,36 +110,60 @@ export default function AICopilotWidget() {
           </div>
 
           {/* Chat area */}
-          <div className="p-4 h-64 flex flex-col justify-end">
+          <div className="p-4 h-64 flex flex-col justify-end overflow-y-auto">
             <div className="space-y-3">
-              {/* System message */}
-              <div className="flex gap-2">
-                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gold-500/20 border border-gold-700 flex items-center justify-center">
-                  <svg className="w-3 h-3 text-gold-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
+              {messages.map((msg, i) => (
+                <div key={i} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : ""}`}>
+                  {msg.role === "assistant" && (
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gold-500/20 border border-gold-700 flex items-center justify-center">
+                      <svg className="w-3 h-3 text-gold-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                  )}
+                  <div
+                    className={`rounded-sm p-3 max-w-[85%] ${
+                      msg.role === "user"
+                        ? "bg-gold-500/10 border border-gold-700/20"
+                        : "bg-celestial-700/50"
+                    }`}
+                  >
+                    <p className="text-xs text-parchment-300 leading-relaxed">
+                      {msg.content}
+                    </p>
+                  </div>
                 </div>
-                <div className="bg-celestial-700/50 rounded-sm p-3 max-w-[85%]">
-                  <p className="text-xs text-parchment-300 leading-relaxed">
-                    Quantum probability field calibrated. I&apos;m monitoring your energy flows
-                    in real-time. Ask me anything about your chart.
-                  </p>
+              ))}
+              {sending && (
+                <div className="flex gap-2">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gold-500/20 border border-gold-700 flex items-center justify-center">
+                    <svg className="w-3 h-3 text-gold-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <div className="bg-celestial-700/50 rounded-sm p-3">
+                    <p className="text-xs text-parchment-500 animate-pulse">Analyzing...</p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
-          {/* Input area (preview — non-functional) */}
+          {/* Input area */}
           <div className="px-4 pb-4">
             <div className="flex items-center gap-2 bg-celestial-900/50 border border-gold-700/30 rounded-sm px-3 py-2">
               <input
                 type="text"
-                placeholder="Ask ZiWei Sifu..."
+                placeholder={session ? "Ask ZiWei Sifu..." : "Sign in to chat"}
                 className="flex-1 bg-transparent text-xs text-parchment-200 placeholder:text-parchment-600 outline-none"
-                disabled
+                disabled={!session || sending}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSend()}
               />
-              <span className="text-[10px] text-gold-700 tracking-wider uppercase">
-                Premium
+              <span className="flex items-center gap-1 text-[10px] text-gold-700 tracking-wider">
+                <Coins className="h-3 w-3" />
+                {CREDIT_COSTS.CHATBOT_MESSAGE}
               </span>
             </div>
           </div>
@@ -113,6 +202,14 @@ export default function AICopilotWidget() {
           )}
         </div>
       </button>
+
+      {/* Insufficient Credits Modal */}
+      <InsufficientCreditsModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        credits={credits}
+        needed={CREDIT_COSTS.CHATBOT_MESSAGE}
+      />
     </div>
   );
 }
