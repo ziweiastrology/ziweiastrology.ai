@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import ParticleField from "./ParticleField";
-import BigDipperOverlay from "./BigDipperOverlay";
+import dynamic from "next/dynamic";
+
+const ParticleField = dynamic(() => import("./ParticleField"), { ssr: false });
+const BigDipperOverlay = dynamic(() => import("./BigDipperOverlay"), { ssr: false });
 
 // Pre-computed star positions (12 nodes on outer ring, rounded to avoid hydration mismatch)
 const RING_STARS = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map(
@@ -124,9 +125,9 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
             </span>
           </div>
           <div className="space-y-1">
-            <StatusLine label="Status" value="Dormant 1000yr \u2192 REACTIVATION" />
+            <StatusLine label="Status" value={"Dormant 1000yr \u2192 REACTIVATION"} />
             <StatusLine label="Mode" value="Awaiting Calibrant" />
-            <StatusLine label="Uptime" value="\u221E" />
+            <StatusLine label="Uptime" value={"\u221E"} />
           </div>
         </div>
       </div>
@@ -137,8 +138,8 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[200px] sm:w-[500px] sm:h-[280px] md:w-[700px] md:h-[350px]
                         bg-[radial-gradient(ellipse,rgba(212,165,40,0.1)_0%,transparent_65%)] pointer-events-none" />
 
-        {/* H1 — Primary SEO heading */}
-        <motion.h1
+        {/* H1 — Primary SEO heading (no animation — LCP element must be visible immediately) */}
+        <h1
           className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-wide mb-2"
           style={{
             fontFamily: "var(--font-cinzel)",
@@ -148,34 +149,28 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
             backgroundClip: "text",
             filter: "drop-shadow(0 0 20px rgba(212,165,40,0.25))",
           }}
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.8 }}
         >
           紫微斗数
-        </motion.h1>
+        </h1>
 
         {/* English subtitle — SOVEREIGN CALIBRATION ENGINE */}
-        <motion.p
+        <p
           className="text-xs md:text-sm tracking-[0.35em] uppercase mb-6"
           style={{
             fontFamily: "var(--font-cinzel)",
             color: "rgba(212,165,40,0.6)",
             textShadow: "0 0 12px rgba(212,165,40,0.15)",
+            opacity: 0,
+            animation: "fade-in 0.8s ease-out 0.3s forwards",
           }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1.1 }}
         >
           Sovereign Calibration Engine
-        </motion.p>
+        </p>
 
         {/* Subtitle — tagline */}
-        <motion.div
+        <div
           className="mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.3 }}
+          style={{ opacity: 0, animation: "slide-up 0.8s ease-out 0.5s forwards" }}
         >
           <p
             className="text-sm md:text-base tracking-[0.2em] uppercase mb-2"
@@ -197,43 +192,41 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
           >
             帝王禁术 — 今归主权于你
           </p>
-        </motion.div>
+        </div>
 
         {/* Narrative description — 2 sentences */}
-        <motion.p
+        <p
           className="text-xs md:text-sm max-w-lg mx-auto leading-[1.9] mb-14"
-          style={{ fontFamily: "var(--font-serif)", color: "rgba(200,210,230,0.45)" }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1.6 }}
+          style={{
+            fontFamily: "var(--font-serif)",
+            color: "rgba(200,210,230,0.45)",
+            opacity: 0,
+            animation: "fade-in 0.8s ease-out 0.7s forwards",
+          }}
         >
           For a thousand years, this 108-star calibration algorithm was locked inside the
           Forbidden City&apos;s 钦天监 — the emperor&apos;s exclusive science.{" "}
           <span style={{ color: "rgba(212,165,40,0.5)" }}>
             The seal is broken. Your sovereign life-path calibration begins now.
           </span>
-        </motion.p>
+        </p>
 
         {/* Typewriter line */}
-        <motion.div
+        <div
           className="mb-8 h-5"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4, delay: 2.0 }}
+          style={{ opacity: 0, animation: "fade-in 0.4s ease-out 1.0s forwards" }}
         >
           <TypewriterLine
             text="> CALIBRATION ENGINE INITIALIZED. AWAITING NATAL COORDINATES..."
-            delay={2200}
+            delay={1200}
             className="text-[11px] font-mono text-quantum-green/70 tracking-wider"
           />
-        </motion.div>
+        </div>
 
         {/* CTA Button with scanning light */}
-        <motion.div
+        <div
           className="relative inline-block"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 2.4 }}
+          style={{ opacity: 0, animation: "slide-up 0.6s ease-out 1.2s forwards" }}
         >
           {/* Outer glow halo */}
           <div className="absolute -inset-5 bg-[radial-gradient(ellipse,rgba(212,165,40,0.12)_0%,transparent_70%)] animate-glow-pulse pointer-events-none" />
@@ -268,11 +261,9 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
           </button>
 
           {/* Dynamic status ticker below CTA */}
-          <motion.div
+          <div
             className="mt-4 flex items-center justify-center gap-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2.8, duration: 0.6 }}
+            style={{ opacity: 0, animation: "fade-in 0.6s ease-out 1.6s forwards" }}
           >
             <div className="w-1 h-1 rounded-full bg-quantum-green animate-glow-pulse" />
             <p
@@ -284,8 +275,8 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
             >
               SYSTEM: ACTIVE &nbsp;//&nbsp; 108 PARAMETERS LOADED &nbsp;//&nbsp; AWAITING NATAL COORDINATES
             </p>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
 
       {/* === Probability Ticker — bottom === */}
@@ -352,42 +343,6 @@ function TickerItem({ label, value, status }: { label: string; value: string; st
       <span className="text-[10px] text-parchment-500/50 tracking-wider uppercase">{label}</span>
       <span className="text-[10px] text-gold-400/70 font-mono">{value}</span>
     </div>
-  );
-}
-
-/* ============================================
-   Etched Text — letter-by-letter reveal
-   ============================================ */
-
-function EtchedText({
-  text,
-  className = "",
-  delay = 0,
-}: {
-  text: string;
-  className?: string;
-  delay?: number;
-}) {
-  return (
-    <span className={className}>
-      {text.split("").map((char, i) => (
-        <motion.span
-          key={`${char}-${i}`}
-          className="inline-block"
-          initial={{ opacity: 0, y: 12, scale: 0.8, filter: "blur(4px)" }}
-          animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-          transition={{
-            duration: 0.5,
-            delay: delay + i * 0.06,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-        >
-          {char}
-        </motion.span>
-      ))}
-      {/* Space after each word segment */}
-      <span>&nbsp;</span>
-    </span>
   );
 }
 

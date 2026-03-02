@@ -1,9 +1,22 @@
 import type { Metadata } from "next";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 export const metadata: Metadata = {
   title: "System Comparison — ziweiastrology.ai",
   description:
     "Benchmark Zi Wei Dou Shu against Western astrology, Ba Zi, I Ching, and Tarot across predictive timing, structural complexity, and analytical depth. Explore the ancient computational roots and performance comparison of global divination systems.",
+  keywords: [
+    "zi wei dou shu vs bazi",
+    "chinese astrology vs western astrology",
+    "bazi vs zi wei",
+    "four pillars of destiny",
+    "i ching vs astrology",
+    "tarot vs astrology",
+    "divination systems comparison",
+    "best astrology system",
+    "八字 vs 紫微斗数",
+    "chinese fortune telling methods",
+  ],
 };
 
 const jsonLd = {
@@ -63,6 +76,7 @@ export default function SystemComparisonLayout({
 }) {
   return (
     <>
+      <BreadcrumbJsonLd items={[{ name: "System Comparison", href: "/system-comparison" }]} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

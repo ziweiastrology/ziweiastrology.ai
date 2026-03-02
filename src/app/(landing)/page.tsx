@@ -1,12 +1,14 @@
 "use client";
 
 import { useCallback, useRef } from "react";
+import dynamic from "next/dynamic";
 import HeroSection from "@/components/HeroSection";
-import VerificationTimeline from "@/components/VerificationTimeline";
-import AICopilotWidget from "@/components/AICopilotWidget";
-import DestinyMatrix from "@/components/destiny-matrix/DestinyMatrix";
-import FreeReport from "@/components/FreeReport";
 import { useDashboardStore } from "@/stores/useDashboardStore";
+
+const VerificationTimeline = dynamic(() => import("@/components/VerificationTimeline"), { ssr: false });
+const DestinyMatrix = dynamic(() => import("@/components/destiny-matrix/DestinyMatrix"), { ssr: false });
+const FreeReport = dynamic(() => import("@/components/FreeReport"), { ssr: false });
+const AICopilotWidget = dynamic(() => import("@/components/AICopilotWidget"), { ssr: false });
 
 export default function Home() {
   const timelineRef = useRef<HTMLDivElement>(null);

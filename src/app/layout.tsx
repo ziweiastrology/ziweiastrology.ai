@@ -14,7 +14,7 @@ const inter = Inter({
 const cinzel = Cinzel_Decorative({
   variable: "--font-cinzel",
   subsets: ["latin"],
-  weight: ["400", "700", "900"],
+  weight: ["400", "700"],
   display: "swap",
 });
 
@@ -35,11 +35,31 @@ export const metadata: Metadata = {
   description:
     "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling. Decode your reality. Optimize your future.",
   keywords: [
+    // Tier 1 — Brand Core
     "zi wei dou shu",
-    "astrology",
-    "quantum probability",
-    "purple star astrology",
     "紫微斗数",
+    "purple star astrology",
+    "zwds",
+    "ziwei dou shu",
+    "ziwei astrology",
+    // Tier 2 — High-Volume Category
+    "chinese astrology",
+    "chinese horoscope",
+    "chinese zodiac",
+    "astrology AI",
+    "birth chart",
+    "destiny chart",
+    // Tier 3 — Feature / Transactional
+    "zi wei dou shu calculator",
+    "zi wei dou shu chart",
+    "zi wei dou shu reading",
+    "free astrology reading",
+    "chinese astrology chart",
+    "purple star astrology chart",
+    "astrology birth chart calculator",
+    // Tier 6 — Life Domain
+    "feng shui",
+    "quantum probability astrology",
   ],
   metadataBase: new URL(SITE_URL),
   openGraph: {
