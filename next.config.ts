@@ -13,7 +13,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   experimental: {
-    optimizePackageImports: ["framer-motion", "recharts", "lucide-react", "date-fns"],
+    optimizePackageImports: ["framer-motion", "recharts", "lucide-react", "date-fns", "@tsparticles/slim", "@tsparticles/react"],
   },
   async headers() {
     return [

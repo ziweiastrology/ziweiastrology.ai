@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useMatrixStore } from "@/stores/useMatrixStore";
 
 // Big Dipper (北斗七星) star positions — mapped to percentage coordinates
@@ -23,11 +22,25 @@ const DIPPER_LINES = [
   [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], // main ladle
   [0, 3], // cross-brace of the bowl
 ];
-const POLARIS_LINE = [0, -1]; // Dubhe -> Polaris (use -1 as Polaris marker)
 
 export default function BigDipperOverlay() {
   const selectedPalaceId = useMatrixStore((s) => s.selectedPalaceId);
   const isActivated = selectedPalaceId === "self";
+
+  // CSS animation properties based on activation state
+  const lineOpacity = isActivated ? "0.6, 1, 0.6" : "0.08, 0.15, 0.08";
+  const lineDur = isActivated ? "2s" : "6s";
+  const starOpacity = isActivated ? "0.7, 1, 0.7" : "0.2, 0.4, 0.2";
+  const starR = isActivated ? "0.3, 0.45, 0.3" : "0.15, 0.25, 0.15";
+  const starDur = isActivated ? "2s" : "5s";
+  const polarisOpacity = isActivated ? "0.8, 1, 0.8" : "0.3, 0.6, 0.3";
+  const polarisR = isActivated ? "0.4, 0.7, 0.4" : "0.25, 0.4, 0.25";
+  const polarisDur = isActivated ? "1.5s" : "4s";
+  const stroke = isActivated ? "#00D1FF" : "#d4a528";
+  const starFill = isActivated ? "#00D1FF" : "#FFD700";
+  const lineWidth = isActivated ? 0.15 : 0.06;
+  const lineFilter = isActivated ? "url(#intense-glow)" : undefined;
+  const starFilter = isActivated ? "url(#intense-glow)" : "url(#star-glow)";
 
   return (
     <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
@@ -55,9 +68,9 @@ export default function BigDipperOverlay() {
           </filter>
           {/* Energy flow gradient */}
           <linearGradient id="energy-line" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor={isActivated ? "#00D1FF" : "#d4a528"} stopOpacity="0" />
-            <stop offset="50%" stopColor={isActivated ? "#00D1FF" : "#d4a528"} stopOpacity={isActivated ? "0.8" : "0.15"} />
-            <stop offset="100%" stopColor={isActivated ? "#00D1FF" : "#d4a528"} stopOpacity="0" />
+            <stop offset="0%" stopColor={stroke} stopOpacity="0" />
+            <stop offset="50%" stopColor={stroke} stopOpacity={isActivated ? "0.8" : "0.15"} />
+            <stop offset="100%" stopColor={stroke} stopOpacity="0" />
           </linearGradient>
         </defs>
 
@@ -66,106 +79,111 @@ export default function BigDipperOverlay() {
           const starA = DIPPER_STARS[a];
           const starB = DIPPER_STARS[b];
           return (
-            <motion.line
+            <line
               key={`line-${i}`}
               x1={starA.x}
               y1={starA.y}
               x2={starB.x}
               y2={starB.y}
-              stroke={isActivated ? "#00D1FF" : "#d4a528"}
-              strokeWidth={isActivated ? 0.15 : 0.06}
-              filter={isActivated ? "url(#intense-glow)" : undefined}
-              animate={{
-                opacity: isActivated ? [0.6, 1, 0.6] : [0.08, 0.15, 0.08],
-              }}
-              transition={{
-                duration: isActivated ? 2 : 6,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: i * 0.3,
-              }}
-            />
+              stroke={stroke}
+              strokeWidth={lineWidth}
+              filter={lineFilter}
+            >
+              <animate
+                attributeName="opacity"
+                values={lineOpacity}
+                dur={lineDur}
+                repeatCount="indefinite"
+                begin={`${i * 0.3}s`}
+              />
+            </line>
           );
         })}
 
         {/* Dubhe -> Polaris guide line */}
-        <motion.line
+        <line
           x1={DIPPER_STARS[0].x}
           y1={DIPPER_STARS[0].y}
           x2={NORTH_STAR.x}
           y2={NORTH_STAR.y}
-          stroke={isActivated ? "#00D1FF" : "#d4a528"}
+          stroke={stroke}
           strokeWidth={isActivated ? 0.12 : 0.04}
           strokeDasharray="0.5 0.8"
-          filter={isActivated ? "url(#intense-glow)" : undefined}
-          animate={{
-            opacity: isActivated ? [0.5, 0.9, 0.5] : [0.05, 0.1, 0.05],
-          }}
-          transition={{
-            duration: isActivated ? 2.5 : 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
+          filter={lineFilter}
+        >
+          <animate
+            attributeName="opacity"
+            values={isActivated ? "0.5, 0.9, 0.5" : "0.05, 0.1, 0.05"}
+            dur={isActivated ? "2.5s" : "8s"}
+            repeatCount="indefinite"
+          />
+        </line>
 
         {/* Merak -> Polaris guide line (pointer stars) */}
-        <motion.line
+        <line
           x1={DIPPER_STARS[1].x}
           y1={DIPPER_STARS[1].y}
           x2={NORTH_STAR.x}
           y2={NORTH_STAR.y}
-          stroke={isActivated ? "#00D1FF" : "#d4a528"}
+          stroke={stroke}
           strokeWidth={isActivated ? 0.1 : 0.03}
           strokeDasharray="0.4 1"
-          filter={isActivated ? "url(#intense-glow)" : undefined}
-          animate={{
-            opacity: isActivated ? [0.4, 0.7, 0.4] : [0.03, 0.08, 0.03],
-          }}
-          transition={{
-            duration: isActivated ? 3 : 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
+          filter={lineFilter}
+        >
+          <animate
+            attributeName="opacity"
+            values={isActivated ? "0.4, 0.7, 0.4" : "0.03, 0.08, 0.03"}
+            dur={isActivated ? "3s" : "10s"}
+            repeatCount="indefinite"
+          />
+        </line>
 
         {/* Dipper star nodes */}
         {DIPPER_STARS.map((star, i) => (
-          <motion.circle
+          <circle
             key={star.id}
             cx={star.x}
             cy={star.y}
-            r={isActivated ? 0.35 : 0.2}
-            fill={isActivated ? "#00D1FF" : "#FFD700"}
-            filter={isActivated ? "url(#intense-glow)" : "url(#star-glow)"}
-            animate={{
-              opacity: isActivated ? [0.7, 1, 0.7] : [0.2, 0.4, 0.2],
-              r: isActivated ? [0.3, 0.45, 0.3] : [0.15, 0.25, 0.15],
-            }}
-            transition={{
-              duration: isActivated ? 2 : 5,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 0.2,
-            }}
-          />
+            fill={starFill}
+            filter={starFilter}
+          >
+            <animate
+              attributeName="opacity"
+              values={starOpacity}
+              dur={starDur}
+              repeatCount="indefinite"
+              begin={`${i * 0.2}s`}
+            />
+            <animate
+              attributeName="r"
+              values={starR}
+              dur={starDur}
+              repeatCount="indefinite"
+              begin={`${i * 0.2}s`}
+            />
+          </circle>
         ))}
 
         {/* North Star (紫微) — the brightest */}
-        <motion.circle
+        <circle
           cx={NORTH_STAR.x}
           cy={NORTH_STAR.y}
-          fill={isActivated ? "#00D1FF" : "#FFD700"}
+          fill={starFill}
           filter="url(#intense-glow)"
-          animate={{
-            r: isActivated ? [0.4, 0.7, 0.4] : [0.25, 0.4, 0.25],
-            opacity: isActivated ? [0.8, 1, 0.8] : [0.3, 0.6, 0.3],
-          }}
-          transition={{
-            duration: isActivated ? 1.5 : 4,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
+        >
+          <animate
+            attributeName="r"
+            values={polarisR}
+            dur={polarisDur}
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="opacity"
+            values={polarisOpacity}
+            dur={polarisDur}
+            repeatCount="indefinite"
+          />
+        </circle>
       </svg>
     </div>
   );

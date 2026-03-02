@@ -82,6 +82,18 @@ function TypewriterLine({
 }
 
 export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
+  // Defer heavy decorative components until browser is idle
+  const [deferred, setDeferred] = useState(false);
+
+  useEffect(() => {
+    if ("requestIdleCallback" in window) {
+      const id = requestIdleCallback(() => setDeferred(true));
+      return () => cancelIdleCallback(id);
+    }
+    const t = setTimeout(() => setDeferred(true), 3000);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background: Deep navy-to-black radial + ancient paper texture overlay */}
@@ -92,9 +104,9 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
             "radial-gradient(ellipse at 50% 40%, #0a0f2e 0%, #050a1a 35%, #020510 70%, #010208 100%)",
         }}
       />
-      {/* Constellation particle network */}
-      <ParticleField id="hero-particles" />
-      <BigDipperOverlay />
+      {/* Constellation particle network — deferred until browser idle */}
+      {deferred && <ParticleField id="hero-particles" />}
+      {deferred && <BigDipperOverlay />}
 
       {/* Ancient paper texture filter */}
       <div
