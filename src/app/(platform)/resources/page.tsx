@@ -4,7 +4,6 @@ import { useState } from "react";
 import PageHeader from "@/components/layout/PageHeader";
 import ResourceCard from "@/components/resources/ResourceCard";
 import ResourceFilter from "@/components/resources/ResourceFilter";
-import { useResources } from "@/hooks/useResources";
 
 // Placeholder data for when DB is not connected
 const PLACEHOLDER_RESOURCES = [
@@ -212,14 +211,8 @@ export default function ResourcesPage() {
   const [activeType, setActiveType] = useState("");
   const [activeCategory, setActiveCategory] = useState("");
 
-  const { data, isLoading, isError } = useResources({
-    type: activeType,
-    category: activeCategory,
-  });
-
-  // Use API data if available, otherwise use placeholders
-  const resources = data?.resources ?? PLACEHOLDER_RESOURCES;
-  const displayResources = resources.filter((r) => {
+  // TODO: Replace with useResources() hook when DB is connected
+  const displayResources = PLACEHOLDER_RESOURCES.filter((r) => {
     if (activeType && r.type !== activeType) return false;
     if (activeCategory && r.category !== activeCategory) return false;
     return true;
@@ -240,16 +233,7 @@ export default function ResourcesPage() {
       />
 
       <section className="pb-16">
-        {isLoading && !data ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-48 animate-pulse rounded-lg border border-gold-700/10 bg-celestial-800/20"
-              />
-            ))}
-          </div>
-        ) : displayResources.length === 0 ? (
+        {displayResources.length === 0 ? (
           <div className="py-16 text-center">
             <p className="text-parchment-500">
               No resources found matching your filters.
@@ -271,11 +255,6 @@ export default function ResourcesPage() {
           </div>
         )}
 
-        {isError && (
-          <p className="mt-4 text-center text-sm text-parchment-600">
-            Showing sample resources. Connect a database for live data.
-          </p>
-        )}
       </section>
     </div>
   );
