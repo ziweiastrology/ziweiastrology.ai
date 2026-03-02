@@ -15,7 +15,7 @@ const cinzel = Cinzel_Decorative({
   variable: "--font-cinzel",
   subsets: ["latin"],
   weight: ["400", "700"],
-  display: "swap",
+  display: "optional",
 });
 
 const merriweather = Merriweather({

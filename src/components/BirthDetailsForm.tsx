@@ -298,6 +298,7 @@ export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps)
               <select
                 value={form.birthYear}
                 onChange={(e) => update("birthYear", e.target.value)}
+                aria-label="Birth year"
                 style={darkSelectStyle}
               >
                 <option value="">Year</option>
@@ -309,6 +310,7 @@ export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps)
               <select
                 value={form.birthMonth}
                 onChange={(e) => update("birthMonth", e.target.value)}
+                aria-label="Birth month"
                 style={darkSelectStyle}
               >
                 <option value="">Month</option>
@@ -320,6 +322,7 @@ export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps)
               <select
                 value={form.birthDay}
                 onChange={(e) => update("birthDay", e.target.value)}
+                aria-label="Birth day"
                 style={darkSelectStyle}
               >
                 <option value="">Day</option>
@@ -343,6 +346,7 @@ export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps)
                   update("birthHour", e.target.value);
                   if (e.target.value && form.birthMinute === "") update("birthMinute", "00");
                 }}
+                aria-label="Birth hour"
                 style={darkSelectStyle}
               >
                 <option value="">Hour</option>
@@ -355,6 +359,7 @@ export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps)
               <select
                 value={form.birthMinute}
                 onChange={(e) => update("birthMinute", e.target.value)}
+                aria-label="Birth minute"
                 style={darkSelectStyle}
               >
                 <option value="">Minute</option>
