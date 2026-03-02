@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { EARN_RULES, isEarnAction, getStartOfDay } from "@/lib/credits";
-import type { CreditActionType } from "@prisma/client";
+import { EARN_RULES, isEarnAction, getStartOfDay, type EarnAction } from "@/lib/credits";
 
 export async function POST(request: Request) {
   try {
@@ -33,7 +32,7 @@ export async function POST(request: Request) {
       const todayCount = await prisma.creditTransaction.count({
         where: {
           userId,
-          type: action as CreditActionType,
+          type: action as EarnAction,
           createdAt: { gte: startOfDay },
         },
       });
@@ -65,7 +64,7 @@ export async function POST(request: Request) {
         data: {
           userId,
           amount: rule.amount,
-          type: action as CreditActionType,
+          type: action as EarnAction,
           metadata: metadata ? (metadata as Record<string, string>) : undefined,
         },
       });

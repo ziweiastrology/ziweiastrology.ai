@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { CREDIT_COSTS, isSpendAction } from "@/lib/credits";
-import type { CreditActionType } from "@prisma/client";
+import { CREDIT_COSTS, isSpendAction, type SpendAction } from "@/lib/credits";
 
 export async function POST(request: Request) {
   try {
@@ -47,7 +46,7 @@ export async function POST(request: Request) {
         data: {
           userId,
           amount: -cost,
-          type: action as CreditActionType,
+          type: action as SpendAction,
           metadata: palaceId ? { palaceId } : undefined,
         },
       });
