@@ -22,6 +22,12 @@ export const metadata: Metadata = {
     description:
       "Free Purple Star Astrology chart calculator. Ancient 紫微斗数 wisdom meets quantum probability modeling.",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Zi Wei Dou Shu AI — Decode Your Reality",
+    description:
+      "Free Purple Star Astrology chart calculator. Ancient 紫微斗数 wisdom meets quantum probability modeling.",
+  },
 };
 
 export default function LandingLayout({

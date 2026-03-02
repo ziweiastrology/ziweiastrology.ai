@@ -17,6 +17,18 @@ export const metadata: Metadata = {
     "astrology research papers",
     "zi wei dou shu interpretation",
   ],
+  openGraph: {
+    title: "Resources — Zi Wei Dou Shu Articles & Research",
+    description:
+      "Articles, research papers, datasets, and case studies on Zi Wei Dou Shu.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Resources — Zi Wei Dou Shu Articles & Research",
+    description:
+      "Articles, research papers, datasets, and case studies on Zi Wei Dou Shu.",
+  },
 };
 
 export default function ResourcesLayout({

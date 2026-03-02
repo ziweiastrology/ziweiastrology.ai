@@ -12,6 +12,13 @@ const RESOURCE_TITLES: Record<string, string> = {
   "san-he-three-harmonies-framework": "The San He (Three Harmonies) Framework Explained",
   "annual-transformer-activation-patterns": "Annual Transformer Activation Patterns (1924-2024)",
   "ming-palace-archetypes-visual-taxonomy": "Ming Palace Archetypes: A Visual Taxonomy",
+  "wealth-palace-bull-bear-markets": "Wealth Palace in Bull & Bear Markets",
+  "lucky-stars-vs-sha-stars-statistical-impact": "Lucky Stars vs Sha Stars: Statistical Impact",
+  "palace-flyover-technique-derived-charts": "Palace Flyover Technique & Derived Charts",
+  "health-palace-red-flags-case-collection": "Health Palace Red Flags: Case Collection",
+  "da-xian-major-limits-navigation": "Da Xian (Major Limits) Navigation",
+  "zi-wei-dou-shu-tang-court-origins": "Zi Wei Dou Shu: Tang Court Origins",
+  "complete-star-brightness-table": "Complete Star Brightness Table",
 };
 
 export async function generateMetadata({
@@ -25,9 +32,18 @@ export async function generateMetadata({
   return {
     title,
     description: `${title} — Zi Wei Dou Shu resource on ziweiastrology.ai`,
+    keywords: ["zi wei dou shu", "purple star astrology", title.toLowerCase(), "紫微斗数"],
     openGraph: {
       title,
       description: `${title} — Zi Wei Dou Shu resource on ziweiastrology.ai`,
+    },
+    twitter: {
+      card: "summary_large_image" as const,
+      title,
+      description: `${title} — Zi Wei Dou Shu resource on ziweiastrology.ai`,
+    },
+    alternates: {
+      canonical: `https://ziweiastrology.ai/resources/${slug}`,
     },
   };
 }

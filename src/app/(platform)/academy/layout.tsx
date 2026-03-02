@@ -17,6 +17,18 @@ export const metadata: Metadata = {
     "紫微斗数课程",
     "astrology masterclass",
   ],
+  openGraph: {
+    title: "Academy — Learn Zi Wei Dou Shu from Beginner to Sifu",
+    description:
+      "Learn Zi Wei Dou Shu from beginner to Sifu master level. Structured courses, certification path.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Academy — Learn Zi Wei Dou Shu from Beginner to Sifu",
+    description:
+      "Learn Zi Wei Dou Shu from beginner to Sifu master level. Structured courses, certification path.",
+  },
 };
 
 export default function AcademyLayout({

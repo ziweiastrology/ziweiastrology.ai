@@ -16,6 +16,7 @@ ziweiastrology.ai is the world's first platform to apply quantum probability fra
 - ${SITE_URL}/community — Community hub: feed, pillar data, analysis, study groups
 - ${SITE_URL}/academy — Courses and structured learning paths
 - ${SITE_URL}/academy/courses — Course catalog
+- ${SITE_URL}/blog — Blog: history, star analysis, celebrity case studies, mathematics of ZWDS
 
 ## Key Topics
 - Zi Wei Dou Shu (Purple Star Astrology / 紫微斗数)
@@ -25,6 +26,13 @@ ziweiastrology.ai is the world's first platform to apply quantum probability fra
 - Four-layer temporal analysis (Decade, Annual, Monthly, Daily luck periods)
 - Quantum probability modeling applied to astrology
 - Comparative divination system analysis
+- Blog articles on history, star mechanics, celebrity analyses, and mathematics
+
+## Membership Tiers
+- Free — Basic chart generation and limited resources
+- Basic — Full resource library and community access
+- Premium — Advanced analysis tools and academy courses
+- Sifu — Master-level certification path and all features
 
 ## Technical
 - Built with Next.js, React, TypeScript

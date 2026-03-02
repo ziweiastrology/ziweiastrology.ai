@@ -17,6 +17,18 @@ export const metadata: Metadata = {
     "八字 vs 紫微斗数",
     "chinese fortune telling methods",
   ],
+  openGraph: {
+    title: "System Comparison — Zi Wei Dou Shu vs Global Divination Systems",
+    description:
+      "Benchmark Zi Wei Dou Shu against Western astrology, Ba Zi, I Ching, and Tarot across predictive timing, structural complexity, and analytical depth.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "System Comparison — Zi Wei Dou Shu vs Global Divination Systems",
+    description:
+      "Benchmark Zi Wei Dou Shu against Western astrology, Ba Zi, I Ching, and Tarot across predictive timing and analytical depth.",
+  },
 };
 
 const jsonLd = {

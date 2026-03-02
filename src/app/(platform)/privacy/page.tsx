@@ -1,13 +1,26 @@
+import type { Metadata } from "next";
 import PageHeader from "@/components/layout/PageHeader";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Privacy Policy — ziweiastrology.ai",
   description: "How ziweiastrology.ai collects, uses, and protects your personal data.",
+  openGraph: {
+    title: "Privacy Policy — ziweiastrology.ai",
+    description: "How ziweiastrology.ai collects, uses, and protects your personal data.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Privacy Policy — ziweiastrology.ai",
+    description: "How ziweiastrology.ai collects, uses, and protects your personal data.",
+  },
 };
 
 export default function PrivacyPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 pb-16 sm:px-6">
+      <BreadcrumbJsonLd items={[{ name: "Privacy Policy", href: "/privacy" }]} />
       <PageHeader
         title="Privacy Policy"
         subtitle="Last updated: February 2026"

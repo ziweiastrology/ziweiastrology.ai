@@ -24,6 +24,12 @@ export const metadata: Metadata = {
     description:
       "The stars speak through emperors, poets, and visionaries. See Zi Wei Dou Shu decode their destinies.",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Case Studies — Real Zi Wei Dou Shu Celebrity Analyses",
+    description:
+      "The stars speak through emperors, poets, and visionaries. See Zi Wei Dou Shu decode their destinies.",
+  },
 };
 
 export default function CaseStudiesLayout({

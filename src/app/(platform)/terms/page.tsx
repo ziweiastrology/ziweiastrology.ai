@@ -1,13 +1,26 @@
+import type { Metadata } from "next";
 import PageHeader from "@/components/layout/PageHeader";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Terms of Service — ziweiastrology.ai",
   description: "Terms and conditions for using ziweiastrology.ai.",
+  openGraph: {
+    title: "Terms of Service — ziweiastrology.ai",
+    description: "Terms and conditions for using ziweiastrology.ai.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Terms of Service — ziweiastrology.ai",
+    description: "Terms and conditions for using ziweiastrology.ai.",
+  },
 };
 
 export default function TermsPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 pb-16 sm:px-6">
+      <BreadcrumbJsonLd items={[{ name: "Terms of Service", href: "/terms" }]} />
       <PageHeader
         title="Terms of Service"
         subtitle="Last updated: February 2026"

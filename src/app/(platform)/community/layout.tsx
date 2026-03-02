@@ -17,6 +17,18 @@ export const metadata: Metadata = {
     "learn astrology with others",
     "zi wei dou shu practitioners",
   ],
+  openGraph: {
+    title: "Community — Zi Wei Dou Shu Practitioners Forum",
+    description:
+      "Join the Zi Wei Dou Shu community. Discuss, analyze, and learn with fellow practitioners.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Community — Zi Wei Dou Shu Practitioners Forum",
+    description:
+      "Join the Zi Wei Dou Shu community. Discuss, analyze, and learn with fellow practitioners.",
+  },
 };
 
 export default function CommunityLayout({
