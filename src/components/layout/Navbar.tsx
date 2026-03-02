@@ -15,6 +15,7 @@ import {
   LogIn,
   FlaskConical,
   Scale,
+  PenLine,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UserMenu from "@/components/auth/UserMenu";
@@ -25,6 +26,7 @@ const NAV_LINKS = [
   { href: "/resources", label: "Resources", icon: BookOpen },
   { href: "/case-studies", label: "Case Studies", icon: FlaskConical },
   { href: "/system-comparison", label: "Compare", icon: Scale },
+  { href: "/blog", label: "Blog", icon: PenLine },
   { href: "/community", label: "Community", icon: Users },
   { href: "/academy", label: "Academy", icon: GraduationCap },
 ];
