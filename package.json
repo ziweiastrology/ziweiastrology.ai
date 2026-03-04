@@ -7,7 +7,10 @@
     "postinstall": "prisma generate",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "reddit:list": "tsx scripts/reddit-post.ts --list",
+    "reddit:dry-run": "tsx scripts/reddit-post.ts --dry-run",
+    "reddit:post": "tsx scripts/reddit-post.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
@@ -21,6 +24,7 @@
     "date-fns": "^4.1.0",
     "framer-motion": "^12.34.3",
     "gray-matter": "^4.0.3",
+    "iztro": "^2.5.8",
     "lucide-react": "^0.575.0",
     "next": "16.1.6",
     "next-auth": "^5.0.0-beta.30",
@@ -53,6 +57,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

@@ -3,9 +3,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useVerificationStore } from "@/stores/useVerificationStore";
+import { useMatrixStore } from "@/stores/useMatrixStore";
 import { getDeductionsForAge } from "@/data/verificationTemplates";
 import type { Deduction, DeductionResponse } from "@/data/verificationTemplates";
 import BirthDetailsForm from "@/components/BirthDetailsForm";
+import { computeChart } from "@/lib/zwds";
 import type { BirthDetails } from "@/types";
 
 type Phase = "form" | "transitioning" | "verification" | "unlocking" | "done";
@@ -26,17 +28,30 @@ export default function VerificationTimeline({
     respondToDeduction,
   } = useVerificationStore();
 
+  const { setPalaces, setChartMeta, setComputed } = useMatrixStore();
+
   const [phase, setPhase] = useState<Phase>("form");
 
   const handleCalibrate = useCallback(
-    (details: BirthDetails) => {
+    async (details: BirthDetails) => {
       setBirthDetails(details);
+
+      // Compute real ZWDS chart
+      try {
+        const { palaces, meta } = await computeChart(details);
+        setPalaces(palaces);
+        setChartMeta(meta);
+        setComputed(true);
+      } catch (err) {
+        console.error("[ZWDS] computation failed, using defaults:", err);
+      }
+
       const matched = getDeductionsForAge(details.birthYear);
       setDeductions(matched);
       setPhase("transitioning");
       setTimeout(() => setPhase("verification"), 600);
     },
-    [setBirthDetails, setDeductions]
+    [setBirthDetails, setDeductions, setPalaces, setChartMeta, setComputed]
   );
 
   const handleRespond = useCallback(

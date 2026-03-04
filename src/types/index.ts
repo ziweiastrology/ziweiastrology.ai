@@ -78,6 +78,17 @@ export interface PalaceDetail {
   state: "lu" | "quan" | "ke" | "ji" | "neutral";
 }
 
+// === Chart Meta Types ===
+
+export interface ChartMeta {
+  soulPalace: string;
+  bodyPalace: string;
+  fiveElementsClass: string;
+  lunarDate: string;
+  zodiac: string;
+  sign: string;
+}
+
 // === Co-pilot Types ===
 
 export type CopilotStatus = "active" | "monitoring" | "analyzing" | "idle";
