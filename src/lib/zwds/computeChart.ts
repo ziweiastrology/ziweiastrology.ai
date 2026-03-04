@@ -15,7 +15,8 @@ export async function computeChart(
   const { astro } = await import("iztro");
 
   // Resolve True Solar Time hour (fall back to raw birth hour)
-  const hour = parseInt(details.trueSolarHour ?? details.birthHour, 10);
+  const rawHour = parseInt(details.trueSolarHour ?? details.birthHour, 10);
+  const hour = Number.isFinite(rawHour) ? rawHour : 12; // fallback noon
   const timeIndex = tstToTimeIndex(hour);
 
   // Format solar date for iztro: "YYYY-M-D"

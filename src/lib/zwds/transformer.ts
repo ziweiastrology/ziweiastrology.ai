@@ -92,12 +92,14 @@ function maxEnergy(majorStars: { brightness?: string }[]): number {
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export function transformAstrolabe(astrolabe: any): PalaceDetail[] {
-  const palaces: any[] = astrolabe.palaces ?? [];
+  const palaces: any[] = astrolabe?.palaces ?? [];
 
   return palaces
     .map((palace: any) => {
+      if (!palace?.name) return null;
+
       const id = PALACE_NAME_MAP[palace.name];
-      if (!id) return null; // skip unknown palaces (e.g., 来因)
+      if (!id) return null; // skip unknown palaces
 
       const ui = PALACE_UI_META[id];
       const [gridCol, gridRow] = BRANCH_GRID[palace.earthlyBranch] ?? [1, 1];
@@ -106,10 +108,12 @@ export function transformAstrolabe(astrolabe: any): PalaceDetail[] {
       const minors: any[] = palace.minorStars ?? [];
       const allStars = [...majors, ...minors];
 
+      const energy = maxEnergy(majors);
+
       return {
         id,
         name: ui?.name ?? id,
-        nameCn: ui?.nameCn ?? palace.name,
+        nameCn: ui?.nameCn ?? String(palace.name),
         subtitle: ui?.subtitle ?? "",
         icon: ui?.icon ?? id,
         consciousness: ui?.consciousness ?? "",
@@ -117,7 +121,7 @@ export function transformAstrolabe(astrolabe: any): PalaceDetail[] {
         gridCol,
         gridRow,
         stars: [...majors.map(formatStar), ...minors.map(formatStar)],
-        energy: maxEnergy(majors),
+        energy: Number.isFinite(energy) ? energy : 50,
         state: dominantState(allStars),
       } satisfies PalaceDetail;
     })

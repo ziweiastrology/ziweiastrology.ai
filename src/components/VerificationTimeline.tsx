@@ -33,18 +33,19 @@ export default function VerificationTimeline({
   const [phase, setPhase] = useState<Phase>("form");
 
   const handleCalibrate = useCallback(
-    async (details: BirthDetails) => {
+    (details: BirthDetails) => {
       setBirthDetails(details);
 
-      // Compute real ZWDS chart
-      try {
-        const { palaces, meta } = await computeChart(details);
-        setPalaces(palaces);
-        setChartMeta(meta);
-        setComputed(true);
-      } catch (err) {
-        console.error("[ZWDS] computation failed, using defaults:", err);
-      }
+      // Fire ZWDS computation independently (non-blocking)
+      computeChart(details)
+        .then(({ palaces, meta }) => {
+          setPalaces(palaces);
+          setChartMeta(meta);
+          setComputed(true);
+        })
+        .catch((err) => {
+          console.error("[ZWDS] computation failed, using defaults:", err);
+        });
 
       const matched = getDeductionsForAge(details.birthYear);
       setDeductions(matched);
