@@ -62,6 +62,11 @@ export const metadata: Metadata = {
     "quantum probability astrology",
   ],
   metadataBase: new URL(SITE_URL),
+  alternates: {
+    types: {
+      "application/rss+xml": "/blog/feed.xml",
+    },
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -70,14 +75,12 @@ export const metadata: Metadata = {
     title: "ziweiastrology.ai — Decode Your Reality",
     description:
       "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling. Decode your reality. Optimize your future.",
-    images: [{ url: "/logo.jpg", width: 512, height: 512, alt: "ziweiastrology.ai" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "ziweiastrology.ai — Decode Your Reality",
     description:
       "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling.",
-    images: ["/logo.jpg"],
   },
 };
 
