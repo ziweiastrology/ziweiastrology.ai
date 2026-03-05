@@ -6,6 +6,7 @@ import { transformAstrolabe } from "./transformer";
 export interface ChartResult {
   palaces: PalaceDetail[];
   meta: ChartMeta;
+  astrolabe: any; // raw iztro object for event prediction
 }
 
 export async function computeChart(
@@ -14,8 +15,8 @@ export async function computeChart(
   // Dynamic import keeps iztro out of the initial JS bundle
   const { astro } = await import("iztro");
 
-  // Resolve True Solar Time hour (fall back to raw birth hour)
-  const rawHour = parseInt(details.trueSolarHour ?? details.birthHour, 10);
+  // Use raw birth hour for ZWDS calculation (飞星派 uses local clock time, not TST)
+  const rawHour = parseInt(details.birthHour, 10);
   const hour = Number.isFinite(rawHour) ? rawHour : 12; // fallback noon
   const timeIndex = tstToTimeIndex(hour);
 
@@ -41,7 +42,8 @@ export async function computeChart(
     lunarDate: astrolabe.lunarDate,
     zodiac: astrolabe.zodiac,
     sign: astrolabe.sign,
+    birthYear: year,
   };
 
-  return { palaces, meta };
+  return { palaces, meta, astrolabe };
 }

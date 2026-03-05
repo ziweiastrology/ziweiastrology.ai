@@ -2,18 +2,22 @@
 
 import { useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
+import { useSession } from "next-auth/react";
 import HeroSection from "@/components/HeroSection";
 import { useDashboardStore } from "@/stores/useDashboardStore";
 
 const VerificationTimeline = dynamic(() => import("@/components/VerificationTimeline"), { ssr: false });
+const SnapshotBanner = dynamic(() => import("@/components/SnapshotBanner"), { ssr: false });
 const DestinyMatrix = dynamic(() => import("@/components/destiny-matrix/DestinyMatrix"), { ssr: false });
-const FreeReport = dynamic(() => import("@/components/FreeReport"), { ssr: false });
+const FreeReport = dynamic(() => import("@/components/free-report"), { ssr: false });
 const AICopilotWidget = dynamic(() => import("@/components/AICopilotWidget"), { ssr: false });
+const AuthModal = dynamic(() => import("@/components/AuthModal"), { ssr: false });
 
 export default function Home() {
   const timelineRef = useRef<HTMLDivElement>(null);
   const matrixRef = useRef<HTMLDivElement>(null);
   const setUnlocked = useDashboardStore((s) => s.setUnlocked);
+  const { data: session } = useSession();
 
   const handleBeginCalibration = useCallback(() => {
     timelineRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -24,7 +28,16 @@ export default function Home() {
     setTimeout(() => {
       matrixRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 500);
-  }, [setUnlocked]);
+
+    // Grant verification bonus for authenticated users
+    if (session?.user?.id) {
+      fetch("/api/credits/earn", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "VERIFICATION_BONUS" }),
+      }).catch(() => {}); // silently ignore errors
+    }
+  }, [setUnlocked, session]);
 
   return (
     <main className="min-h-screen">
@@ -35,6 +48,9 @@ export default function Home() {
       <div ref={timelineRef}>
         <VerificationTimeline onAllVerified={handleAllVerified} />
       </div>
+
+      {/* Snapshot Banner (anonymous users only) */}
+      <SnapshotBanner />
 
       {/* Destiny Matrix (dark, gated by isUnlocked) */}
       <div ref={matrixRef}>
@@ -144,6 +160,9 @@ export default function Home() {
           </p>
         </div>
       </footer>
+
+      {/* Auth Modal (registration gate) */}
+      <AuthModal />
 
       {/* Floating AI Co-pilot (gated) */}
       <AICopilotWidget />

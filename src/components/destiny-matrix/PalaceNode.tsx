@@ -7,6 +7,20 @@ import { useMatrixStore } from "@/stores/useMatrixStore";
 import { PALACE_ICON_MAP } from "./palaceIcons";
 import type { PalaceDetail } from "@/types";
 
+// 流年: next year whose earthly branch matches the palace position
+const BRANCH_INDEX: Record<string, number> = {
+  "子": 0, "丑": 1, "寅": 2, "卯": 3, "辰": 4, "巳": 5,
+  "午": 6, "未": 7, "申": 8, "酉": 9, "戌": 10, "亥": 11,
+};
+
+function nextLiuNianYear(branch: string): number {
+  const now = new Date().getFullYear();
+  const target = BRANCH_INDEX[branch] ?? 0;
+  const current = ((now - 4) % 12 + 12) % 12;
+  const diff = ((target - current) % 12 + 12) % 12;
+  return diff === 0 ? now : now + diff;
+}
+
 const STATE_COLORS: Record<string, string> = {
   lu: "rgba(68,255,136,0.4)",
   quan: "rgba(255,215,0,0.45)",
@@ -36,7 +50,11 @@ export default function PalaceNode({
 }: PalaceNodeProps) {
   const selectPalace = useMatrixStore((s) => s.selectPalace);
   const selectedPalaceId = useMatrixStore((s) => s.selectedPalaceId);
+  const birthYear = useMatrixStore((s) => s.chartMeta?.birthYear);
   const [pulseKey, setPulseKey] = useState(0);
+
+  // Current age for 小限 highlighting
+  const currentAge = birthYear ? new Date().getFullYear() - birthYear : null;
 
   const IconComponent = PALACE_ICON_MAP[palace.icon];
   const isSelected = selectedPalaceId === palace.id;
@@ -155,6 +173,55 @@ export default function PalaceNode({
         {palace.name}
       </span>
 
+      {/* Stars list (18 飞星派 primary stars) */}
+      {!locked && palace.stars.length > 0 && (
+        <div className="relative z-10 flex flex-wrap justify-center gap-x-1.5 gap-y-0 mt-0.5 max-w-[95%] overflow-hidden">
+          {palace.stars.map((star) => {
+            // Parse mutagen marker: "紫微 Zi Wei[禄]" → { name: "紫微", mutagen: "禄" }
+            const mutagenMatch = star.match(/\[(禄|权|科|忌)\]$/);
+            const displayName = star.replace(/\[.+\]$/, "").split(/\s/)[0]; // Chinese name only
+            const mutagen = mutagenMatch?.[1];
+            const mutagenColor = mutagen === "禄" ? "#44ff88" : mutagen === "权" ? "#ffd700" : mutagen === "科" ? "#44c8ff" : mutagen === "忌" ? "#ff4444" : undefined;
+            return (
+              <span
+                key={star}
+                className="text-[7px] md:text-[9px] leading-tight text-parchment-300/80"
+              >
+                {displayName}
+                {mutagen && (
+                  <span style={{ color: mutagenColor, fontSize: "0.6em" }}>
+                    {mutagen}
+                  </span>
+                )}
+              </span>
+            );
+          })}
+        </div>
+      )}
+
+      {/* 大限 (Major Decade) + 天干地支 + 流年 year — top-left */}
+      {!locked && palace.decadeRange && (
+        <div className="absolute top-1 left-1.5 z-10 flex flex-col items-start">
+          <span
+            className="text-[8px] md:text-[10px] font-mono tracking-wide"
+            style={{ color: "rgba(200,180,255,0.7)" }}
+          >
+            {palace.decadeRange[0]}–{palace.decadeRange[1]}
+          </span>
+          <span
+            className="text-[7px] md:text-[8px] font-mono"
+            style={{ color: "rgba(200,180,255,0.45)" }}
+          >
+            {palace.decadeHeavenlyStem && palace.earthlyBranch
+              ? `${palace.decadeHeavenlyStem}${palace.earthlyBranch}`
+              : ""}
+            {palace.earthlyBranch
+              ? ` (${nextLiuNianYear(palace.earthlyBranch)})`
+              : ""}
+          </span>
+        </div>
+      )}
+
       {/* State badge */}
       {isActive && !locked && (
         <span
@@ -164,6 +231,33 @@ export default function PalaceNode({
             boxShadow: `0 0 6px ${glowColor}`,
           }}
         />
+      )}
+
+      {/* 小限 ages — bottom */}
+      {!locked && palace.xiaoXianAges && palace.xiaoXianAges.length > 0 && (
+        <div className="absolute bottom-1 left-0 right-0 z-10 flex flex-wrap justify-center gap-x-1 px-1">
+          {palace.xiaoXianAges.filter((a) => a <= 100).map((age) => {
+            const isClosest = currentAge !== null &&
+              Math.abs(age - currentAge) <= 1;
+            return (
+              <span
+                key={age}
+                className="text-[6px] md:text-[7px] font-mono"
+                style={{
+                  color: isClosest
+                    ? "#FFD700"
+                    : "rgba(200,180,255,0.35)",
+                  textShadow: isClosest
+                    ? "0 0 6px rgba(255,215,0,0.5)"
+                    : "none",
+                  fontWeight: isClosest ? 700 : 400,
+                }}
+              >
+                {age}
+              </span>
+            );
+          })}
+        </div>
       )}
 
       {/* Hover glow edge */}

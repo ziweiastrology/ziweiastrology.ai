@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Unlock, Coins } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useMatrixStore } from "@/stores/useMatrixStore";
+import { useDashboardStore } from "@/stores/useDashboardStore";
 import { useCredits, useSpendCredits } from "@/hooks/useCredits";
 import { FREE_PALACE_COUNT, CREDIT_COSTS } from "@/lib/credits";
 import PalaceNode from "./PalaceNode";
@@ -42,16 +43,21 @@ export default function DestinyMatrix() {
 
   const isPalaceLocked = useCallback(
     (palaceId: string) => {
-      if (!session) return false; // not logged in = show all (no credit system)
-      if (freePalaceIds.has(palaceId)) return false;
-      if (unlockedIds.has(palaceId)) return false;
-      return true;
+      if (!session) return !freePalaceIds.has(palaceId); // anonymous: only top 3 free
+      return false; // registered: ALL palaces free
     },
-    [session, freePalaceIds, unlockedIds]
+    [session, freePalaceIds]
   );
+
+  const openAuthModal = useDashboardStore((s) => s.openAuthModal);
+  const snapshotExpired = useDashboardStore((s) => s.snapshotExpired);
 
   const handleLockedClick = useCallback(
     async (palaceId: string) => {
+      if (!session) {
+        openAuthModal("palace");
+        return;
+      }
       const credits = creditsData?.credits ?? 0;
       if (credits < CREDIT_COSTS.PALACE_UNLOCK) {
         setModalNeeded(CREDIT_COSTS.PALACE_UNLOCK);
@@ -72,7 +78,7 @@ export default function DestinyMatrix() {
         setShowModal(true);
       }
     },
-    [creditsData, spendMutation, selectPalace]
+    [session, creditsData, spendMutation, selectPalace, openAuthModal]
   );
 
   const lockedCount = useMemo(
@@ -105,6 +111,9 @@ export default function DestinyMatrix() {
       className="relative py-20 md:py-28 overflow-hidden"
       style={{
         background: "#08041a",
+        filter: snapshotExpired && !session ? "blur(8px) saturate(0.3)" : "none",
+        pointerEvents: snapshotExpired && !session ? "none" : "auto",
+        transition: "filter 0.5s ease",
       }}
     >
       {/* Constellation particle network */}
@@ -353,6 +362,7 @@ export default function DestinyMatrix() {
             </button>
           ) : (
             <button
+              onClick={() => openAuthModal("full_reading")}
               className="inline-flex items-center gap-3 px-10 py-4 text-sm font-semibold uppercase tracking-[0.25em]
                          text-celestial-900 rounded-sm cursor-pointer
                          transition-all duration-400 ease-out

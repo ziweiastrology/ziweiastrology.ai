@@ -92,7 +92,7 @@ export default function InsufficientCreditsModal({
               Or Upgrade
             </p>
             <Link
-              href="/payments"
+              href="/pricing"
               onClick={onClose}
               className="flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold text-celestial-900 transition-all hover:shadow-[0_0_20px_rgba(212,165,40,0.3)]"
               style={{

@@ -76,6 +76,10 @@ export interface PalaceDetail {
   stars: string[];
   energy: number;
   state: "lu" | "quan" | "ke" | "ji" | "neutral";
+  decadeRange?: [number, number]; // 大限 age range, e.g. [43, 52]
+  decadeHeavenlyStem?: string;    // 大限 天干, e.g. "丁"
+  earthlyBranch?: string;         // 地支, e.g. "巳"
+  xiaoXianAges?: number[];        // 小限 ages, e.g. [2,14,26,38,50,62,74,86,98,110]
 }
 
 // === Chart Meta Types ===
@@ -87,6 +91,7 @@ export interface ChartMeta {
   lunarDate: string;
   zodiac: string;
   sign: string;
+  birthYear: number;
 }
 
 // === Co-pilot Types ===

@@ -7,10 +7,21 @@ import { useMatrixStore } from "@/stores/useMatrixStore";
 import { getDeductionsForAge } from "@/data/verificationTemplates";
 import type { Deduction, DeductionResponse } from "@/data/verificationTemplates";
 import BirthDetailsForm from "@/components/BirthDetailsForm";
-import { computeChart } from "@/lib/zwds";
 import type { BirthDetails } from "@/types";
 
-type Phase = "form" | "transitioning" | "verification" | "unlocking" | "done";
+async function fireZWDSComputation(details: BirthDetails) {
+  const { computeChart, generateChartDeductions } = await import("@/lib/zwds");
+  const { palaces, meta, astrolabe } = await computeChart(details);
+
+  const store = useMatrixStore.getState();
+  store.setPalaces(palaces);
+  store.setChartMeta(meta);
+  store.setComputed(true);
+
+  return { astrolabe, birthYear: parseInt(details.birthYear, 10) };
+}
+
+type Phase = "form" | "transitioning" | "verification" | "recalibrating" | "unlocking" | "birth_time_warning" | "done";
 
 interface VerificationTimelineProps {
   onAllVerified?: () => void;
@@ -23,36 +34,45 @@ export default function VerificationTimeline({
     deductions,
     responses,
     allResponded,
+    currentBatch,
     setBirthDetails,
     setDeductions,
     respondToDeduction,
+    setAstrolabeRef,
+    getVerificationResult,
   } = useVerificationStore();
-
-  const { setPalaces, setChartMeta, setComputed } = useMatrixStore();
 
   const [phase, setPhase] = useState<Phase>("form");
 
   const handleCalibrate = useCallback(
-    (details: BirthDetails) => {
+    async (details: BirthDetails) => {
       setBirthDetails(details);
-
-      // Fire ZWDS computation independently (non-blocking)
-      computeChart(details)
-        .then(({ palaces, meta }) => {
-          setPalaces(palaces);
-          setChartMeta(meta);
-          setComputed(true);
-        })
-        .catch((err) => {
-          console.error("[ZWDS] computation failed, using defaults:", err);
-        });
-
-      const matched = getDeductionsForAge(details.birthYear);
-      setDeductions(matched);
       setPhase("transitioning");
+
+      try {
+        const { astrolabe, birthYear } = await fireZWDSComputation(details);
+        setAstrolabeRef(astrolabe, birthYear);
+
+        // Generate dynamic deductions from chart
+        const { generateChartDeductions } = await import("@/lib/zwds");
+        const dynamicDeductions = generateChartDeductions(astrolabe, birthYear, { batch: 0 });
+
+        if (dynamicDeductions.length > 0) {
+          setDeductions(dynamicDeductions);
+        } else {
+          // Fallback to static deductions if no events found
+          const matched = getDeductionsForAge(details.birthYear);
+          setDeductions(matched);
+        }
+      } catch (err) {
+        console.error("[ZWDS] computation failed, using static deductions:", err);
+        const matched = getDeductionsForAge(details.birthYear);
+        setDeductions(matched);
+      }
+
       setTimeout(() => setPhase("verification"), 600);
     },
-    [setBirthDetails, setDeductions, setPalaces, setChartMeta, setComputed]
+    [setBirthDetails, setDeductions, setAstrolabeRef]
   );
 
   const handleRespond = useCallback(
@@ -62,13 +82,57 @@ export default function VerificationTimeline({
     [respondToDeduction]
   );
 
-  // Watch for all responded -> trigger unlock
+  const handleReturnToForm = useCallback(() => {
+    useVerificationStore.getState().reset();
+    setPhase("form");
+  }, []);
+
+  // Watch for all responded -> determine next action
   useEffect(() => {
-    if (allResponded && phase === "verification") {
+    if (!allResponded || phase !== "verification") return;
+
+    const result = getVerificationResult();
+
+    if (result === "verified") {
       const t = setTimeout(() => setPhase("unlocking"), 600);
       return () => clearTimeout(t);
     }
-  }, [allResponded, phase]);
+
+    if (result === "needs_retry") {
+      // Transition to recalibrating, then load batch 2
+      const t = setTimeout(async () => {
+        setPhase("recalibrating");
+
+        const { astrolabeRef, birthYearNum } = useVerificationStore.getState();
+        if (astrolabeRef && birthYearNum) {
+          try {
+            const { generateChartDeductions } = await import("@/lib/zwds");
+            const batch2 = generateChartDeductions(astrolabeRef, birthYearNum, { batch: 1 });
+
+            if (batch2.length > 0) {
+              useVerificationStore.getState().requestNextBatch();
+              setDeductions(batch2);
+            } else {
+              // No more events — show warning
+              setPhase("birth_time_warning");
+              return;
+            }
+          } catch {
+            setPhase("birth_time_warning");
+            return;
+          }
+        }
+
+        setTimeout(() => setPhase("verification"), 1200);
+      }, 600);
+      return () => clearTimeout(t);
+    }
+
+    if (result === "birth_time_suspect") {
+      const t = setTimeout(() => setPhase("birth_time_warning"), 600);
+      return () => clearTimeout(t);
+    }
+  }, [allResponded, phase, getVerificationResult, setDeductions]);
 
   // Unlock phase -> callback after animation, then dismiss overlay
   useEffect(() => {
@@ -83,6 +147,7 @@ export default function VerificationTimeline({
 
   return (
     <section
+      id="calibration"
       className="relative py-28 px-6 overflow-hidden"
       style={{
         background: "linear-gradient(180deg, #050a1a 0%, #0a0e1a 100%)",
@@ -93,7 +158,7 @@ export default function VerificationTimeline({
         <div className="inline-flex items-center gap-3 mb-4">
           <div className="h-px w-10 bg-gradient-to-r from-transparent to-gold-600/40" />
           <span className="text-[10px] text-gold-400 tracking-[0.4em] uppercase font-mono">
-            Phase One
+            {phase === "recalibrating" ? "Recalibrating" : "Phase One"}
           </span>
           <div className="h-px w-10 bg-gradient-to-l from-transparent to-gold-600/40" />
         </div>
@@ -111,7 +176,11 @@ export default function VerificationTimeline({
         >
           {phase === "form" || phase === "transitioning"
             ? "Calibration Input"
-            : "Verification Phase"}
+            : phase === "recalibrating"
+              ? "Recalibrating Engine"
+              : phase === "birth_time_warning"
+                ? "Calibration Alert"
+                : "Verification Phase"}
         </h2>
         <p
           className="text-base max-w-xl mx-auto leading-relaxed"
@@ -122,7 +191,13 @@ export default function VerificationTimeline({
         >
           {phase === "form" || phase === "transitioning"
             ? "Enter your celestial coordinates to initialize the quantum probability engine."
-            : "The engine has generated deductions from your natal coordinates. Respond to calibrate."}
+            : phase === "recalibrating"
+              ? "Adjusting parameters and generating secondary verification set..."
+              : phase === "birth_time_warning"
+                ? "The engine could not verify your birth time with sufficient confidence."
+                : currentBatch === 1
+                  ? "Secondary verification set generated. Please respond to recalibrate."
+                  : "The engine has generated deductions from your natal coordinates. Respond to calibrate."}
         </p>
       </div>
 
@@ -141,11 +216,36 @@ export default function VerificationTimeline({
         )}
       </AnimatePresence>
 
+      {/* Phase: Recalibrating spinner */}
+      <AnimatePresence>
+        {phase === "recalibrating" && (
+          <motion.div
+            key="recalibrating"
+            className="relative z-10 max-w-2xl mx-auto text-center py-20"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <div className="inline-flex items-center gap-3">
+              <motion.div
+                className="w-5 h-5 rounded-full border-2 border-gold-500/60 border-t-transparent"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              />
+              <span className="text-sm font-mono text-gold-400/70 tracking-wider">
+                RECALIBRATING QUANTUM FIELD...
+              </span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Phase: Verification -- Deduction Cards */}
       <AnimatePresence>
         {phase === "verification" && (
           <motion.div
-            key="verification"
+            key={`verification-${currentBatch}`}
             className="relative z-10 max-w-2xl mx-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -161,6 +261,69 @@ export default function VerificationTimeline({
                   onRespond={handleRespond}
                 />
               ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Phase: Birth Time Warning */}
+      <AnimatePresence>
+        {phase === "birth_time_warning" && (
+          <motion.div
+            key="warning"
+            className="relative z-10 max-w-xl mx-auto text-center py-16"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div
+              className="rounded-sm border border-quantum-red/30 p-8"
+              style={{ background: "rgba(180,40,40,0.06)" }}
+            >
+              <div className="text-3xl mb-4">⚠</div>
+              <h3
+                className="text-lg font-bold text-parchment-100 mb-3"
+                style={{ fontFamily: "var(--font-cinzel)" }}
+              >
+                Birth Time Verification Inconclusive
+              </h3>
+              <p
+                className="text-sm leading-relaxed mb-6"
+                style={{
+                  fontFamily: "var(--font-merriweather)",
+                  color: "rgba(200,210,230,0.5)",
+                }}
+              >
+                The engine could not verify your chart with sufficient confidence. Please check
+                the following and try again:
+              </p>
+              <ul
+                className="text-sm text-left list-disc list-inside mb-6 space-y-2"
+                style={{
+                  fontFamily: "var(--font-merriweather)",
+                  color: "rgba(200,210,230,0.6)",
+                }}
+              >
+                <li>Is your <strong className="text-parchment-200">birth hour (时辰)</strong> correct? Even one hour off shifts your entire chart.</li>
+                <li>Is your <strong className="text-parchment-200">birth location</strong> correct? Longitude affects the true solar time calculation.</li>
+              </ul>
+              <button
+                onClick={handleReturnToForm}
+                className="inline-flex items-center gap-2 px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em]
+                           text-celestial-900 rounded-sm cursor-pointer
+                           transition-all duration-300
+                           hover:shadow-[0_0_25px_rgba(212,165,40,0.35)]
+                           active:scale-95"
+                style={{
+                  background: "linear-gradient(135deg, #b8891e, #d4a528, #e6be4a)",
+                }}
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Return to Calibration
+              </button>
             </div>
           </motion.div>
         )}
@@ -463,7 +626,7 @@ function UnlockOverlay() {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.8 }}
         >
-          [SYS] DESTINY MATRIX CALIBRATED \u2713
+          [SYS] DESTINY MATRIX CALIBRATED ✓
         </motion.p>
       </motion.div>
     </motion.div>

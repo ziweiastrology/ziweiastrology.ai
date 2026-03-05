@@ -38,6 +38,12 @@ export function isEarnAction(action: string): action is EarnAction {
   return action in EARN_RULES;
 }
 
+// Tier comparison helper
+const TIER_LEVELS: Record<string, number> = { FREE: 0, BASIC: 1, PREMIUM: 2, SIFU: 3 };
+export function hasMinTier(userTier: string | undefined, required: string): boolean {
+  return (TIER_LEVELS[userTier ?? "FREE"] ?? 0) >= (TIER_LEVELS[required] ?? 0);
+}
+
 export function getStartOfDay(date: Date = new Date()): Date {
   const d = new Date(date);
   d.setHours(0, 0, 0, 0);

@@ -1,15 +1,25 @@
 import { create } from "zustand";
 import type { DashboardData, CopilotStatus } from "@/types";
 
+type AuthModalReason = "palace" | "copilot" | "full_reading" | null;
+
 interface DashboardState {
   isUnlocked: boolean;
   data: DashboardData;
   copilotStatus: CopilotStatus;
   copilotOpen: boolean;
+  copilotInitialPrompt: string | null;
+  authModalOpen: boolean;
+  authModalReason: AuthModalReason;
+  snapshotExpired: boolean;
   setUnlocked: (unlocked: boolean) => void;
   setData: (data: DashboardData) => void;
   setCopilotStatus: (status: CopilotStatus) => void;
   toggleCopilot: () => void;
+  setCopilotInitialPrompt: (prompt: string | null) => void;
+  openAuthModal: (reason: AuthModalReason) => void;
+  closeAuthModal: () => void;
+  setSnapshotExpired: (expired: boolean) => void;
 }
 
 const PLACEHOLDER_DATA: DashboardData = {
@@ -34,9 +44,17 @@ export const useDashboardStore = create<DashboardState>((set) => ({
   data: PLACEHOLDER_DATA,
   copilotStatus: "active",
   copilotOpen: false,
+  copilotInitialPrompt: null,
+  authModalOpen: false,
+  authModalReason: null,
+  snapshotExpired: false,
 
   setUnlocked: (unlocked) => set({ isUnlocked: unlocked }),
   setData: (data) => set({ data }),
   setCopilotStatus: (status) => set({ copilotStatus: status }),
   toggleCopilot: () => set((state) => ({ copilotOpen: !state.copilotOpen })),
+  setCopilotInitialPrompt: (prompt) => set({ copilotInitialPrompt: prompt }),
+  openAuthModal: (reason) => set({ authModalOpen: true, authModalReason: reason }),
+  closeAuthModal: () => set({ authModalOpen: false, authModalReason: null }),
+  setSnapshotExpired: (expired) => set({ snapshotExpired: expired }),
 }));

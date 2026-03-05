@@ -24,9 +24,10 @@ const PALACE_NAME_MAP: Record<string, string> = {
 // Earthly branch → fixed grid position  (col, row)
 // ---------------------------------------------------------------------------
 const BRANCH_GRID: Record<string, [number, number]> = {
-  "寅": [4, 4], "卯": [4, 3], "辰": [4, 2], "巳": [4, 1],
-  "午": [3, 1], "未": [2, 1], "申": [1, 1], "酉": [1, 2],
-  "戌": [1, 3], "亥": [1, 4], "子": [2, 4], "丑": [3, 4],
+  "巳": [1, 1], "午": [2, 1], "未": [3, 1], "申": [4, 1],
+  "辰": [1, 2],                               "酉": [4, 2],
+  "卯": [1, 3],                               "戌": [4, 3],
+  "寅": [1, 4], "丑": [2, 4], "子": [3, 4], "亥": [4, 4],
 };
 
 // ---------------------------------------------------------------------------
@@ -44,13 +45,19 @@ const MUTAGEN_STATE: Record<string, PalaceDetail["state"]> = {
 };
 
 // ---------------------------------------------------------------------------
+// 飞星派 18 primary stars: 14 major + 4 key auxiliary
+// ---------------------------------------------------------------------------
+const KEY_MINOR_STARS = new Set(["文昌", "文曲", "左辅", "右弼"]);
+
+// ---------------------------------------------------------------------------
 // Star Chinese name → English display name (from our star catalog)
 // ---------------------------------------------------------------------------
 const STAR_CN_TO_EN = new Map(STARS.map((s) => [s.nameCn, s.nameEn]));
 
-function formatStar(star: { name: string }): string {
+function formatStar(star: { name: string; mutagen?: string }): string {
   const en = STAR_CN_TO_EN.get(star.name);
-  return en ? `${star.name} ${en}` : star.name;
+  const base = en ? `${star.name} ${en}` : star.name;
+  return star.mutagen ? `${base}[${star.mutagen}]` : base;
 }
 
 // ---------------------------------------------------------------------------
@@ -110,6 +117,14 @@ export function transformAstrolabe(astrolabe: any): PalaceDetail[] {
 
       const energy = maxEnergy(majors);
 
+      // 大限 (Major Decade) data
+      const decadal = palace.decadal;
+      const decadeRange: [number, number] | undefined =
+        decadal?.range?.[0] != null && decadal?.range?.[1] != null
+          ? [decadal.range[0], decadal.range[1]]
+          : undefined;
+      const decadeHeavenlyStem: string | undefined = decadal?.heavenlyStem;
+
       return {
         id,
         name: ui?.name ?? id,
@@ -120,10 +135,17 @@ export function transformAstrolabe(astrolabe: any): PalaceDetail[] {
         fable: ui?.fable ?? "",
         gridCol,
         gridRow,
-        stars: [...majors.map(formatStar), ...minors.map(formatStar)],
+        stars: [
+          ...majors.map(formatStar),
+          ...minors.filter((s: any) => KEY_MINOR_STARS.has(s.name)).map(formatStar),
+        ],
         energy: Number.isFinite(energy) ? energy : 50,
         state: dominantState(allStars),
+        decadeRange,
+        decadeHeavenlyStem,
+        earthlyBranch: palace.earthlyBranch,
+        xiaoXianAges: Array.isArray(palace.ages) ? palace.ages : undefined,
       } satisfies PalaceDetail;
     })
-    .filter((p: any): p is PalaceDetail => p !== null);
+    .filter(Boolean) as PalaceDetail[];
 }

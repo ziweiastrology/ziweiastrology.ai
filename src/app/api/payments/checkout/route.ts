@@ -47,8 +47,8 @@ export async function POST(request: Request) {
       customer: customerId,
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${process.env.AUTH_URL}/community?success=true`,
-      cancel_url: `${process.env.AUTH_URL}/community?canceled=true`,
+      success_url: `${process.env.AUTH_URL}/pricing?success=true`,
+      cancel_url: `${process.env.AUTH_URL}/pricing?canceled=true`,
       metadata: { userId: session.user.id, tier },
     });
 

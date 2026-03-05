@@ -111,7 +111,7 @@ export default function SettingsPage() {
               Upgrade your membership to unlock community features, courses, and
               more.
             </p>
-            <Button onClick={() => router.push("/academy")}>
+            <Button onClick={() => router.push("/pricing")}>
               View Plans
             </Button>
           </div>

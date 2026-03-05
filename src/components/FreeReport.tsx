@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Coins, Unlock } from "lucide-react";
+import { Coins, Unlock, Briefcase, Heart, Home, Sparkles } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useMatrixStore } from "@/stores/useMatrixStore";
 import { useVerificationStore } from "@/stores/useVerificationStore";
@@ -127,6 +127,151 @@ function StateBadge({ state }: { state: "lu" | "quan" | "ke" | "ji" }) {
   );
 }
 
+/* ─── 流年 Topic Config ─── */
+
+const LIU_NIAN_TOPICS = [
+  {
+    key: "career",
+    labelCn: "事业",
+    labelEn: "Career",
+    icon: Briefcase,
+    primaryPalace: "career",
+    primaryPalaceCn: "官禄宫",
+    supportPalace: "wealth",
+    prompt: "Analyze my 2026 career 流年 based on my 官禄宫 and 财帛宫. What opportunities and challenges do you see?",
+  },
+  {
+    key: "love",
+    labelCn: "感情",
+    labelEn: "Love",
+    icon: Heart,
+    primaryPalace: "spouse",
+    primaryPalaceCn: "夫妻宫",
+    supportPalace: "fortune",
+    prompt: "Analyze my 2026 love and relationships 流年 based on my 夫妻宫 and 福德宫. What does the year hold?",
+  },
+  {
+    key: "family",
+    labelCn: "家庭",
+    labelEn: "Family",
+    icon: Home,
+    primaryPalace: "property",
+    primaryPalaceCn: "田宅宫",
+    supportPalace: "parents",
+    prompt: "Analyze my 2026 family 流年 based on my 田宅宫 and 父母宫. What changes or focus areas do you see?",
+  },
+];
+
+function buildTeaser(palace: PalaceDetail | undefined, palaceCn: string): string {
+  if (!palace) return `Your ${palaceCn} holds unique patterns worth exploring...`;
+  const mainStar = palace.stars[0] || "key stars";
+  const stateLabel =
+    palace.state === "lu" ? "[禄]" : palace.state === "quan" ? "[权]" : palace.state === "ke" ? "[科]" : palace.state === "ji" ? "[忌]" : "";
+  const narratives: Record<string, string> = {
+    lu: `a year of abundance and new opportunities flowing in`,
+    quan: `a year of authority and decisive power emerging`,
+    ke: `a year of recognition and scholarly achievement`,
+    ji: `a year requiring careful navigation and transformation`,
+    neutral: `shifting energies that shape your path forward`,
+  };
+  return `Your ${palaceCn} holds ${mainStar}${stateLabel} — ${narratives[palace.state] || narratives.neutral}...`;
+}
+
+function LiuNianTeaser({ palaces }: { palaces: PalaceDetail[] }) {
+  const { toggleCopilot, setCopilotInitialPrompt, openAuthModal } = useDashboardStore();
+  const { data: session } = useSession();
+
+  const handleCardClick = useCallback(
+    (prompt: string) => {
+      if (!session) {
+        openAuthModal("copilot");
+        return;
+      }
+      setCopilotInitialPrompt(prompt);
+      toggleCopilot();
+    },
+    [session, setCopilotInitialPrompt, toggleCopilot, openAuthModal]
+  );
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.7, delay: 0.15 }}
+      className="relative p-8 sm:p-10 rounded-xl border border-gold-500/20 bg-gradient-to-b from-celestial-900/90 to-celestial-800/50"
+    >
+      {/* Decorative top glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-quantum-cyan/50 to-transparent" />
+
+      <div className="text-center mb-6">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-mono tracking-[0.3em] uppercase text-quantum-cyan/80 border border-quantum-cyan/30 rounded-sm mb-3">
+          <Sparkles className="h-3 w-3" />
+          2026 流年 FORECAST
+        </span>
+        <h3
+          className="text-xl sm:text-2xl font-bold gold-gradient-text"
+          style={{ fontFamily: "var(--font-cinzel)" }}
+        >
+          Your Year Ahead
+        </h3>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        {LIU_NIAN_TOPICS.map((topic) => {
+          const palace = palaces.find((p) => p.id === topic.primaryPalace);
+          const teaser = buildTeaser(palace, topic.primaryPalaceCn);
+
+          return (
+            <button
+              key={topic.key}
+              onClick={() => handleCardClick(topic.prompt)}
+              className="relative group p-5 rounded-lg border border-gold-700/20 bg-celestial-900/60 text-left overflow-hidden
+                         hover:border-gold-500/40 transition-all duration-300"
+            >
+              {/* Content */}
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-full bg-gold-500/10 border border-gold-700/30 flex items-center justify-center">
+                    <topic.icon className="h-4 w-4 text-gold-500/70" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-parchment-200">
+                      {topic.labelCn} {topic.labelEn}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-xs text-parchment-400/70 leading-relaxed line-clamp-2">
+                  {teaser}
+                </p>
+              </div>
+
+              {/* Blur overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-celestial-900/80 via-celestial-900/40 to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
+
+              {/* CTA overlay */}
+              <div className="absolute bottom-3 left-0 right-0 flex justify-center">
+                <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-gold-400 group-hover:text-gold-300 transition-colors">
+                  Ask ZiWei Sifu →
+                </span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="text-center">
+        <a
+          href="/pricing"
+          className="text-xs text-parchment-500 hover:text-gold-400 transition-colors"
+        >
+          Or subscribe for unlimited daily insights →
+        </a>
+      </div>
+    </motion.div>
+  );
+}
+
 /* ─── Main Component ─── */
 
 export default function FreeReport() {
@@ -153,8 +298,15 @@ export default function FreeReport() {
     return palaces.filter((p) => !topIds.has(p.id));
   }, [palaces, topPalaces]);
 
+  const openAuthModal = useDashboardStore((s) => s.openAuthModal);
+  const snapshotExpired = useDashboardStore((s) => s.snapshotExpired);
+
   const handleUnlockPalace = useCallback(
     async (palaceId: string) => {
+      if (!session) {
+        openAuthModal("palace");
+        return;
+      }
       const credits = creditsData?.credits ?? 0;
       if (credits < CREDIT_COSTS.PALACE_UNLOCK) {
         setShowModal(true);
@@ -170,10 +322,14 @@ export default function FreeReport() {
         setShowModal(true);
       }
     },
-    [creditsData, spendMutation]
+    [session, creditsData, spendMutation, openAuthModal]
   );
 
   const handleUnlockAll = useCallback(async () => {
+    if (!session) {
+      openAuthModal("full_reading");
+      return;
+    }
     const credits = creditsData?.credits ?? 0;
     if (credits < CREDIT_COSTS.FULL_READING) {
       setShowModal(true);
@@ -185,7 +341,7 @@ export default function FreeReport() {
     } else {
       setShowModal(true);
     }
-  }, [creditsData, spendMutation, remainingPalaces]);
+  }, [session, creditsData, spendMutation, remainingPalaces, openAuthModal]);
 
   // Build user display info
   const displayName = birthDetails?.fullName || "Calibrant";
@@ -203,7 +359,14 @@ export default function FreeReport() {
   if (!isUnlocked) return null;
 
   return (
-    <section className="relative py-20 px-4 sm:px-6 celestial-bg overflow-hidden">
+    <section
+      className="relative py-20 px-4 sm:px-6 celestial-bg overflow-hidden"
+      style={{
+        filter: snapshotExpired && !session ? "blur(8px) saturate(0.3)" : "none",
+        pointerEvents: snapshotExpired && !session ? "none" : "auto",
+        transition: "filter 0.5s ease",
+      }}
+    >
       {/* Subtle top border glow */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-500/30 to-transparent" />
 
@@ -374,7 +537,7 @@ export default function FreeReport() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {remainingPalaces.map((palace) => {
-              const isRevealed = !session || unlockedIds.has(palace.id);
+              const isRevealed = !!session; // registered = all revealed
               return (
                 <div
                   key={palace.id}
@@ -459,14 +622,29 @@ export default function FreeReport() {
             Credits refresh daily — or upgrade for more.
           </p>
 
-          {session && (
+          {session ? (
             <div className="mb-6 flex items-center justify-center gap-2 text-sm text-gold-300">
               <Coins className="h-4 w-4" />
               <span className="font-semibold">{creditsData?.credits ?? 0}</span>
               <span className="text-parchment-500">credits remaining</span>
             </div>
+          ) : (
+            <button
+              onClick={() => openAuthModal("full_reading")}
+              className="mb-6 inline-flex items-center gap-3 px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-celestial-900 rounded-sm transition-all hover:shadow-[0_0_30px_rgba(212,165,40,0.3)]"
+              style={{
+                background: "linear-gradient(135deg, #8f6b17, #d4a528, #8f6b17)",
+              }}
+            >
+              Create Free Account to Continue
+            </button>
           )}
         </motion.div>
+
+        {/* ─── 1G: 流年 Teaser (registered users only) ─── */}
+        {session && palaces.length > 0 && (
+          <LiuNianTeaser palaces={palaces} />
+        )}
 
         {/* Insufficient Credits Modal */}
         <InsufficientCreditsModal
