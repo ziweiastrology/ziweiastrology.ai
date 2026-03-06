@@ -1,4 +1,4 @@
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://ziweiastrology.ai").trim();
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.ziweiastrology.ai").trim();
 
 interface BreadcrumbItem {
   name: string;

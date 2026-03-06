@@ -8,7 +8,7 @@ import { getPostBySlug, getAllPosts } from "@/lib/blog";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL || "https://ziweiastrology.ai"
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.ziweiastrology.ai"
 ).trim();
 
 /* ── Static params for SSG ────────────────────────────── */

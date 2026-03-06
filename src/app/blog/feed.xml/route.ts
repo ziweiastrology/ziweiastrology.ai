@@ -3,7 +3,7 @@ import { getAllPosts } from "@/lib/blog";
 export const dynamic = "force-static";
 
 const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL || "https://ziweiastrology.ai"
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.ziweiastrology.ai"
 ).trim();
 
 function escapeXml(str: string): string {

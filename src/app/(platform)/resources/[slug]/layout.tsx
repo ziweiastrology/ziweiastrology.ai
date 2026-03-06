@@ -43,7 +43,7 @@ export async function generateMetadata({
       description: `${title} — Zi Wei Dou Shu resource on ziweiastrology.ai`,
     },
     alternates: {
-      canonical: `https://ziweiastrology.ai/resources/${slug}`,
+      canonical: `https://www.ziweiastrology.ai/resources/${slug}`,
     },
   };
 }

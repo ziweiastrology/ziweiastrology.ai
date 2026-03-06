@@ -30,7 +30,7 @@ export async function generateMetadata({
       description: `${title} — Learn Zi Wei Dou Shu on ziweiastrology.ai Academy`,
     },
     alternates: {
-      canonical: `https://ziweiastrology.ai/academy/courses/${slug}`,
+      canonical: `https://www.ziweiastrology.ai/academy/courses/${slug}`,
     },
   };
 }

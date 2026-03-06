@@ -25,7 +25,7 @@ const merriweather = Merriweather({
   display: "swap",
 });
 
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://ziweiastrology.ai").trim();
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.ziweiastrology.ai").trim();
 
 export const metadata: Metadata = {
   title: {
@@ -63,6 +63,7 @@ export const metadata: Metadata = {
   ],
   metadataBase: new URL(SITE_URL),
   alternates: {
+    canonical: SITE_URL,
     types: {
       "application/rss+xml": "/blog/feed.xml",
     },
