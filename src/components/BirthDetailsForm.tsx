@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import type { BirthDetails } from "@/types";
 import { findCity, getTopSuggestions, type CityEntry } from "@/data/cityLongitudes";
 import { computeTrueSolarTime, formatOffsetForLog, type TSTResult } from "@/utils/solarTime";
+import { playTerminalBeep } from "@/lib/sounds";
 
 interface BirthDetailsFormProps {
   onCalibrate: (details: BirthDetails) => void;
@@ -173,6 +174,11 @@ export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps)
       const interval = setInterval(() => {
         i++;
         setVisibleLogLines(allLines.slice(0, i));
+        // Play beep for every non-blank terminal line
+        const currentLine = allLines[i - 1];
+        if (currentLine && currentLine.trim().length > 0) {
+          playTerminalBeep();
+        }
         if (i >= allLines.length) {
           clearInterval(interval);
           setTimeout(() => setStatusPhase("complete"), 800);
