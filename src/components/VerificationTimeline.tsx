@@ -7,6 +7,7 @@ import { useMatrixStore } from "@/stores/useMatrixStore";
 import { getDeductionsForAge } from "@/data/verificationTemplates";
 import type { Deduction, DeductionResponse } from "@/data/verificationTemplates";
 import BirthDetailsForm from "@/components/BirthDetailsForm";
+import { playCardConfirm, playCardDeny, playCardUnsure, playUnlockSuccess } from "@/lib/sounds";
 import type { BirthDetails } from "@/types";
 
 async function fireZWDSComputation(details: BirthDetails) {
@@ -77,6 +78,9 @@ export default function VerificationTimeline({
 
   const handleRespond = useCallback(
     (id: string, response: DeductionResponse) => {
+      if (response === "yes") playCardConfirm();
+      else if (response === "no") playCardDeny();
+      else playCardUnsure();
       respondToDeduction(id, response);
     },
     [respondToDeduction]
@@ -137,6 +141,7 @@ export default function VerificationTimeline({
   // Unlock phase -> callback after animation, then dismiss overlay
   useEffect(() => {
     if (phase === "unlocking" && onAllVerified) {
+      playUnlockSuccess();
       const t = setTimeout(() => {
         onAllVerified();
         setPhase("done");

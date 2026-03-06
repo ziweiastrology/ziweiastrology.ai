@@ -81,6 +81,8 @@ export default function DestinyMatrix() {
     [session, creditsData, spendMutation, selectPalace, openAuthModal]
   );
 
+  const isUnlocked = useDashboardStore((s) => s.isUnlocked);
+
   const lockedCount = useMemo(
     () => palaces.filter((p) => isPalaceLocked(p.id)).length,
     [palaces, isPalaceLocked]
@@ -105,6 +107,8 @@ export default function DestinyMatrix() {
       setShowModal(true);
     }
   }, [creditsData, spendMutation, palaces]);
+
+  if (!isUnlocked) return null;
 
   return (
     <section
