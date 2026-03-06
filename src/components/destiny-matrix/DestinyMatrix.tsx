@@ -1,19 +1,15 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useCallback } from "react";
 import { motion } from "framer-motion";
-import { Unlock, Coins } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useMatrixStore } from "@/stores/useMatrixStore";
 import { useDashboardStore } from "@/stores/useDashboardStore";
-import { useCredits, useSpendCredits } from "@/hooks/useCredits";
-import { FREE_PALACE_COUNT, CREDIT_COSTS } from "@/lib/credits";
 import PalaceNode from "./PalaceNode";
 import CoreVoid from "./CoreVoid";
 import PalaceSidebar from "./PalaceSidebar";
 import ParticleField from "@/components/ParticleField";
 import BigDipperOverlay from "@/components/BigDipperOverlay";
-import InsufficientCreditsModal from "@/components/credits/InsufficientCreditsModal";
 
 const gridSpring = {
   type: "spring" as const,
@@ -27,86 +23,12 @@ export default function DestinyMatrix() {
   const selectPalace = useMatrixStore((s) => s.selectPalace);
 
   const { data: session } = useSession();
-  const { data: creditsData } = useCredits();
-  const spendMutation = useSpendCredits();
 
-  // Track which palaces the user has unlocked (client state)
-  const [unlockedIds, setUnlockedIds] = useState<Set<string>>(new Set());
-  const [showModal, setShowModal] = useState(false);
-  const [modalNeeded, setModalNeeded] = useState(1);
-
-  // Top N palaces by energy are free
-  const freePalaceIds = useMemo(() => {
-    const sorted = [...palaces].sort((a, b) => b.energy - a.energy);
-    return new Set(sorted.slice(0, FREE_PALACE_COUNT).map((p) => p.id));
-  }, [palaces]);
-
-  const isPalaceLocked = useCallback(
-    (palaceId: string) => {
-      if (!session) return !freePalaceIds.has(palaceId); // anonymous: only top 3 free
-      return false; // registered: ALL palaces free
-    },
-    [session, freePalaceIds]
-  );
+  const handleLockedClick = useCallback(() => {}, []);
 
   const openAuthModal = useDashboardStore((s) => s.openAuthModal);
   const snapshotExpired = useDashboardStore((s) => s.snapshotExpired);
-
-  const handleLockedClick = useCallback(
-    async (palaceId: string) => {
-      if (!session) {
-        openAuthModal("palace");
-        return;
-      }
-      const credits = creditsData?.credits ?? 0;
-      if (credits < CREDIT_COSTS.PALACE_UNLOCK) {
-        setModalNeeded(CREDIT_COSTS.PALACE_UNLOCK);
-        setShowModal(true);
-        return;
-      }
-
-      const result = await spendMutation.mutateAsync({
-        action: "PALACE_UNLOCK",
-        palaceId,
-      });
-
-      if (result.success) {
-        setUnlockedIds((prev) => new Set([...prev, palaceId]));
-        selectPalace(palaceId);
-      } else if (result.error === "insufficient_credits") {
-        setModalNeeded(result.needed ?? CREDIT_COSTS.PALACE_UNLOCK);
-        setShowModal(true);
-      }
-    },
-    [session, creditsData, spendMutation, selectPalace, openAuthModal]
-  );
-
   const isUnlocked = useDashboardStore((s) => s.isUnlocked);
-
-  const lockedCount = useMemo(
-    () => palaces.filter((p) => isPalaceLocked(p.id)).length,
-    [palaces, isPalaceLocked]
-  );
-
-  const handleUnlockAll = useCallback(async () => {
-    const credits = creditsData?.credits ?? 0;
-    if (credits < CREDIT_COSTS.FULL_READING) {
-      setModalNeeded(CREDIT_COSTS.FULL_READING);
-      setShowModal(true);
-      return;
-    }
-
-    const result = await spendMutation.mutateAsync({
-      action: "FULL_READING",
-    });
-
-    if (result.success) {
-      setUnlockedIds(new Set(palaces.map((p) => p.id)));
-    } else if (result.error === "insufficient_credits") {
-      setModalNeeded(result.needed ?? CREDIT_COSTS.FULL_READING);
-      setShowModal(true);
-    }
-  }, [creditsData, spendMutation, palaces]);
 
   if (!isUnlocked) return null;
 
@@ -238,7 +160,7 @@ export default function DestinyMatrix() {
                           key={palace.id}
                           palace={palace}
                           index={i}
-                          locked={isPalaceLocked(palace.id)}
+                          locked={false}
                           onLockedClick={handleLockedClick}
                         />
                       ))}
@@ -343,59 +265,28 @@ export default function DestinyMatrix() {
 
         {/* Unlock All / CTA */}
         <div className="mt-12 text-center">
-          {session && lockedCount > 0 ? (
-            <button
-              onClick={handleUnlockAll}
-              disabled={spendMutation.isPending}
-              className="inline-flex items-center gap-3 px-10 py-4 text-sm font-semibold uppercase tracking-[0.25em]
-                         text-celestial-900 rounded-sm cursor-pointer
-                         transition-all duration-400 ease-out
-                         hover:shadow-[0_0_40px_rgba(212,165,40,0.4),0_0_80px_rgba(212,165,40,0.2)]
-                         active:scale-[0.97] disabled:opacity-60"
-              style={{
-                background: "linear-gradient(135deg, #8f6b17, #b8891e, #d4a528, #e6be4a, #d4a528, #b8891e, #8f6b17)",
-                backgroundSize: "200% 100%",
-              }}
-            >
-              <Unlock className="h-5 w-5" />
-              Unlock All Palaces
-              <span className="flex items-center gap-1 rounded-full bg-celestial-900/30 px-2 py-0.5 text-xs text-gold-200">
-                <Coins className="h-3 w-3" />
-                {CREDIT_COSTS.FULL_READING}
-              </span>
-            </button>
-          ) : (
-            <button
-              onClick={() => openAuthModal("full_reading")}
-              className="inline-flex items-center gap-3 px-10 py-4 text-sm font-semibold uppercase tracking-[0.25em]
-                         text-celestial-900 rounded-sm cursor-pointer
-                         transition-all duration-400 ease-out
-                         hover:shadow-[0_0_40px_rgba(212,165,40,0.4),0_0_80px_rgba(212,165,40,0.2)]
-                         active:scale-[0.97]"
-              style={{
-                background: "linear-gradient(135deg, #8f6b17, #b8891e, #d4a528, #e6be4a, #d4a528, #b8891e, #8f6b17)",
-                backgroundSize: "200% 100%",
-              }}
-            >
-              Unlock Full Reading
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </button>
-          )}
+          <button
+            onClick={() => openAuthModal("full_reading")}
+            className="inline-flex items-center gap-3 px-10 py-4 text-sm font-semibold uppercase tracking-[0.25em]
+                       text-celestial-900 rounded-sm cursor-pointer
+                       transition-all duration-400 ease-out
+                       hover:shadow-[0_0_40px_rgba(212,165,40,0.4),0_0_80px_rgba(212,165,40,0.2)]
+                       active:scale-[0.97]"
+            style={{
+              background: "linear-gradient(135deg, #8f6b17, #b8891e, #d4a528, #e6be4a, #d4a528, #b8891e, #8f6b17)",
+              backgroundSize: "200% 100%",
+            }}
+          >
+            Unlock Full Reading
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </button>
         </div>
       </div>
 
       {/* Sidebar */}
       <PalaceSidebar />
-
-      {/* Insufficient Credits Modal */}
-      <InsufficientCreditsModal
-        open={showModal}
-        onClose={() => setShowModal(false)}
-        credits={creditsData?.credits ?? 0}
-        needed={modalNeeded}
-      />
     </section>
   );
 }
