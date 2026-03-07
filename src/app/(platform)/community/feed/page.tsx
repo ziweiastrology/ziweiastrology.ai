@@ -1,89 +1,107 @@
 "use client";
 
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Loader2 } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
 import PostCard from "@/components/community/PostCard";
 import PostEditor from "@/components/community/PostEditor";
-import MembershipWall from "@/components/community/MembershipWall";
-
-const PLACEHOLDER_POSTS = [
-  {
-    id: "1",
-    title: "Wu Qu in Career Palace — Anyone else seeing this pattern?",
-    content:
-      "I've been analyzing charts of people in finance and tech, and Wu Qu (武曲) in the Career Palace seems to show up disproportionately. Has anyone done systematic analysis on this? I have about 30 charts to compare.",
-    type: "DISCUSSION",
-    category: "patterns",
-    author: { id: "1", name: "Chen Wei", tier: "PREMIUM" },
-    voteScore: 12,
-    commentCount: 8,
-    pinned: false,
-    createdAt: "2025-12-15T10:30:00Z",
-  },
-  {
-    id: "2",
-    title: "Case Study: Tai Yang + Tian Liang in Health Palace",
-    content:
-      "Documenting a fascinating case where Tai Yang and Tian Liang both occupy the Health Palace with Ji transformation active. The subject experienced a health crisis at exactly the predicted decadal transition point.",
-    type: "PILLAR_DATA",
-    category: "health",
-    author: { id: "2", name: "Master Lin", tier: "SIFU" },
-    voteScore: 24,
-    commentCount: 15,
-    pinned: true,
-    createdAt: "2025-12-10T08:00:00Z",
-  },
-  {
-    id: "3",
-    title: "2026 Annual Chart: Global Economic Predictions",
-    content:
-      "Using the Zi Wei framework applied to national founding dates, I've mapped out the key economic inflection points for 2026. The Ji activation in the Wealth Palace of several major economies suggests...",
-    type: "EVENT_ANALYSIS",
-    category: "economics",
-    author: { id: "3", name: "Sarah Tan", tier: "PREMIUM" },
-    voteScore: 18,
-    commentCount: 22,
-    pinned: false,
-    createdAt: "2025-12-08T14:20:00Z",
-  },
-  {
-    id: "4",
-    title: "Chart Analysis Request: Born 1988, Hour of Tiger",
-    content:
-      "Looking for peer review on a chart I've been working on. The subject was born in the Year of Dragon, Month 3, Day 15, Tiger hour. Interesting Zi Wei + Tian Fu opposition across the Self-Travel axis.",
-    type: "CHART_ANALYSIS",
-    category: null,
-    author: { id: "4", name: "James Koh", tier: "PREMIUM" },
-    voteScore: 5,
-    commentCount: 3,
-    createdAt: "2025-12-05T16:45:00Z",
-  },
-];
+import SearchBar from "@/components/community/SearchBar";
+import SortTabs from "@/components/community/SortTabs";
+import FeedSidebar from "@/components/community/FeedSidebar";
+import { useFeed } from "@/hooks/useCommunity";
 
 export default function CommunityFeedPage() {
-  return (
-    <MembershipWall requiredTier="BASIC">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        <PageHeader
-          title="Community Feed"
-          subtitle="Discussions, insights, and shared discoveries from practitioners worldwide."
-        />
+  const [sort, setSort] = useState<"hot" | "new" | "following">("hot");
+  const [search, setSearch] = useState("");
+  const handleSearch = useCallback((q: string) => setSearch(q), []);
 
-        {/* Post Editor */}
-        <div className="mb-8">
-          <PostEditor />
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useFeed({ sort, search });
+
+  // Infinite scroll
+  const observerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = observerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const posts = data?.pages.flatMap((page) => page.posts || []) || [];
+
+  return (
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <PageHeader
+        title="Community Feed"
+        subtitle="Discussions, insights, and shared discoveries from practitioners worldwide."
+      />
+
+      <div className="flex gap-8 pb-16">
+        {/* Main feed */}
+        <div className="flex-1 min-w-0">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <SortTabs active={sort} onChange={setSort} />
+            <div className="w-full sm:w-64">
+              <SearchBar onSearch={handleSearch} />
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <PostEditor />
+          </div>
+
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-6 w-6 animate-spin text-gold-400" />
+            </div>
+          ) : posts.length === 0 ? (
+            <div className="rounded-lg border border-gold-700/20 bg-celestial-800/30 p-8 text-center">
+              <p className="text-parchment-500">No posts found.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {posts.map((post: Record<string, unknown>) => (
+                <PostCard
+                  key={post.id as string}
+                  id={post.id as string}
+                  title={post.title as string}
+                  content={post.content as string}
+                  type={post.type as string}
+                  category={post.category as string | null}
+                  author={post.author as { id: string; name: string | null; tier: string; avatarUrl?: string | null }}
+                  voteScore={(post.voteScore as number) || 0}
+                  commentCount={(post._count as { comments: number })?.comments || 0}
+                  pinned={post.pinned as boolean}
+                  createdAt={post.createdAt as string}
+                  tags={post.tags as string[]}
+                  viewCount={post.viewCount as number}
+                  userVote={post.userVote as number | null}
+                  href={`/community/post/${post.id}`}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Infinite scroll trigger */}
+          <div ref={observerRef} className="py-4 text-center">
+            {isFetchingNextPage && (
+              <Loader2 className="mx-auto h-5 w-5 animate-spin text-gold-400" />
+            )}
+          </div>
         </div>
 
-        {/* Posts */}
-        <div className="space-y-4 pb-16">
-          {PLACEHOLDER_POSTS.map((post) => (
-            <PostCard
-              key={post.id}
-              {...post}
-              href={`/community/feed#post-${post.id}`}
-            />
-          ))}
+        {/* Sidebar — desktop only */}
+        <div className="hidden w-72 shrink-0 lg:block">
+          <FeedSidebar />
         </div>
       </div>
-    </MembershipWall>
+    </div>
   );
 }

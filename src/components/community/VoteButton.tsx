@@ -2,17 +2,26 @@
 
 import { ChevronUp, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useVote } from "@/hooks/useCommunity";
 
 interface VoteButtonProps {
   postId: string;
   score: number;
-  userVote?: number;
+  userVote?: number | null;
 }
 
-export default function VoteButton({ score, userVote }: VoteButtonProps) {
+export default function VoteButton({ postId, score, userVote }: VoteButtonProps) {
+  const vote = useVote();
+
+  function handleVote(value: 1 | -1) {
+    vote.mutate({ postId, value });
+  }
+
   return (
     <div className="flex flex-col items-center gap-0.5">
       <button
+        onClick={() => handleVote(1)}
+        disabled={vote.isPending}
         className={cn(
           "rounded p-0.5 transition-colors hover:bg-celestial-700/50",
           userVote === 1
@@ -36,6 +45,8 @@ export default function VoteButton({ score, userVote }: VoteButtonProps) {
         {score}
       </span>
       <button
+        onClick={() => handleVote(-1)}
+        disabled={vote.isPending}
         className={cn(
           "rounded p-0.5 transition-colors hover:bg-celestial-700/50",
           userVote === -1

@@ -1,78 +1,99 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getTierLimits } from "@/lib/tierLimits";
 
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: postId } = await params;
     const session = await auth();
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "unauthorized" }, { status: 401 });
     }
 
-    const tier = session.user.tier;
-    if (!tier || !["PREMIUM", "SIFU"].includes(tier)) {
-      return NextResponse.json({ error: "Premium membership required" }, { status: 403 });
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { tier: true },
+    });
+    const limits = getTierLimits(user?.tier ?? "FREE");
+    if (!limits.canVote) {
+      return NextResponse.json(
+        { error: "tier_required", minTier: "BASIC" },
+        { status: 403 }
+      );
     }
 
-    const { id: postId } = await params;
     const { value, commentId } = await request.json();
-
     if (value !== 1 && value !== -1) {
-      return NextResponse.json({ error: "Value must be 1 or -1" }, { status: 400 });
+      return NextResponse.json({ error: "invalid_value" }, { status: 400 });
     }
 
     // Comment vote
     if (commentId) {
-      const existingVote = await prisma.vote.findUnique({
-        where: { userId_commentId: { userId: session.user.id, commentId } },
+      const existing = await prisma.vote.findUnique({
+        where: {
+          userId_commentId: { userId: session.user.id, commentId },
+        },
       });
 
-      if (existingVote) {
-        if (existingVote.value === value) {
-          await prisma.vote.delete({ where: { id: existingVote.id } });
-          return NextResponse.json({ action: "removed" });
+      if (existing) {
+        if (existing.value === value) {
+          await prisma.vote.delete({ where: { id: existing.id } });
         } else {
           await prisma.vote.update({
-            where: { id: existingVote.id },
+            where: { id: existing.id },
             data: { value },
           });
-          return NextResponse.json({ action: "updated", value });
         }
+      } else {
+        await prisma.vote.create({
+          data: { userId: session.user.id, commentId, value },
+        });
       }
 
-      await prisma.vote.create({
-        data: { value, userId: session.user.id, commentId },
+      // Return updated comment score
+      const commentVotes = await prisma.vote.findMany({
+        where: { commentId },
       });
+      const score = commentVotes.reduce((sum, v) => sum + v.value, 0);
+      const userVote =
+        commentVotes.find((v) => v.userId === session.user.id)?.value ?? null;
 
-      return NextResponse.json({ action: "created", value }, { status: 201 });
+      return NextResponse.json({ score, userVote });
     }
 
     // Post vote
-    const existingVote = await prisma.vote.findUnique({
+    const existing = await prisma.vote.findUnique({
       where: { userId_postId: { userId: session.user.id, postId } },
     });
 
-    if (existingVote) {
-      if (existingVote.value === value) {
-        await prisma.vote.delete({ where: { id: existingVote.id } });
-        return NextResponse.json({ action: "removed" });
+    if (existing) {
+      if (existing.value === value) {
+        // Same vote = remove it
+        await prisma.vote.delete({ where: { id: existing.id } });
       } else {
+        // Different vote = update
         await prisma.vote.update({
-          where: { id: existingVote.id },
+          where: { id: existing.id },
           data: { value },
         });
-        return NextResponse.json({ action: "updated", value });
       }
+    } else {
+      await prisma.vote.create({
+        data: { userId: session.user.id, postId, value },
+      });
     }
 
-    await prisma.vote.create({
-      data: { value, userId: session.user.id, postId },
-    });
+    // Get updated score
+    const votes = await prisma.vote.findMany({ where: { postId } });
+    const score = votes.reduce((sum, v) => sum + v.value, 0);
+    const userVote =
+      votes.find((v) => v.userId === session.user.id)?.value ?? null;
 
-    return NextResponse.json({ action: "created", value }, { status: 201 });
+    return NextResponse.json({ score, userVote });
   } catch {
     return NextResponse.json(
       { error: "Failed to process vote" },

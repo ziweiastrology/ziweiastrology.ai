@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Send } from "lucide-react";
-import { toast } from "sonner";
+import { Send, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { useCreatePost } from "@/hooks/useCommunity";
 
 const POST_TYPES = [
   { value: "DISCUSSION", label: "Discussion" },
@@ -12,17 +12,23 @@ const POST_TYPES = [
   { value: "CHART_ANALYSIS", label: "Chart Analysis" },
 ];
 
-interface PostEditorProps {
-  onSubmit?: (data: { title: string; content: string; type: string; category?: string }) => void;
-}
-
-export default function PostEditor({ onSubmit }: PostEditorProps) {
+export default function PostEditor() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [type, setType] = useState("DISCUSSION");
-  const [loading, setLoading] = useState(false);
+  const [tagInput, setTagInput] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const createPost = useCreatePost();
 
   const [errors, setErrors] = useState<{ title?: string; content?: string }>({});
+
+  function addTag() {
+    const tag = tagInput.trim().toLowerCase();
+    if (tag && !tags.includes(tag) && tags.length < 5) {
+      setTags([...tags, tag]);
+      setTagInput("");
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -35,16 +41,10 @@ export default function PostEditor({ onSubmit }: PostEditorProps) {
     }
     setErrors({});
 
-    setLoading(true);
-    try {
-      onSubmit?.({ title, content, type });
-      toast.success("Post published!");
-      setTitle("");
-      setContent("");
-    } catch {
-      toast.error("Failed to publish post");
-    }
-    setLoading(false);
+    await createPost.mutateAsync({ title, content, type, tags });
+    setTitle("");
+    setContent("");
+    setTags([]);
   }
 
   return (
@@ -74,7 +74,7 @@ export default function PostEditor({ onSubmit }: PostEditorProps) {
           value={title}
           onChange={(e) => { setTitle(e.target.value); setErrors((p) => ({ ...p, title: undefined })); }}
           placeholder="Post title..."
-          className={`w-full rounded-md border bg-celestial-900/40 px-4 py-2.5 text-sm text-parchment-200 placeholder:text-parchment-700 focus:outline-none ${errors.title ? "border-quantum-red/50 focus:border-quantum-red" : "border-gold-700/20 focus:border-gold-500"}`}
+          className={`w-full rounded-md border bg-celestial-900/40 px-4 py-2.5 text-sm text-parchment-200 placeholder:text-parchment-700 focus:outline-none ${errors.title ? "border-quantum-red/50" : "border-gold-700/20 focus:border-gold-500"}`}
         />
         {errors.title && <p className="mt-1 text-xs text-quantum-red">{errors.title}</p>}
       </div>
@@ -85,15 +85,43 @@ export default function PostEditor({ onSubmit }: PostEditorProps) {
           onChange={(e) => { setContent(e.target.value); setErrors((p) => ({ ...p, content: undefined })); }}
           placeholder="Share your analysis, insight, or question... (Markdown supported)"
           rows={4}
-          className={`w-full resize-none rounded-md border bg-celestial-900/40 px-4 py-2.5 text-sm text-parchment-200 placeholder:text-parchment-700 focus:outline-none ${errors.content ? "border-quantum-red/50 focus:border-quantum-red" : "border-gold-700/20 focus:border-gold-500"}`}
+          className={`w-full resize-none rounded-md border bg-celestial-900/40 px-4 py-2.5 text-sm text-parchment-200 placeholder:text-parchment-700 focus:outline-none ${errors.content ? "border-quantum-red/50" : "border-gold-700/20 focus:border-gold-500"}`}
         />
         {errors.content && <p className="mt-1 text-xs text-quantum-red">{errors.content}</p>}
       </div>
 
+      {/* Tags */}
+      <div className="mb-3">
+        <div className="flex gap-2">
+          <input
+            value={tagInput}
+            onChange={(e) => setTagInput(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addTag(); } }}
+            placeholder="Add tags (press Enter)"
+            className="flex-1 rounded-md border border-gold-700/20 bg-celestial-900/40 px-3 py-1.5 text-sm text-parchment-200 placeholder:text-parchment-700 focus:outline-none"
+          />
+        </div>
+        {tags.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {tags.map((tag) => (
+              <span
+                key={tag}
+                className="flex items-center gap-1 rounded-full bg-gold-500/10 px-2 py-0.5 text-xs text-gold-400"
+              >
+                {tag}
+                <button type="button" onClick={() => setTags(tags.filter((t) => t !== tag))}>
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+
       <div className="flex justify-end">
-        <Button type="submit" size="sm" disabled={loading || !title.trim()}>
+        <Button type="submit" size="sm" disabled={createPost.isPending || !title.trim()}>
           <Send className="mr-1.5 h-3.5 w-3.5" />
-          {loading ? "Posting..." : "Post"}
+          {createPost.isPending ? "Posting..." : "Post"}
         </Button>
       </div>
     </form>

@@ -16,10 +16,46 @@ import {
   FlaskConical,
   Scale,
   PenLine,
+  Bell,
+  MessageCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UserMenu from "@/components/auth/UserMenu";
 import CreditBadge from "@/components/credits/CreditBadge";
+import { useUnreadCounts } from "@/hooks/useNotifications";
+
+function NavBadges() {
+  const { data: unread } = useUnreadCounts();
+
+  return (
+    <div className="flex items-center gap-1">
+      <Link
+        href="/messages"
+        className="relative rounded-md p-2 text-parchment-400 hover:bg-celestial-800 hover:text-parchment-200 transition-colors"
+        aria-label="Notifications"
+      >
+        <Bell className="h-5 w-5" />
+        {(unread?.notifications ?? 0) > 0 && (
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-quantum-red text-[10px] font-bold text-white">
+            {unread.notifications > 9 ? "9+" : unread.notifications}
+          </span>
+        )}
+      </Link>
+      <Link
+        href="/messages?tab=dm"
+        className="relative rounded-md p-2 text-parchment-400 hover:bg-celestial-800 hover:text-parchment-200 transition-colors"
+        aria-label="Messages"
+      >
+        <MessageCircle className="h-5 w-5" />
+        {(unread?.messages ?? 0) > 0 && (
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-quantum-red text-[10px] font-bold text-white">
+            {unread.messages > 9 ? "9+" : unread.messages}
+          </span>
+        )}
+      </Link>
+    </div>
+  );
+}
 
 const NAV_LINKS = [
   { href: "/about", label: "About", icon: Info },
@@ -86,6 +122,7 @@ export default function Navbar() {
           {/* Right side */}
           <div className="flex items-center gap-3">
             {session && <CreditBadge />}
+            {session && <NavBadges />}
             {session ? (
               <UserMenu />
             ) : (
