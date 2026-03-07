@@ -1,15 +1,42 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getTierLimits } from "@/lib/tierLimits";
 import { updateTagsSchema } from "@/lib/validations/profile";
 
-// GET all available tags
-export async function GET() {
-  const tags = await prisma.tag.findMany({
-    orderBy: [{ category: "asc" }, { name: "asc" }],
-  });
-  return NextResponse.json(tags);
+// GET all available tags — nested tree by default, ?flat=true for flat list
+export async function GET(request: NextRequest) {
+  try {
+    const flat = request.nextUrl.searchParams.get("flat") === "true";
+
+    if (flat) {
+      const tags = await prisma.tag.findMany({
+        where: { depth: { gt: 0 } },
+        orderBy: [{ category: "asc" }, { order: "asc" }],
+      });
+      return NextResponse.json(tags);
+    }
+
+    const tree = await prisma.tag.findMany({
+      where: { depth: 0 },
+      orderBy: { order: "asc" },
+      include: {
+        children: {
+          orderBy: { order: "asc" },
+          include: {
+            children: {
+              orderBy: { order: "asc" },
+            },
+          },
+        },
+      },
+    });
+
+    return NextResponse.json(tree);
+  } catch (error) {
+    console.error("[GET /api/user/tags]", error);
+    return NextResponse.json({ error: "internal_error", detail: String(error) }, { status: 500 });
+  }
 }
 
 // PUT user's selected tags

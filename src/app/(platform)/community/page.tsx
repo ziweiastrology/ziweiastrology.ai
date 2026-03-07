@@ -1,92 +1,101 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import PageHeader from "@/components/layout/PageHeader";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Community — ziweiastrology.ai",
-  description:
-    "Join the Zi Wei Dou Shu community. Discuss, analyze, and learn with fellow practitioners.",
-};
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Loader2 } from "lucide-react";
+import PostCard from "@/components/community/PostCard";
+import PostEditor from "@/components/community/PostEditor";
+import SearchBar from "@/components/community/SearchBar";
+import SortTabs from "@/components/community/SortTabs";
+import FeedSidebar from "@/components/community/FeedSidebar";
+import { useFeed } from "@/hooks/useCommunity";
 
 export default function CommunityPage() {
-  const sections = [
-    {
-      title: "Community Feed",
-      description: "Discussions, insights, and shared discoveries from practitioners worldwide.",
-      href: "/community/feed",
-      count: "Coming soon",
-    },
-    {
-      title: "Pillar Data",
-      description: "Categorized case studies: family, career, love, partnerships, health.",
-      href: "/community/pillar-data",
-      count: "Coming soon",
-    },
-    {
-      title: "Analysis",
-      description: "In-depth Zi Wei Dou Shu breakdowns of events and public figures.",
-      href: "/community/analysis",
-      count: "Coming soon",
-    },
-    {
-      title: "Groups",
-      description: "Join focused study groups organized by topic and experience level.",
-      href: "/community/groups",
-      count: "Coming soon",
-    },
-  ];
+  const [sort, setSort] = useState<"hot" | "new" | "following">("hot");
+  const [search, setSearch] = useState("");
+  const handleSearch = useCallback((q: string) => setSearch(q), []);
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useFeed({ sort, search });
+
+  // Infinite scroll
+  const observerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = observerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const posts = data?.pages.flatMap((page) => page.posts || []) || [];
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <PageHeader
-        title="Community"
-        subtitle="A space for serious practitioners to discuss, analyze, and advance the art of Zi Wei Dou Shu."
-      />
+      <div className="flex gap-8 py-6 pb-16">
+        {/* Main feed */}
+        <div className="min-w-0 flex-1">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <SortTabs active={sort} onChange={setSort} />
+            <div className="w-full sm:w-64">
+              <SearchBar onSearch={handleSearch} />
+            </div>
+          </div>
 
-      <section className="pb-16">
-        <div className="grid gap-6 sm:grid-cols-2">
-          {sections.map((section) => (
-            <Link
-              key={section.href}
-              href={section.href}
-              className="group rounded-lg border border-gold-700/20 bg-celestial-800/30 p-8 transition-all hover:border-gold-700/40 hover:bg-celestial-800/50"
-            >
-              <h3
-                className="mb-2 text-xl font-bold text-parchment-100 group-hover:text-gold-400 transition-colors"
-                style={{ fontFamily: "var(--font-cinzel)" }}
-              >
-                {section.title}
-              </h3>
-              <p className="text-sm text-parchment-500">
-                {section.description}
-              </p>
-              <span className="mt-4 inline-block text-xs text-gold-500/60 uppercase tracking-wider">
-                {section.count}
-              </span>
-            </Link>
-          ))}
+          <div className="mb-6">
+            <PostEditor />
+          </div>
+
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-6 w-6 animate-spin text-gold-400" />
+            </div>
+          ) : posts.length === 0 ? (
+            <div className="rounded-lg border border-gold-700/20 bg-celestial-800/30 p-8 text-center">
+              <p className="text-parchment-500">No posts yet. Be the first to share!</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {posts.map((post: Record<string, unknown>) => (
+                <PostCard
+                  key={post.id as string}
+                  id={post.id as string}
+                  title={post.title as string}
+                  content={post.content as string}
+                  type={post.type as string}
+                  category={post.category as string | null}
+                  author={post.author as { id: string; name: string | null; tier: string; avatarUrl?: string | null }}
+                  voteScore={(post.voteScore as number) || 0}
+                  commentCount={(post._count as { comments: number })?.comments || 0}
+                  pinned={post.pinned as boolean}
+                  createdAt={post.createdAt as string}
+                  tags={post.tags as string[]}
+                  viewCount={post.viewCount as number}
+                  userVote={post.userVote as number | null}
+                  href={`/community/post/${post.id}`}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Infinite scroll trigger */}
+          <div ref={observerRef} className="py-4 text-center">
+            {isFetchingNextPage && (
+              <Loader2 className="mx-auto h-5 w-5 animate-spin text-gold-400" />
+            )}
+          </div>
         </div>
 
-        {/* Membership CTA */}
-        <div className="mt-12 rounded-lg border border-gold-500/30 bg-gradient-to-br from-celestial-800/80 to-celestial-700/40 p-8 text-center">
-          <h3
-            className="mb-2 text-xl font-bold text-gold-400"
-            style={{ fontFamily: "var(--font-cinzel)" }}
-          >
-            Unlock Full Community Access
-          </h3>
-          <p className="mb-6 text-parchment-500">
-            Join as a member to participate in discussions, access pillar data,
-            and connect with master practitioners.
-          </p>
-          <Link
-            href="/auth/register"
-            className="inline-block rounded-md bg-gold-500 px-6 py-2.5 text-sm font-semibold text-celestial-900 transition-colors hover:bg-gold-400"
-          >
-            Get Started
-          </Link>
+        {/* Sidebar — desktop only */}
+        <div className="hidden w-72 shrink-0 lg:block">
+          <FeedSidebar />
         </div>
-      </section>
+      </div>
     </div>
   );
 }

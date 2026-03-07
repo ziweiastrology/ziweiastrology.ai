@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rateLimit";
+import { getTierLimits } from "@/lib/tierLimits";
 
 export async function GET(request: Request) {
   try {
@@ -138,11 +139,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Check tier — PREMIUM or SIFU required to post
-    const tier = session.user.tier;
-    if (!tier || !["PREMIUM", "SIFU"].includes(tier)) {
+    // Check daily post limit based on tier
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { tier: true },
+    });
+    const limits = getTierLimits(user?.tier ?? "FREE");
+    if (limits.postsPerDay <= 0) {
       return NextResponse.json(
-        { error: "Premium membership required to post" },
+        { error: "Your membership tier cannot create posts" },
         { status: 403 }
       );
     }

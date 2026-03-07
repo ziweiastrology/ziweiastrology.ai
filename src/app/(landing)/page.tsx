@@ -53,7 +53,7 @@ export default function Home() {
       <SnapshotBanner />
 
       {/* Destiny Matrix (dark, gated by isUnlocked) */}
-      <div ref={matrixRef}>
+      <div ref={matrixRef} id="destiny-matrix">
         <DestinyMatrix />
       </div>
 

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useMatrixStore } from "@/stores/useMatrixStore";
 import { useDashboardStore } from "@/stores/useDashboardStore";
+import { hasMinTier } from "@/lib/credits";
 import PalaceNode from "./PalaceNode";
 import CoreVoid from "./CoreVoid";
 import PalaceSidebar from "./PalaceSidebar";
@@ -97,7 +98,7 @@ export default function DestinyMatrix() {
           className="mx-auto max-w-[340px] sm:max-w-[480px] md:max-w-[640px]"
           animate={{
             scale: sidebarOpen ? 0.95 : 1,
-            x: sidebarOpen ? 40 : 0,
+            x: 0,
           }}
           transition={gridSpring}
         >
@@ -263,26 +264,28 @@ export default function DestinyMatrix() {
           </div>
         </motion.div>
 
-        {/* Unlock All / CTA */}
-        <div className="mt-12 text-center">
-          <button
-            onClick={() => openAuthModal("full_reading")}
-            className="inline-flex items-center gap-3 px-10 py-4 text-sm font-semibold uppercase tracking-[0.25em]
-                       text-celestial-900 rounded-sm cursor-pointer
-                       transition-all duration-400 ease-out
-                       hover:shadow-[0_0_40px_rgba(212,165,40,0.4),0_0_80px_rgba(212,165,40,0.2)]
-                       active:scale-[0.97]"
-            style={{
-              background: "linear-gradient(135deg, #8f6b17, #b8891e, #d4a528, #e6be4a, #d4a528, #b8891e, #8f6b17)",
-              backgroundSize: "200% 100%",
-            }}
-          >
-            Unlock Full Reading
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </button>
-        </div>
+        {/* Unlock All / CTA — hidden for BASIC+ subscribers */}
+        {!hasMinTier(session?.user?.tier, "BASIC") && (
+          <div className="mt-12 text-center">
+            <button
+              onClick={() => openAuthModal("full_reading")}
+              className="inline-flex items-center gap-3 px-10 py-4 text-sm font-semibold uppercase tracking-[0.25em]
+                         text-celestial-900 rounded-sm cursor-pointer
+                         transition-all duration-400 ease-out
+                         hover:shadow-[0_0_40px_rgba(212,165,40,0.4),0_0_80px_rgba(212,165,40,0.2)]
+                         active:scale-[0.97]"
+              style={{
+                background: "linear-gradient(135deg, #8f6b17, #b8891e, #d4a528, #e6be4a, #d4a528, #b8891e, #8f6b17)",
+                backgroundSize: "200% 100%",
+              }}
+            >
+              Unlock Full Reading
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Sidebar */}

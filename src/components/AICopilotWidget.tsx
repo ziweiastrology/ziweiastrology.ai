@@ -40,7 +40,7 @@ const TOPIC_CARDS = [
 ];
 
 interface ChatMessage {
-  role: "assistant" | "user";
+  role: "assistant" | "user" | "system";
   content: string;
 }
 
@@ -102,6 +102,13 @@ export default function AICopilotWidget() {
 
       // Check credits client-side
       if (credits < CREDIT_COSTS.CHATBOT_MESSAGE) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "system",
+            content: "I have deeper insights about your chart to share... Upgrade your plan to continue this reading.",
+          },
+        ]);
         setShowModal(true);
         return;
       }
@@ -301,24 +308,39 @@ export default function AICopilotWidget() {
               {/* Messages */}
               {messages.map((msg, i) => (
                 <div key={i} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : ""}`}>
-                  {msg.role === "assistant" && (
+                  {(msg.role === "assistant" || msg.role === "system") && (
                     <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gold-500/20 border border-gold-700 flex items-center justify-center">
                       <svg className="w-3 h-3 text-gold-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
                     </div>
                   )}
-                  <div
-                    className={`rounded-sm p-3 max-w-[85%] ${
-                      msg.role === "user"
-                        ? "bg-gold-500/10 border border-gold-700/20"
-                        : "bg-celestial-700/50"
-                    }`}
-                  >
-                    <p className="text-xs text-parchment-300 leading-relaxed whitespace-pre-wrap">
-                      {msg.content}
-                    </p>
-                  </div>
+                  {msg.role === "system" ? (
+                    <div className="rounded-sm p-3 max-w-[85%] border border-gold-500/40 bg-gold-500/5">
+                      <p className="text-xs text-gold-300 leading-relaxed mb-2">
+                        {msg.content}
+                      </p>
+                      <Link
+                        href="/pricing"
+                        className="inline-flex items-center gap-1 text-[10px] font-semibold text-celestial-900 bg-gold-500 hover:bg-gold-400 px-3 py-1.5 rounded-sm transition-colors"
+                      >
+                        <Coins className="h-3 w-3" />
+                        Upgrade Plan
+                      </Link>
+                    </div>
+                  ) : (
+                    <div
+                      className={`rounded-sm p-3 max-w-[85%] ${
+                        msg.role === "user"
+                          ? "bg-gold-500/10 border border-gold-700/20"
+                          : "bg-celestial-700/50"
+                      }`}
+                    >
+                      <p className="text-xs text-parchment-300 leading-relaxed whitespace-pre-wrap">
+                        {msg.content}
+                      </p>
+                    </div>
+                  )}
                 </div>
               ))}
 

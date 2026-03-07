@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { motion } from "framer-motion";
-import { Lock } from "lucide-react";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Lock, Sparkles } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useMatrixStore } from "@/stores/useMatrixStore";
+import { useDashboardStore } from "@/stores/useDashboardStore";
 import { PALACE_ICON_MAP } from "./palaceIcons";
 import type { PalaceDetail } from "@/types";
 
@@ -26,6 +28,20 @@ const STATE_COLORS: Record<string, string> = {
   quan: "rgba(255,215,0,0.45)",
   ke: "rgba(68,200,255,0.4)",
   ji: "rgba(255,68,68,0.4)",
+};
+
+const HUA_INFO: Record<string, { label: string; en: string; labelShort: string; desc: string; descEn: string }> = {
+  ji:   { label: "化忌", en: "Hua Ji",   labelShort: "忌 JI",   desc: "此宫面临挑战与阻碍，需要关注与转化", descEn: "Challenges & obstacles — an area requiring attention" },
+  lu:   { label: "化禄", en: "Hua Lu",   labelShort: "禄 LU",   desc: "此宫财运亨通，能量顺遂丰盛", descEn: "Wealth & abundance — energy flows smoothly here" },
+  quan: { label: "化权", en: "Hua Quan", labelShort: "权 QUAN", desc: "此宫权力强势，掌控力与领导力突出", descEn: "Authority & control — strong leadership energy" },
+  ke:   { label: "化科", en: "Hua Ke",   labelShort: "科 KE",   desc: "此宫才华显现，学术与名望之星", descEn: "Fame & knowledge — intellectual brilliance shines" },
+};
+
+const STATE_BADGE_COLORS: Record<string, { bg: string; text: string; glow: string }> = {
+  lu:   { bg: "rgba(68,255,136,0.15)", text: "#44ff88", glow: "0 0 8px rgba(68,255,136,0.4)" },
+  quan: { bg: "rgba(255,215,0,0.15)",  text: "#ffd700", glow: "0 0 8px rgba(255,215,0,0.4)" },
+  ke:   { bg: "rgba(68,200,255,0.15)", text: "#44c8ff", glow: "0 0 8px rgba(68,200,255,0.4)" },
+  ji:   { bg: "rgba(255,68,68,0.15)",  text: "#ff4444", glow: "0 0 8px rgba(255,68,68,0.4)" },
 };
 
 const STATE_BORDER_GLOW: Record<string, string> = {
@@ -51,7 +67,12 @@ export default function PalaceNode({
   const selectPalace = useMatrixStore((s) => s.selectPalace);
   const selectedPalaceId = useMatrixStore((s) => s.selectedPalaceId);
   const birthYear = useMatrixStore((s) => s.chartMeta?.birthYear);
+  const { toggleCopilot, setCopilotInitialPrompt, openAuthModal } = useDashboardStore();
+  const { data: session } = useSession();
   const [pulseKey, setPulseKey] = useState(0);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const tooltipTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const badgeRef = useRef<HTMLDivElement>(null);
 
   // Current age for 小限 highlighting
   const currentAge = birthYear ? new Date().getFullYear() - birthYear : null;
@@ -71,10 +92,53 @@ export default function PalaceNode({
     selectPalace(palace.id);
   }, [locked, onLockedClick, selectPalace, palace.id]);
 
+  const handleBadgeEnter = useCallback(() => {
+    if (tooltipTimeout.current) clearTimeout(tooltipTimeout.current);
+    setTooltipOpen(true);
+  }, []);
+
+  const handleBadgeLeave = useCallback(() => {
+    tooltipTimeout.current = setTimeout(() => setTooltipOpen(false), 150);
+  }, []);
+
+  const handleBadgeClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setTooltipOpen((v) => !v);
+  }, []);
+
+  const handleAskSifu = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!session) {
+      openAuthModal("copilot");
+      return;
+    }
+    const huaInfo = HUA_INFO[palace.state];
+    const starNames = palace.stars.map((s) => s.replace(/\[.+\]$/, "").split(/\s/)[0]).join("、");
+    const prompt = `请分析我的${palace.nameCn}${huaInfo?.label ?? ""}（${huaInfo?.en ?? palace.state} in ${palace.name} palace）对我有什么影响？这个宫位有${starNames || "无主星"}。`;
+    setCopilotInitialPrompt(prompt);
+    toggleCopilot();
+    setTooltipOpen(false);
+  }, [session, palace, openAuthModal, setCopilotInitialPrompt, toggleCopilot]);
+
+  // Close tooltip on outside click
+  useEffect(() => {
+    if (!tooltipOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (badgeRef.current && !badgeRef.current.contains(e.target as Node)) {
+        setTooltipOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [tooltipOpen]);
+
+  const huaInfo = HUA_INFO[palace.state];
+  const badgeColors = STATE_BADGE_COLORS[palace.state];
+
   return (
     <motion.button
       onClick={handleClick}
-      className="relative aspect-square flex flex-col items-center justify-center gap-1.5 cursor-pointer group"
+      className="relative aspect-square flex flex-col items-center justify-center gap-1.5 cursor-pointer group min-h-[44px]"
       style={{
         gridColumn: palace.gridCol,
         gridRow: palace.gridRow,
@@ -222,15 +286,75 @@ export default function PalaceNode({
         </div>
       )}
 
-      {/* State badge */}
-      {isActive && !locked && (
-        <span
-          className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full z-10"
-          style={{
-            backgroundColor: glowColor?.replace(/[\d.]+\)$/, "0.9)"),
-            boxShadow: `0 0 6px ${glowColor}`,
-          }}
-        />
+      {/* State badge — interactive pill with tooltip */}
+      {isActive && !locked && huaInfo && badgeColors && (
+        <div
+          ref={badgeRef}
+          className="absolute top-1 right-1 z-30"
+          onMouseEnter={handleBadgeEnter}
+          onMouseLeave={handleBadgeLeave}
+        >
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={handleBadgeClick}
+            className="px-1.5 py-0.5 rounded-full text-[7px] md:text-[8px] font-mono font-bold tracking-wide transition-all duration-200 hover:scale-110 cursor-help"
+            style={{
+              backgroundColor: badgeColors.bg,
+              color: badgeColors.text,
+              boxShadow: badgeColors.glow,
+              border: `1px solid ${badgeColors.text}33`,
+            }}
+          >
+            {huaInfo.labelShort}
+          </div>
+
+          {/* Tooltip */}
+          <AnimatePresence>
+            {tooltipOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.15 }}
+                className="absolute top-full right-0 mt-1 w-48 rounded-lg p-2.5 pointer-events-auto"
+                style={{
+                  background: "rgba(16, 8, 38, 0.97)",
+                  border: `1px solid ${badgeColors.text}44`,
+                  boxShadow: `0 4px 20px rgba(0,0,0,0.5), ${badgeColors.glow}`,
+                  backdropFilter: "blur(12px)",
+                }}
+                onMouseEnter={handleBadgeEnter}
+                onMouseLeave={handleBadgeLeave}
+              >
+                <div className="text-[11px] font-bold mb-1" style={{ color: badgeColors.text }}>
+                  {huaInfo.label} {huaInfo.en}
+                </div>
+                <p className="text-[10px] leading-relaxed text-parchment-300/80 mb-1">
+                  {huaInfo.desc}
+                </p>
+                <p className="text-[9px] leading-relaxed text-parchment-300/50 mb-2">
+                  {huaInfo.descEn}
+                </p>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={handleAskSifu}
+                  className="w-full flex items-center justify-center gap-1 px-2 py-1.5 rounded-md text-[10px] font-bold tracking-wide transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(255,215,0,0.2), rgba(212,165,40,0.15))",
+                    color: "#FFD700",
+                    border: "1px solid rgba(255,215,0,0.3)",
+                    boxShadow: "0 0 10px rgba(255,215,0,0.1)",
+                  }}
+                >
+                  <Sparkles className="w-3 h-3" />
+                  Ask AI Sifu
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       )}
 
       {/* 小限 ages — bottom */}

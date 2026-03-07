@@ -184,9 +184,16 @@ enum CourseLevel {
 }
 
 enum TagCategory {
+  // New hierarchical categories
+  METAPHYSICS
+  LIFESTYLE
+  BUSINESS
+  ARTS
+  SOCIAL
+  GOAL
+  // Deprecated (kept for migration compatibility)
   INDUSTRY
   INTEREST
-  GOAL
   ASTRO
 }
 
@@ -577,10 +584,20 @@ model Tag {
   name      String
   nameCn    String
   category  TagCategory
+  slug      String?     @unique
+  depth     Int         @default(0)
+  order     Int         @default(0)
+
+  parentId  String?
+  parent    Tag?        @relation("TagHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children  Tag[]       @relation("TagHierarchy")
+
   users     UserTag[]
   createdAt DateTime    @default(now())
 
   @@unique([name, category])
+  @@index([parentId])
+  @@index([category, depth])
 }
 
 model UserTag {

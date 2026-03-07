@@ -69,7 +69,7 @@ export default function PalaceSidebar() {
           {/* Drawer — slides from LEFT */}
           <motion.div
             key="drawer"
-            className="fixed top-0 left-0 z-50 h-full w-full max-w-md overflow-hidden"
+            className="fixed top-0 left-0 z-50 h-full w-full max-w-[100vw] sm:max-w-md overflow-hidden"
             style={{
               background:
                 "linear-gradient(180deg, rgba(12,6,30,0.98) 0%, rgba(8,4,20,0.99) 100%)",

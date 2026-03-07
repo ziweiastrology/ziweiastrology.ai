@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { computeMatchesForUser } from "@/lib/computeMatchesForUser";
 
 export async function PUT(request: Request) {
   try {
@@ -40,6 +41,9 @@ export async function PUT(request: Request) {
         birthGender: true,
       },
     });
+
+    // Fire-and-forget: recompute energy matches with updated birth data
+    computeMatchesForUser(session.user.id).catch(console.error);
 
     return NextResponse.json(user);
   } catch {

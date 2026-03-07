@@ -10,7 +10,7 @@ export const updateProfileSchema = z.object({
 });
 
 export const updateTagsSchema = z.object({
-  tagIds: z.array(z.string()).max(20),
+  tagIds: z.array(z.string()).max(50),
 });
 
 export const followSchema = z.object({

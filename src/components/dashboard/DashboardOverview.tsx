@@ -6,11 +6,8 @@ import CreditBalanceCard from "./CreditBalanceCard";
 import ActivityFeed from "./ActivityFeed";
 import CourseProgressWidget from "./CourseProgressWidget";
 import QuickActionsGrid from "./QuickActionsGrid";
-import BookmarksList from "./BookmarksList";
 import NotificationCard from "./NotificationCard";
-import MessageCard from "./MessageCard";
-import EnergyMatchCard from "./EnergyMatchCard";
-import TrendingPostsCard from "./TrendingPostsCard";
+import WelcomeInsightCard from "./WelcomeInsightCard";
 
 export default function DashboardOverview() {
   const { data, isLoading, error } = useDashboard();
@@ -52,6 +49,13 @@ export default function DashboardOverview() {
         </p>
       </div>
 
+      {/* Today's Insight */}
+      <WelcomeInsightCard
+        birthDate={user.birthDate}
+        birthHour={user.birthHour}
+        birthGender={user.birthGender}
+      />
+
       {/* Main grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Chart Snapshot — spans 2 cols on desktop */}
@@ -69,36 +73,25 @@ export default function DashboardOverview() {
         {/* Notifications */}
         <NotificationCard />
 
-        {/* Messages */}
-        <MessageCard />
-
-        {/* Activity Feed — spans 2 cols */}
-        <div className="lg:col-span-2">
-          <ActivityFeed
-            recentPosts={recentPosts}
-            recentComments={recentComments}
-          />
-        </div>
-
         {/* Quick Actions */}
         <QuickActionsGrid />
 
-        {/* Course Progress — spans 2 cols */}
-        <div className="lg:col-span-2">
-          <CourseProgressWidget enrollments={enrollments} />
-        </div>
+        {/* Activity Feed — spans 2 cols, hide if empty */}
+        {(recentPosts.length > 0 || recentComments.length > 0) && (
+          <div className="lg:col-span-2">
+            <ActivityFeed
+              recentPosts={recentPosts}
+              recentComments={recentComments}
+            />
+          </div>
+        )}
 
-        {/* Energy Matches — full width */}
-        <div className="lg:col-span-3">
-          <EnergyMatchCard />
-        </div>
-
-        {/* Trending + Bookmarks */}
-        <div className="lg:col-span-2">
-          <TrendingPostsCard />
-        </div>
-
-        <BookmarksList tier={user.tier} />
+        {/* Course Progress — spans 2 cols, hide if no enrollments */}
+        {enrollments.length > 0 && (
+          <div className="lg:col-span-2">
+            <CourseProgressWidget enrollments={enrollments} />
+          </div>
+        )}
       </div>
     </div>
   );

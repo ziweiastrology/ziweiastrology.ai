@@ -345,6 +345,12 @@ export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps)
               Exact Time of Birth <span className="text-quantum-red text-[8px]">*</span>
               <span className="text-parchment-500/50 normal-case tracking-normal ml-1">(critical)</span>
             </label>
+            <p className="flex items-start gap-1.5 mb-2 text-xs text-parchment-600 leading-relaxed">
+              <svg className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-gold-500/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+              </svg>
+              Accurate birth hour is essential for chart precision. If unsure, ask your parents or check your birth certificate.
+            </p>
             <div className="grid grid-cols-2 gap-3">
               <select
                 value={form.birthHour}

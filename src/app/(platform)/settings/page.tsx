@@ -20,11 +20,39 @@ export default function SettingsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
+  // Birth info state — must be declared before any early returns
+  const [birthDate, setBirthDate] = useState("");
+  const [birthHour, setBirthHour] = useState("");
+  const [birthMinute, setBirthMinute] = useState("");
+  const [birthLocation, setBirthLocation] = useState("");
+  const [birthGender, setBirthGender] = useState("");
+  const [birthLoading, setBirthLoading] = useState(false);
+  const [birthSaved, setBirthSaved] = useState(false);
+  const [birthLoaded, setBirthLoaded] = useState(false);
+
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/auth/login?callbackUrl=/settings");
     }
   }, [status, router]);
+
+  // Load existing birth info
+  useEffect(() => {
+    if (birthLoaded || status !== "authenticated") return;
+    fetch("/api/dashboard")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.user) {
+          if (data.user.birthDate) setBirthDate(data.user.birthDate.slice(0, 10));
+          if (data.user.birthHour != null) setBirthHour(String(data.user.birthHour));
+          if (data.user.birthMinute != null) setBirthMinute(String(data.user.birthMinute));
+          if (data.user.birthLocation) setBirthLocation(data.user.birthLocation);
+          if (data.user.birthGender) setBirthGender(data.user.birthGender);
+        }
+        setBirthLoaded(true);
+      })
+      .catch(() => setBirthLoaded(true));
+  }, [birthLoaded, status]);
 
   if (status === "loading") {
     return (
@@ -42,34 +70,6 @@ export default function SettingsPage() {
 
   const tier = (session.user as { tier?: string })?.tier || "FREE";
   const tierInfo = TIER_LABELS[tier] || TIER_LABELS.FREE;
-
-  // Birth info state
-  const [birthDate, setBirthDate] = useState("");
-  const [birthHour, setBirthHour] = useState("");
-  const [birthMinute, setBirthMinute] = useState("");
-  const [birthLocation, setBirthLocation] = useState("");
-  const [birthGender, setBirthGender] = useState("");
-  const [birthLoading, setBirthLoading] = useState(false);
-  const [birthSaved, setBirthSaved] = useState(false);
-  const [birthLoaded, setBirthLoaded] = useState(false);
-
-  // Load existing birth info
-  useEffect(() => {
-    if (birthLoaded) return;
-    fetch("/api/dashboard")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.user) {
-          if (data.user.birthDate) setBirthDate(data.user.birthDate.slice(0, 10));
-          if (data.user.birthHour != null) setBirthHour(String(data.user.birthHour));
-          if (data.user.birthMinute != null) setBirthMinute(String(data.user.birthMinute));
-          if (data.user.birthLocation) setBirthLocation(data.user.birthLocation);
-          if (data.user.birthGender) setBirthGender(data.user.birthGender);
-        }
-        setBirthLoaded(true);
-      })
-      .catch(() => setBirthLoaded(true));
-  }, [birthLoaded]);
 
   async function handleSaveBirthInfo() {
     setBirthLoading(true);

@@ -50,7 +50,7 @@ export default function UserMenu() {
           </div>
 
           <Link
-            href="/academy/dashboard"
+            href="/dashboard"
             onClick={() => setOpen(false)}
             className={cn(
               "flex items-center gap-2 px-4 py-2 text-sm text-parchment-400 transition-colors hover:bg-celestial-700/50 hover:text-parchment-200"

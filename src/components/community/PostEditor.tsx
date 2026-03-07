@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Send, X } from "lucide-react";
+import { Send, X, LogIn } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { useCreatePost } from "@/hooks/useCommunity";
 
@@ -13,6 +15,7 @@ const POST_TYPES = [
 ];
 
 export default function PostEditor() {
+  const { data: session } = useSession();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [type, setType] = useState("DISCUSSION");
@@ -21,6 +24,23 @@ export default function PostEditor() {
   const createPost = useCreatePost();
 
   const [errors, setErrors] = useState<{ title?: string; content?: string }>({});
+
+  if (!session) {
+    return (
+      <div className="rounded-lg border border-gold-700/20 bg-celestial-800/30 p-5 text-center">
+        <p className="text-sm text-parchment-400 mb-3">
+          Sign in to share your analysis, insight, or question with the community.
+        </p>
+        <Link
+          href="/auth/login"
+          className="inline-flex items-center gap-1.5 rounded-md border border-gold-700/40 px-4 py-2 text-sm font-medium text-gold-400 transition-all hover:border-gold-500 hover:bg-gold-500/10"
+        >
+          <LogIn className="h-4 w-4" />
+          Sign in to post
+        </Link>
+      </div>
+    );
+  }
 
   function addTag() {
     const tag = tagInput.trim().toLowerCase();

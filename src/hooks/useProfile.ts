@@ -31,7 +31,7 @@ export function useUpdateProfile() {
 
 export function useAvailableTags() {
   return useQuery({
-    queryKey: ["tags"],
+    queryKey: ["tags-tree"],
     queryFn: () => fetch("/api/user/tags").then((r) => r.json()),
     staleTime: 300_000,
   });

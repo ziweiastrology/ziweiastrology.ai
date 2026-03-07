@@ -1,11 +1,25 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { TrendingUp, Users, Sparkles } from "lucide-react";
 import { useMyMatches } from "@/hooks/useMatches";
 
+interface SidebarData {
+  trendingTags: { name: string; count: number }[];
+  groups: { id: string; name: string; slug: string; memberCount: number }[];
+}
+
 export default function FeedSidebar() {
   const { data: matches } = useMyMatches(3);
+  const [sidebar, setSidebar] = useState<SidebarData | null>(null);
+
+  useEffect(() => {
+    fetch("/api/community/sidebar")
+      .then((r) => r.json())
+      .then(setSidebar)
+      .catch(() => {});
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -13,42 +27,46 @@ export default function FeedSidebar() {
       <div className="rounded-lg border border-gold-700/20 bg-celestial-800/30 p-4">
         <h3 className="mb-3 flex items-center gap-1.5 text-sm font-semibold text-parchment-200">
           <TrendingUp className="h-4 w-4 text-gold-400" />
-          热门标签
+          Trending Tags
         </h3>
-        <div className="flex flex-wrap gap-1.5">
-          {["紫微斗数", "风水", "投资理财", "职业规划", "八字"].map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full border border-gold-700/20 px-2 py-0.5 text-xs text-parchment-500 hover:border-gold-700/40 hover:text-parchment-300 cursor-pointer transition-colors"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
+        {sidebar?.trendingTags && sidebar.trendingTags.length > 0 ? (
+          <div className="flex flex-wrap gap-1.5">
+            {sidebar.trendingTags.map((tag) => (
+              <span
+                key={tag.name}
+                className="cursor-pointer rounded-full border border-gold-700/20 px-2 py-0.5 text-xs text-parchment-500 transition-colors hover:border-gold-700/40 hover:text-parchment-300"
+              >
+                {tag.name}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <p className="text-xs text-parchment-700">No trending tags yet</p>
+        )}
       </div>
 
       {/* Groups */}
       <div className="rounded-lg border border-gold-700/20 bg-celestial-800/30 p-4">
         <h3 className="mb-3 flex items-center gap-1.5 text-sm font-semibold text-parchment-200">
           <Users className="h-4 w-4 text-gold-400" />
-          推荐群组
+          Groups
         </h3>
-        <div className="space-y-2">
-          {[
-            { name: "四化研究", slug: "four-transformers", members: 67 },
-            { name: "初学者圈", slug: "beginner-study", members: 156 },
-            { name: "事业财富", slug: "career-wealth", members: 94 },
-          ].map((g) => (
-            <Link
-              key={g.slug}
-              href={`/community/groups/${g.slug}`}
-              className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm text-parchment-400 hover:bg-celestial-700/30 transition-colors"
-            >
-              <span>{g.name}</span>
-              <span className="text-xs text-parchment-700">{g.members}</span>
-            </Link>
-          ))}
-        </div>
+        {sidebar?.groups && sidebar.groups.length > 0 ? (
+          <div className="space-y-2">
+            {sidebar.groups.map((g) => (
+              <Link
+                key={g.id}
+                href={`/community/groups/${g.slug}`}
+                className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm text-parchment-400 transition-colors hover:bg-celestial-700/30"
+              >
+                <span>{g.name}</span>
+                <span className="text-xs text-parchment-700">{g.memberCount}</span>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <p className="text-xs text-parchment-700">No groups yet</p>
+        )}
       </div>
 
       {/* Energy Matches */}
@@ -56,19 +74,19 @@ export default function FeedSidebar() {
         <div className="rounded-lg border border-gold-700/20 bg-celestial-800/30 p-4">
           <h3 className="mb-3 flex items-center gap-1.5 text-sm font-semibold text-parchment-200">
             <Sparkles className="h-4 w-4 text-gold-400" />
-            能量匹配
+            Energy Matches
           </h3>
           <div className="space-y-2">
             {matches.map((m: { user: { id: string; name: string | null; headline: string | null }; overallScore: number }) => (
               <Link
                 key={m.user.id}
                 href={`/profile/${m.user.id}`}
-                className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm hover:bg-celestial-700/30 transition-colors"
+                className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-celestial-700/30"
               >
                 <div>
                   <p className="text-parchment-300">{m.user.name || "Anonymous"}</p>
                   {m.user.headline && (
-                    <p className="text-xs text-parchment-600 truncate max-w-[140px]">{m.user.headline}</p>
+                    <p className="max-w-[140px] truncate text-xs text-parchment-600">{m.user.headline}</p>
                   )}
                 </div>
                 <span className="text-xs font-semibold text-gold-400">{m.overallScore}%</span>

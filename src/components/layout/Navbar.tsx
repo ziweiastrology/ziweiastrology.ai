@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -14,8 +14,7 @@ import {
   Info,
   LogIn,
   FlaskConical,
-  Scale,
-  PenLine,
+  ChevronDown,
   Bell,
   MessageCircle,
 } from "lucide-react";
@@ -59,18 +58,38 @@ function NavBadges() {
 
 const NAV_LINKS = [
   { href: "/about", label: "About", icon: Info },
-  { href: "/resources", label: "Resources", icon: BookOpen },
   { href: "/case-studies", label: "Case Studies", icon: FlaskConical },
-  { href: "/system-comparison", label: "Compare", icon: Scale },
-  { href: "/blog", label: "Blog", icon: PenLine },
   { href: "/community", label: "Community", icon: Users },
   { href: "/academy", label: "Academy", icon: GraduationCap },
 ];
 
+const LEARN_DROPDOWN = [
+  { href: "/resources", label: "Resources" },
+  { href: "/blog", label: "Blog" },
+  { href: "/system-comparison", label: "Compare Systems" },
+];
+
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [learnOpen, setLearnOpen] = useState(false);
+  const [mobileLearnOpen, setMobileLearnOpen] = useState(false);
+  const learnRef = useRef<HTMLDivElement>(null);
+  const learnTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
   const { data: session } = useSession();
+
+  const isLearnActive = LEARN_DROPDOWN.some((item) => pathname.startsWith(item.href));
+
+  // Close learn dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (learnRef.current && !learnRef.current.contains(e.target as Node)) {
+        setLearnOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   return (
     <nav className="sticky top-0 z-50 border-b border-gold-700/20 bg-celestial-900/95 backdrop-blur-md">
@@ -98,7 +117,69 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden items-center gap-1 md:flex">
-            {NAV_LINKS.map(({ href, label, icon: Icon }) => {
+            {/* About link */}
+            <Link
+              href="/about"
+              aria-current={pathname.startsWith("/about") ? "page" : undefined}
+              className={cn(
+                "flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-all",
+                pathname.startsWith("/about")
+                  ? "bg-celestial-700/60 text-gold-400"
+                  : "text-parchment-400 hover:bg-celestial-800/60 hover:text-parchment-200"
+              )}
+            >
+              <Info className="h-4 w-4" />
+              About
+            </Link>
+
+            {/* Learn dropdown */}
+            <div
+              ref={learnRef}
+              className="relative"
+              onMouseEnter={() => {
+                if (learnTimeout.current) clearTimeout(learnTimeout.current);
+                setLearnOpen(true);
+              }}
+              onMouseLeave={() => {
+                learnTimeout.current = setTimeout(() => setLearnOpen(false), 150);
+              }}
+            >
+              <button
+                onClick={() => setLearnOpen((v) => !v)}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-all",
+                  isLearnActive
+                    ? "bg-celestial-700/60 text-gold-400"
+                    : "text-parchment-400 hover:bg-celestial-800/60 hover:text-parchment-200"
+                )}
+              >
+                <BookOpen className="h-4 w-4" />
+                Learn
+                <ChevronDown className={cn("h-3 w-3 transition-transform", learnOpen && "rotate-180")} />
+              </button>
+              {learnOpen && (
+                <div className="absolute top-full left-0 mt-1 w-48 rounded-md border border-gold-700/30 bg-celestial-900/98 backdrop-blur-md shadow-lg overflow-hidden z-50">
+                  {LEARN_DROPDOWN.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setLearnOpen(false)}
+                      className={cn(
+                        "block px-4 py-2.5 text-sm transition-colors",
+                        pathname.startsWith(item.href)
+                          ? "bg-celestial-700/60 text-gold-400"
+                          : "text-parchment-400 hover:bg-celestial-800/60 hover:text-parchment-200"
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Remaining nav links */}
+            {NAV_LINKS.slice(1).map(({ href, label, icon: Icon }) => {
               const isActive = pathname.startsWith(href);
               return (
                 <Link
@@ -155,7 +236,58 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="border-t border-gold-700/20 bg-celestial-900/98 md:hidden">
           <div className="space-y-1 px-4 pb-4 pt-2">
-            {NAV_LINKS.map(({ href, label, icon: Icon }) => {
+            {/* About */}
+            <Link
+              href="/about"
+              onClick={() => setMobileOpen(false)}
+              aria-current={pathname.startsWith("/about") ? "page" : undefined}
+              className={cn(
+                "flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-all",
+                pathname.startsWith("/about")
+                  ? "bg-celestial-700/60 text-gold-400"
+                  : "text-parchment-400 hover:bg-celestial-800/60 hover:text-parchment-200"
+              )}
+            >
+              <Info className="h-4 w-4" />
+              About
+            </Link>
+
+            {/* Learn — expandable */}
+            <button
+              onClick={() => setMobileLearnOpen((v) => !v)}
+              className={cn(
+                "flex w-full items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-all",
+                isLearnActive
+                  ? "bg-celestial-700/60 text-gold-400"
+                  : "text-parchment-400 hover:bg-celestial-800/60 hover:text-parchment-200"
+              )}
+            >
+              <BookOpen className="h-4 w-4" />
+              Learn
+              <ChevronDown className={cn("ml-auto h-3 w-3 transition-transform", mobileLearnOpen && "rotate-180")} />
+            </button>
+            {mobileLearnOpen && (
+              <div className="ml-6 space-y-1">
+                {LEARN_DROPDOWN.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileOpen(false)}
+                    className={cn(
+                      "block rounded-md px-3 py-2 text-sm transition-colors",
+                      pathname.startsWith(item.href)
+                        ? "text-gold-400"
+                        : "text-parchment-500 hover:text-parchment-300"
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            {/* Remaining links */}
+            {NAV_LINKS.slice(1).map(({ href, label, icon: Icon }) => {
               const isActive = pathname.startsWith(href);
               return (
                 <Link

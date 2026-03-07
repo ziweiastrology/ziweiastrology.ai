@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { registerSchema } from "@/lib/validations";
 import { rateLimit } from "@/lib/rateLimit";
+import { computeMatchesForUser } from "@/lib/computeMatchesForUser";
 
 export async function POST(request: Request) {
   try {
@@ -48,13 +49,17 @@ export async function POST(request: Request) {
       },
     });
 
+    // Fire-and-forget: compute energy matches (no-op if no birth data yet)
+    computeMatchesForUser(user.id).catch(console.error);
+
     return NextResponse.json(
       { user: { id: user.id, name: user.name, email: user.email } },
       { status: 201 }
     );
-  } catch {
+  } catch (error) {
+    console.error("Register error:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Internal server error", details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }

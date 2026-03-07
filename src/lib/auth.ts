@@ -12,7 +12,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
     // Keep the shared providers (Google) but override Credentials with real authorize()
-    ...authConfig.providers.filter((p) => (p as { name?: string }).name !== "credentials"),
+    ...authConfig.providers.filter((p) => (p as { type?: string }).type !== "credentials"),
     Credentials({
       name: "credentials",
       credentials: {
