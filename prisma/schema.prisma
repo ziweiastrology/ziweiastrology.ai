@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ========================
@@ -31,16 +32,39 @@ model User {
   subscription   Subscription?
   stripeCustomerId String?
 
+  birthDate      DateTime?
+  birthHour      Int?
+  birthMinute    Int?
+  birthLocation  String?
+  birthGender    String?
+
+  // Profile
+  bio             String?
+  headline        String?
+  location        String?
+  isProfilePublic Boolean  @default(true)
+  avatarUrl       String?
+
   credits          Int       @default(0)
   lastDailyGrant   DateTime?
   creditHistory    CreditTransaction[]
   conversations    Conversation[]
 
+  bookmarks        Bookmark[]
   caseReactions        CaseReaction[]
   caseComments         CaseComment[]
   casePollsCreated     CasePoll[]
   casePollVotes        CasePollVote[]
   celebritySubmissions CelebritySubmission[]
+
+  tags             UserTag[]
+  notifications    Notification[]
+  sentMessages     DirectMessage[]
+  dmConversations  DMConversation[] @relation("DMParticipants")
+  followers        Follow[]         @relation("Following")
+  following        Follow[]         @relation("Followers")
+  matchesAsA       UserMatch[]      @relation("MatchesAsA")
+  matchesAsB       UserMatch[]      @relation("MatchesAsB")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -159,6 +183,21 @@ enum CourseLevel {
   MASTER
 }
 
+enum TagCategory {
+  INDUSTRY
+  INTEREST
+  GOAL
+  ASTRO
+}
+
+enum NotificationType {
+  SYSTEM
+  VOTE
+  COMMENT
+  FOLLOW
+  MATCH
+}
+
 // ========================
 // Credits
 // ========================
@@ -234,6 +273,8 @@ model Post {
   type     PostType
   category String?
   pinned   Boolean  @default(false)
+  tags      String[]
+  viewCount Int      @default(0)
 
   authorId String
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
@@ -509,4 +550,128 @@ model CelebritySubmission {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ========================
+// Bookmarks
+// ========================
+
+model Bookmark {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetType String   // "post" | "resource" | "course" | "case_study"
+  targetId   String
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, targetType, targetId])
+  @@index([userId, createdAt])
+}
+
+// ========================
+// Tags
+// ========================
+
+model Tag {
+  id        String      @id @default(cuid())
+  name      String
+  nameCn    String
+  category  TagCategory
+  users     UserTag[]
+  createdAt DateTime    @default(now())
+
+  @@unique([name, category])
+}
+
+model UserTag {
+  id        String   @id @default(cuid())
+  userId    String
+  tagId     String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tag       Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, tagId])
+}
+
+// ========================
+// Social — Follow
+// ========================
+
+model Follow {
+  id          String   @id @default(cuid())
+  followerId  String
+  followingId String
+  follower    User     @relation("Followers", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@unique([followerId, followingId])
+  @@index([followingId])
+}
+
+// ========================
+// Notifications
+// ========================
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  content   String
+  link      String?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  @@index([userId, read, createdAt])
+}
+
+// ========================
+// Direct Messages
+// ========================
+
+model DMConversation {
+  id           String          @id @default(cuid())
+  participants User[]          @relation("DMParticipants")
+  messages     DirectMessage[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model DirectMessage {
+  id             String         @id @default(cuid())
+  conversationId String
+  conversation   DMConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User           @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  content        String         @db.Text
+  readAt         DateTime?
+  createdAt      DateTime       @default(now())
+
+  @@index([conversationId, createdAt])
+  @@index([senderId])
+}
+
+// ========================
+// Energy Matching
+// ========================
+
+model UserMatch {
+  id           String   @id @default(cuid())
+  userAId      String
+  userBId      String
+  userA        User     @relation("MatchesAsA", fields: [userAId], references: [id], onDelete: Cascade)
+  userB        User     @relation("MatchesAsB", fields: [userBId], references: [id], onDelete: Cascade)
+  overallScore Int
+  bizScore     Int
+  friendScore  Int
+  guirenScore  Int
+  sharedTags   String[]
+  calculatedAt DateTime @default(now())
+
+  @@unique([userAId, userBId])
+  @@index([userAId, overallScore])
+  @@index([userBId, overallScore])
 }
