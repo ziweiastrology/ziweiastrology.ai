@@ -262,11 +262,11 @@ export default function Footer() {
               Contact
             </h4>
             <a
-              href="mailto:hello@ziweiastrology.ai"
+              href="mailto:support@ziweiastrology.ai"
               className="flex items-center gap-2 text-sm text-parchment-500 transition-colors hover:text-gold-400"
             >
               <Mail className="h-4 w-4" />
-              hello@ziweiastrology.ai
+              support@ziweiastrology.ai
             </a>
           </div>
         </div>

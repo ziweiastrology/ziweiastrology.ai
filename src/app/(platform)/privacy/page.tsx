@@ -126,10 +126,10 @@ export default function PrivacyPage() {
         <p>
           To exercise any of these rights, contact us at{" "}
           <a
-            href="mailto:hello@ziweiastrology.ai"
+            href="mailto:support@ziweiastrology.ai"
             className="text-gold-400 hover:text-gold-300"
           >
-            hello@ziweiastrology.ai
+            support@ziweiastrology.ai
           </a>
           .
         </p>
@@ -157,10 +157,10 @@ export default function PrivacyPage() {
         <p>
           If you have questions about this Privacy Policy, please contact us at{" "}
           <a
-            href="mailto:hello@ziweiastrology.ai"
+            href="mailto:support@ziweiastrology.ai"
             className="text-gold-400 hover:text-gold-300"
           >
-            hello@ziweiastrology.ai
+            support@ziweiastrology.ai
           </a>
           .
         </p>

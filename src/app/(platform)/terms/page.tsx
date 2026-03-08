@@ -158,10 +158,10 @@ export default function TermsPage() {
         <p>
           For questions about these Terms, contact us at{" "}
           <a
-            href="mailto:hello@ziweiastrology.ai"
+            href="mailto:support@ziweiastrology.ai"
             className="text-gold-400 hover:text-gold-300"
           >
-            hello@ziweiastrology.ai
+            support@ziweiastrology.ai
           </a>
           .
         </p>
