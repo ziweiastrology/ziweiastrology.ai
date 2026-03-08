@@ -66,6 +66,7 @@ model User {
   matchesAsA       UserMatch[]      @relation("MatchesAsA")
   matchesAsB       UserMatch[]      @relation("MatchesAsB")
   dailyInsights    DailyInsight[]
+  reports          ChartReport[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -136,6 +137,21 @@ enum CreditActionType {
   CHATBOT_MESSAGE
   FULL_READING
   PURCHASE
+  REPORT_GENERATION
+}
+
+enum ReportStatus {
+  PREVIEW
+  GENERATING
+  COMPLETE
+  FAILED
+}
+
+enum ReportSectionType {
+  PALACE_ANALYSIS
+  DECADE_ANALYSIS
+  OVERALL_ASSESSMENT
+  TOPIC_DEEP_DIVE
 }
 
 enum ResourceType {
@@ -710,4 +726,42 @@ model UserMatch {
   @@unique([userAId, userBId])
   @@index([userAId, overallScore])
   @@index([userBId, overallScore])
+}
+
+// ========================
+// Chart Reports
+// ========================
+
+model ChartReport {
+  id          String       @id @default(cuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      ReportStatus @default(PREVIEW)
+  birthDate   DateTime
+  birthHour   Int
+  birthGender String
+  palacesJson Json
+  metaJson    Json
+  sections    ReportSection[]
+  creditCost  Int          @default(8)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([userId, createdAt])
+}
+
+model ReportSection {
+  id             String            @id @default(cuid())
+  reportId       String
+  report         ChartReport       @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  type           ReportSectionType
+  key            String
+  title          String
+  content        String            @db.Text
+  orderIndex     Int               @default(0)
+  conversationId String?
+  createdAt      DateTime          @default(now())
+
+  @@unique([reportId, key])
+  @@index([reportId, type])
 }

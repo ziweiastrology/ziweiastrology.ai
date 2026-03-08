@@ -195,6 +195,15 @@ export default function AICopilotWidget() {
 
               if (data.done && data.conversationId) {
                 setConversationId(data.conversationId);
+                if (data.deepDiveSaved) {
+                  setMessages((prev) => [
+                    ...prev,
+                    {
+                      role: "system",
+                      content: "Insight saved to your report \u2014 View in Report \u2192",
+                    },
+                  ]);
+                }
               }
 
               if (data.error) {

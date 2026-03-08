@@ -208,10 +208,67 @@ export async function POST(request: Request) {
             },
           });
 
+          // Deep dive synthesis — after 4+ messages in a topic conversation
+          let deepDiveSaved = false;
+          const messageCount = history.length + 1; // includes assistant response
+          if (messageCount >= 8 && conversation.topic && conversation.topic !== "general") {
+            try {
+              // Check if user has a COMPLETE report
+              const latestReport = await prisma.chartReport.findFirst({
+                where: { userId, status: "COMPLETE" },
+                orderBy: { createdAt: "desc" },
+              });
+
+              if (latestReport) {
+                // Synthesize conversation into report section
+                const synthesisResponse = await anthropic.messages.create({
+                  model: "claude-sonnet-4-20250514",
+                  max_tokens: 2000,
+                  system: "You are a Zi Wei Dou Shu analyst. Synthesize the following conversation into a structured report section. Use markdown headers. Focus on key insights and actionable advice. Keep Chinese ZWDS terms with English explanations.",
+                  messages: [
+                    {
+                      role: "user",
+                      content: `Synthesize this ${conversation.topic} consultation into a structured deep-dive report section:\n\n${history.map((m) => `${m.role}: ${m.content}`).join("\n\n")}\n\nassistant: ${fullResponse}`,
+                    },
+                  ],
+                });
+
+                const synthesisContent =
+                  synthesisResponse.content[0].type === "text"
+                    ? synthesisResponse.content[0].text
+                    : "";
+
+                if (synthesisContent) {
+                  const topicKey = `topic_${conversation.topic}_${conversation.id.slice(-6)}`;
+                  await prisma.reportSection.upsert({
+                    where: {
+                      reportId_key: { reportId: latestReport.id, key: topicKey },
+                    },
+                    create: {
+                      reportId: latestReport.id,
+                      type: "TOPIC_DEEP_DIVE",
+                      key: topicKey,
+                      title: `${conversation.topic.charAt(0).toUpperCase() + conversation.topic.slice(1)} Deep Dive`,
+                      content: synthesisContent,
+                      orderIndex: 20,
+                      conversationId: conversation.id,
+                    },
+                    update: {
+                      content: synthesisContent,
+                    },
+                  });
+                  deepDiveSaved = true;
+                }
+              }
+            } catch (synthErr) {
+              console.error("Deep dive synthesis error:", synthErr);
+            }
+          }
+
           // Send done event with metadata
           controller.enqueue(
             encoder.encode(
-              `data: ${JSON.stringify({ done: true, conversationId: conversation.id, credits: creditResult.credits })}\n\n`
+              `data: ${JSON.stringify({ done: true, conversationId: conversation.id, credits: creditResult.credits, deepDiveSaved })}\n\n`
             )
           );
         } catch (err) {

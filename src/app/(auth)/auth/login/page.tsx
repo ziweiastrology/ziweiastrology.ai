@@ -120,14 +120,23 @@ function LoginForm() {
         <div className="h-px flex-1 bg-gold-700/20" />
       </div>
 
-      {/* Google OAuth */}
-      <Button
-        variant="outline"
-        className="w-full"
-        onClick={() => signIn("google", { callbackUrl })}
-      >
-        Continue with Google
-      </Button>
+      {/* Social OAuth */}
+      <div className="space-y-3">
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => signIn("google", { callbackUrl })}
+        >
+          Continue with Google
+        </Button>
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => signIn("facebook", { callbackUrl })}
+        >
+          Continue with Facebook
+        </Button>
+      </div>
 
       <p className="mt-6 text-center text-sm text-parchment-500">
         Don&apos;t have an account?{" "}

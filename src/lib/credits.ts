@@ -13,6 +13,7 @@ export const CREDIT_COSTS = {
   PALACE_UNLOCK: 1,
   CHATBOT_MESSAGE: 1,
   FULL_READING: 8, // Discount vs 9 individual
+  REPORT_GENERATION: 8,
 } as const;
 
 // Earning rules: amount + daily limit

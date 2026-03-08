@@ -17,6 +17,7 @@ import {
   ChevronDown,
   Bell,
   MessageCircle,
+  FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UserMenu from "@/components/auth/UserMenu";
@@ -198,6 +199,21 @@ export default function Navbar() {
                 </Link>
               );
             })}
+            {session && (
+              <Link
+                href="/reports"
+                aria-current={pathname.startsWith("/reports") ? "page" : undefined}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-all",
+                  pathname.startsWith("/reports")
+                    ? "bg-celestial-700/60 text-gold-400"
+                    : "text-parchment-400 hover:bg-celestial-800/60 hover:text-parchment-200"
+                )}
+              >
+                <FileText className="h-4 w-4" />
+                Reports
+              </Link>
+            )}
           </div>
 
           {/* Right side */}
@@ -307,6 +323,22 @@ export default function Navbar() {
                 </Link>
               );
             })}
+            {session && (
+              <Link
+                href="/reports"
+                onClick={() => setMobileOpen(false)}
+                aria-current={pathname.startsWith("/reports") ? "page" : undefined}
+                className={cn(
+                  "flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-all",
+                  pathname.startsWith("/reports")
+                    ? "bg-celestial-700/60 text-gold-400"
+                    : "text-parchment-400 hover:bg-celestial-800/60 hover:text-parchment-200"
+                )}
+              >
+                <FileText className="h-4 w-4" />
+                Reports
+              </Link>
+            )}
             {!session && (
               <Link
                 href="/auth/login"

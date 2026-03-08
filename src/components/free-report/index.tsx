@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useMatrixStore } from "@/stores/useMatrixStore";
 import { useVerificationStore } from "@/stores/useVerificationStore";
@@ -14,6 +14,8 @@ import FableStories from "./FableStories";
 import DecadeDeepAnalysis from "./DecadeDeepAnalysis";
 import LiuNianTeaser from "./LiuNianTeaser";
 import { getStatesPalaces, buildInsightNarrative } from "./shared";
+import FullReportPreview from "./FullReportPreview";
+import { useCredits } from "@/hooks/useCredits";
 
 /* ─── Main Component ─── */
 
@@ -31,6 +33,47 @@ export default function FreeReport() {
 
   const userTier = (session?.user as { tier?: string } | undefined)?.tier;
   const isLoggedIn = !!session;
+
+  const { data: creditsData } = useCredits();
+  const [reportGenerating, setReportGenerating] = useState(false);
+
+  const handleGenerateReport = useCallback(async () => {
+    if (!session || !palaces.length || !chartMeta) return;
+    setReportGenerating(true);
+    try {
+      const res = await fetch("/api/reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          palaces: palaces.map((p) => ({
+            name: p.name,
+            nameCn: p.nameCn,
+            stars: p.stars,
+            energy: p.energy,
+            state: p.state,
+            consciousness: p.consciousness,
+            decadeRange: p.decadeRange,
+            decadeHeavenlyStem: p.decadeHeavenlyStem,
+            earthlyBranch: p.earthlyBranch,
+          })),
+          meta: chartMeta,
+          birthDate: birthDetails?.birthYear && birthDetails?.birthMonth && birthDetails?.birthDay
+            ? `${birthDetails.birthYear}-${birthDetails.birthMonth.padStart(2, "0")}-${birthDetails.birthDay.padStart(2, "0")}`
+            : new Date().toISOString(),
+          birthHour: birthDetails?.birthHour ? parseInt(birthDetails.birthHour) : 0,
+          birthGender: birthDetails?.gender || "male",
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        window.location.href = `/reports/${data.reportId}`;
+      }
+    } catch (err) {
+      console.error("Report generation error:", err);
+    } finally {
+      setReportGenerating(false);
+    }
+  }, [session, palaces, chartMeta, birthDetails]);
 
   const statesPalaces = useMemo(() => getStatesPalaces(palaces), [palaces]);
   const narrative = useMemo(
@@ -139,6 +182,17 @@ export default function FreeReport() {
         {/* ─── 1H: Decade Overview (FREE+ only) ─── */}
         {isLoggedIn && chartMeta && (
           <DecadeOverview palaces={palaces} chartMeta={chartMeta} />
+        )}
+
+        {/* ─── 1I: Full Report Preview (logged in only) ─── */}
+        {isLoggedIn && palaces.length > 0 && chartMeta && (
+          <FullReportPreview
+            palaces={palaces}
+            chartMeta={chartMeta}
+            credits={creditsData?.credits ?? 0}
+            onGenerate={handleGenerateReport}
+            generating={reportGenerating}
+          />
         )}
 
         {/* ─── 1J: Fable Stories (BASIC+ only, blurred for FREE) ─── */}
