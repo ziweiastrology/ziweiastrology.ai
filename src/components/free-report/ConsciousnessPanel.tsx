@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import type { PalaceDetail } from "@/types";
 
 interface ConsciousnessPanelProps {
@@ -7,13 +9,32 @@ interface ConsciousnessPanelProps {
 }
 
 export default function ConsciousnessPanel({ palaces }: ConsciousnessPanelProps) {
+  const [expanded, setExpanded] = useState(false);
+  const preview = palaces.slice(0, 3);
+  const visible = expanded ? palaces : preview;
+
   return (
     <div>
-      <p className="text-[10px] font-mono tracking-[0.3em] uppercase text-gold-500/50 mb-4">
-        CONSCIOUSNESS READINGS · 宫位解读
-      </p>
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full flex items-center justify-between mb-4 group cursor-pointer"
+      >
+        <p className="text-[10px] font-mono tracking-[0.3em] uppercase text-gold-500/50">
+          CONSCIOUSNESS READINGS · 宫位解读
+        </p>
+        <div className="flex items-center gap-1.5 text-gold-500/50 group-hover:text-gold-400 transition-colors">
+          <span className="text-[10px] font-mono">
+            {expanded ? "Collapse" : `Show all ${palaces.length}`}
+          </span>
+          {expanded ? (
+            <ChevronUp className="h-3.5 w-3.5" />
+          ) : (
+            <ChevronDown className="h-3.5 w-3.5" />
+          )}
+        </div>
+      </button>
       <div className="space-y-3">
-        {palaces.map((palace) => (
+        {visible.map((palace) => (
           <div
             key={palace.id}
             className="p-4 rounded-lg border border-gold-700/15 bg-celestial-900/30"
@@ -32,6 +53,16 @@ export default function ConsciousnessPanel({ palaces }: ConsciousnessPanelProps)
           </div>
         ))}
       </div>
+      {!expanded && palaces.length > 3 && (
+        <button
+          onClick={() => setExpanded(true)}
+          className="mt-3 w-full py-2 text-[10px] font-mono tracking-wider text-gold-500/50
+                     hover:text-gold-400 transition-colors border border-gold-700/15 rounded-lg
+                     bg-celestial-900/20 hover:bg-celestial-900/40"
+        >
+          + {palaces.length - 3} more palaces
+        </button>
+      )}
     </div>
   );
 }
