@@ -69,7 +69,7 @@ export default function CaseCard({
       <h4 className="text-lg font-semibold text-parchment-100">
         {case_.title}
       </h4>
-      <p className="mt-0.5 text-sm text-parchment-500">{case_.titleCn}</p>
+      {case_.titleCn && <p className="mt-0.5 text-sm text-parchment-500">{case_.titleCn}</p>}
 
       {/* Star + Transformer pills — always visible as visual hook */}
       <div className="mt-3 flex flex-wrap gap-1.5">

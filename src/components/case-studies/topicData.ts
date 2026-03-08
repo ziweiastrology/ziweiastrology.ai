@@ -55,10 +55,10 @@ export const TOPICS: TopicData[] = [
       {
         id: "health-1",
         title: "Chronic Fatigue at Age 35",
-        titleCn: "35岁慢性疲劳",
+        titleCn: "",
         subject: {
           name: "Steve Jobs",
-          nameCn: "史蒂夫·乔布斯",
+          nameCn: "",
           era: "1955–2011",
           title: "Apple Co-founder",
           avatar: "/case-studies/steve-jobs.jpg",
@@ -76,7 +76,7 @@ export const TOPICS: TopicData[] = [
       {
         id: "health-2",
         title: "Unexpected Surgery at Age 42",
-        titleCn: "42岁意外手术",
+        titleCn: "",
         subject: {
           name: "Guan Yu",
           nameCn: "关羽",
@@ -97,10 +97,10 @@ export const TOPICS: TopicData[] = [
       {
         id: "health-3",
         title: "AI Race Burnout — Mind-Body Collapse Under Pressure",
-        titleCn: "AI竞赛高压下的身心透支",
+        titleCn: "",
         subject: {
           name: "Sam Altman",
-          nameCn: "山姆·奥特曼",
+          nameCn: "",
           era: "1985–",
           title: "OpenAI CEO",
           avatar: "/case-studies/sam-altman.jpg",
@@ -138,10 +138,10 @@ export const TOPICS: TopicData[] = [
       {
         id: "career-1",
         title: "Corporate to Entrepreneur at Age 38",
-        titleCn: "38岁从企业转型创业",
+        titleCn: "",
         subject: {
           name: "Elon Musk",
-          nameCn: "埃隆·马斯克",
+          nameCn: "",
           era: "1971–",
           title: "Tech Visionary",
           avatar: "/case-studies/elon-musk.jpg",
@@ -159,10 +159,10 @@ export const TOPICS: TopicData[] = [
       {
         id: "career-2",
         title: "Gaming Chips to AI Infrastructure — Strategic Pivot of the Century",
-        titleCn: "从游戏芯片到AI基础设施的世纪转型",
+        titleCn: "",
         subject: {
           name: "Jensen Huang",
-          nameCn: "黄仁勋",
+          nameCn: "",
           era: "1963–",
           title: "NVIDIA CEO",
           avatar: "/case-studies/jensen-huang.jpg",
@@ -180,10 +180,10 @@ export const TOPICS: TopicData[] = [
       {
         id: "career-3",
         title: "Rescuing a Dying Company — AMD's Impossible Turnaround",
-        titleCn: "接手濒危AMD逆转命运",
+        titleCn: "",
         subject: {
           name: "Lisa Su",
-          nameCn: "苏姿丰",
+          nameCn: "",
           era: "1969–",
           title: "AMD CEO",
           avatar: "/case-studies/lisa-su.jpg",
@@ -221,7 +221,7 @@ export const TOPICS: TopicData[] = [
       {
         id: "rel-1",
         title: "Late Marriage After Multiple Heartbreaks",
-        titleCn: "历经坎坷终得良缘",
+        titleCn: "",
         subject: {
           name: "Yang Guifei",
           nameCn: "杨贵妃",
@@ -242,10 +242,10 @@ export const TOPICS: TopicData[] = [
       {
         id: "rel-2",
         title: "Values-Driven Partnership — When Ideology Shapes Destiny",
-        titleCn: "理念驱动的合伙关系",
+        titleCn: "",
         subject: {
           name: "Dario Amodei",
-          nameCn: "达里奥·阿莫迪",
+          nameCn: "",
           era: "1983–",
           title: "Anthropic CEO",
           avatar: "/case-studies/dario-amodei.jpg",
@@ -263,10 +263,10 @@ export const TOPICS: TopicData[] = [
       {
         id: "rel-3",
         title: "Divorce and Remarriage — A Better Second Chapter",
-        titleCn: "离婚再嫁更幸福",
+        titleCn: "",
         subject: {
           name: "Elizabeth Taylor",
-          nameCn: "伊丽莎白·泰勒",
+          nameCn: "",
           era: "1932–2011",
           title: "Hollywood Icon",
           avatar: "/case-studies/elizabeth-taylor.svg",
@@ -304,10 +304,10 @@ export const TOPICS: TopicData[] = [
       {
         id: "child-1",
         title: "Nurturing an Organization as 'Children' — Building Culture from Zero",
-        titleCn: "子女宫的另类解读：从零孕育AI安全公司",
+        titleCn: "",
         subject: {
           name: "Daniela Amodei",
-          nameCn: "达妮埃拉·阿莫迪",
+          nameCn: "",
           era: "1988–",
           title: "Anthropic President",
           avatar: "/case-studies/daniela-amodei.svg",
@@ -325,7 +325,7 @@ export const TOPICS: TopicData[] = [
       {
         id: "child-2",
         title: "Gifted but Rebellious Child",
-        titleCn: "天才叛逆儿",
+        titleCn: "",
         subject: {
           name: "Emperor Kangxi",
           nameCn: "康熙帝",
@@ -346,10 +346,10 @@ export const TOPICS: TopicData[] = [
       {
         id: "child-3",
         title: "Intellectual Progeny — Scientific Breakthroughs as Legacy",
-        titleCn: "智识传承：科学突破作为精神后代",
+        titleCn: "",
         subject: {
           name: "Demis Hassabis",
-          nameCn: "德米斯·哈萨比斯",
+          nameCn: "",
           era: "1976–",
           title: "DeepMind CEO & Nobel Laureate",
           avatar: "/case-studies/demis-hassabis.jpg",
@@ -387,7 +387,7 @@ export const TOPICS: TopicData[] = [
       {
         id: "prop-1",
         title: "Real Estate Fortune Through Precise Timing",
-        titleCn: "精准择时的房产投资",
+        titleCn: "",
         subject: {
           name: "Fan Li",
           nameCn: "范蠡",
@@ -408,7 +408,7 @@ export const TOPICS: TopicData[] = [
       {
         id: "prop-2",
         title: "Family Property Dispute Resolution",
-        titleCn: "家产纠纷化解",
+        titleCn: "",
         subject: {
           name: "Cao Pi & Cao Zhi",
           nameCn: "曹丕/曹植",
@@ -429,7 +429,7 @@ export const TOPICS: TopicData[] = [
       {
         id: "prop-3",
         title: "Nomadic Lifestyle by Chart Design",
-        titleCn: "命中注定的游牧生活",
+        titleCn: "",
         subject: {
           name: "Xu Xiake",
           nameCn: "徐霞客",
