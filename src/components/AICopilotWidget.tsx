@@ -244,7 +244,7 @@ export default function AICopilotWidget() {
         <div
           className="absolute bottom-20 right-0 w-[22rem] gold-frame rounded-sm bg-celestial-800/95 backdrop-blur-md
                      shadow-[0_0_40px_rgba(0,0,0,0.5),0_0_15px_rgba(212,165,40,0.1)]
-                     animate-fade-in overflow-hidden"
+                     animate-fade-in overflow-hidden overscroll-contain"
         >
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-gold-700/30 bg-celestial-900/50">
@@ -273,7 +273,7 @@ export default function AICopilotWidget() {
           </div>
 
           {/* Chat area */}
-          <div className="p-4 h-80 flex flex-col justify-end overflow-y-auto">
+          <div className="p-4 h-80 flex flex-col justify-end overflow-y-auto overscroll-contain">
             <div className="space-y-3">
               {/* Topic cards — show when no messages */}
               {!hasMessages && !sending && (
