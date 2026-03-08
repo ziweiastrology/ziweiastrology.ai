@@ -1,0 +1,46 @@
+# ZWDS Knowledge Base
+
+Crawled from ziweidoushu.info on 2026-03-08
+
+## Articles (33 total)
+
+### Palaces (宮位)
+- [紫微鬥數哪個宮最重要？](./zi-wei-dou-shu-gong-wei.md)
+- [紫微鬥數可以問什麼？](./zi-wei-dou-shu-how-to-ask.md)
+- [命宮是什麼？紫微斗數核心宮位全面解析](./ming-gong-jiben-gainian.md)
+- [命宮核心指南：主星組合與人格原型解析](./ming-gong-zhuxing-xiangjie.md)
+- [命宮核心指南：主星組合與人格原型解析](./ming-gong-liunian-yunshi.md)
+- [兄弟宮入門：紫微鬥數中的人際關繫解讀](./brother-palace-basics.md)
+- [兄弟宮星曜全解析：不同主星對人際關繫的影響](./brother-palace-stars-analysis.md)
+- [兄弟宮實戰指南：從命盤看人際關繫處理之道](./brother-palace-practical-guide.md)
+- [夫妻宮是什麼？紫微斗數中的婚姻密碼大公開](./what-is-spouse-palace.md)
+- [夫妻宮終極攻略：主星、四化與婚姻模式解析](./spouse-palace-stars-analysis.md)
+- [夫妻宮終極攻略：主星、四化與婚姻模式解析](./spouse-palace-practical-guide.md)
+- [子女宮是什麼？紫微斗數中的子女運解析](./shi-ye-gong-jie-shao.md)
+- [子女宮全書：孕育、教養與命格啟示](./tian-zhai-gong-jie-shao.md)
+- [子女宮實戰指南：與財帛、夫妻宮的關聯解析](./child-palace-practical-application.md)
+- [财帛宫的秘密：解读你的财富命盘](./cai-bo-gong-de-mi-mi.md)
+- [財帛宮財富藍圖：主星組合與財運起伏](./cai-bo-gong-zhu-xing-fu-xing.md)
+- [命盤的健康密碼：解讀疾厄宮的位置與意義](./ji-e-gong-jian-jie.md)
+- [命盤中的遠方呼喚：解析遷移宮的位置與內涵](./qian-yi-gong-de-wei-zhi-he-nei-han.md)
+- [交友宮的星盤密碼：解析人際關係的天文鑰匙](./jiao-you-gong-jie-shao.md)
+- [福德宮的幸福密碼：探尋內在喜悅與精神財富的星盤奧祕](./fu-de-gong-jie-shao.md)
+- [父母宮的家族印記：解析原生家庭與成長環境的星象圖譜](./fu-mu-gong-jie-shao.md)
+- [身宮的生命藍圖：探索個人氣質與體魄特質的命盤基石](./shen-gong-jie-shao.md)
+
+### Techniques (技法)
+- [解盤技巧與格局——論命步驟](./lun-ming-bu-zhou.md)
+- [解盤技巧與格局——三方四正](./san-fang-si-zheng.md)
+- [什麼是大限分析？初學者必知的基礎概念](./what-is-daxian-analysis.md)
+- [大限分析權威手冊：十年行運與人生節奏](./how-to-calculate-daxian.md)
+- [大限分析權威手冊：十年行運與人生節奏](./advanced-daxian-analysis.md)
+
+### Fundamentals (基礎)
+- [命盤結構與排盤](./ming-pan-jie-gou-pai-pan.md)
+- [陰陽五行與干支](./yin-yang-wu-xing-yu-gan-zhi.md)
+
+### Stars (星曜)
+- [十四主星](./shi-si-zhu-xing.md)
+- [紫微斗數中的輔星與吉星解析](./zi-wei-dou-shu-zhong-de-fu-xing-yu-ji-xing-jie-xi.md)
+- [煞星與忌星](./sha-xing-yu-ji-xing.md)
+- [祿存與天馬](./lu-cun-yu-tian-ma.md)

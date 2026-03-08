@@ -83,7 +83,7 @@ export default function CommunityFeedPage() {
                   tags={post.tags as string[]}
                   viewCount={post.viewCount as number}
                   userVote={post.userVote as number | null}
-                  href={`/community/post/${post.id}`}
+                  href={`/community/post/${post.slug || post.id}`}
                 />
               ))}
             </div>

@@ -8,6 +8,7 @@ interface ProfileTabsProps {
   userId: string;
   posts: {
     id: string;
+    slug?: string | null;
     title: string;
     content: string;
     type: string;
@@ -52,7 +53,7 @@ export default function ProfileTabs({ posts }: ProfileTabsProps) {
             <p className="py-8 text-center text-sm text-parchment-600">No posts yet.</p>
           ) : (
             posts.map((post) => (
-              <PostCard key={post.id} {...post} href={`/community/post/${post.id}`} />
+              <PostCard key={post.id} {...post} href={`/community/post/${post.slug || post.id}`} />
             ))
           )}
         </div>

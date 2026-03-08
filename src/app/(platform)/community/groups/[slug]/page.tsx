@@ -16,6 +16,7 @@ interface GroupDetail {
 
 interface PostData {
   id: string;
+  slug?: string | null;
   title: string;
   content: string;
   type: string;
@@ -155,7 +156,7 @@ export default function GroupDetailPage({
               voteScore={post.voteScore || 0}
               commentCount={post._count?.comments || 0}
               createdAt={post.createdAt}
-              href={`/community/post/${post.id}`}
+              href={`/community/post/${post.slug || post.id}`}
             />
           ))
         )}

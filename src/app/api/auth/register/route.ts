@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { registerSchema } from "@/lib/validations";
 import { rateLimit } from "@/lib/rateLimit";
 import { computeMatchesForUser } from "@/lib/computeMatchesForUser";
+import { sendWelcomeNotifications } from "@/lib/welcomeNotifications";
 
 export async function POST(request: Request) {
   try {
@@ -49,7 +50,8 @@ export async function POST(request: Request) {
       },
     });
 
-    // Fire-and-forget: compute energy matches (no-op if no birth data yet)
+    // Fire-and-forget: welcome notifications + energy matches
+    sendWelcomeNotifications(user.id, user.name).catch(console.error);
     computeMatchesForUser(user.id).catch(console.error);
 
     return NextResponse.json(

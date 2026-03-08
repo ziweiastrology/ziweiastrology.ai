@@ -62,8 +62,8 @@ export async function POST(
           data: {
             userId: post.authorId,
             type: "COMMENT",
-            title: "新评论",
-            content: `${user?.name || "Someone"} 评论了你的帖子「${post.title}」`,
+            title: "New Comment",
+            content: `${user?.name || "Someone"} commented on your post "${post.title}"`,
             link: `/community/post/${postId}`,
           },
         });
@@ -83,8 +83,8 @@ export async function POST(
             data: {
               userId: parentComment.authorId,
               type: "COMMENT",
-              title: "新回复",
-              content: `${user?.name || "Someone"} 回复了你的评论`,
+              title: "New Reply",
+              content: `${user?.name || "Someone"} replied to your comment`,
               link: `/community/post/${postId}`,
             },
           });

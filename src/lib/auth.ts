@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
 import { rateLimit } from "./rateLimit";
 import { authConfig } from "./auth.config";
+import { sendWelcomeNotifications } from "./welcomeNotifications";
 import type { Role, Tier } from "@prisma/client";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -49,6 +50,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+  events: {
+    async createUser({ user }) {
+      // Send welcome notifications for Google OAuth sign-ups
+      if (user.id) {
+        sendWelcomeNotifications(user.id, user.name).catch(console.error);
+      }
+    },
+  },
   callbacks: {
     ...authConfig.callbacks,
     async jwt({ token, user }) {

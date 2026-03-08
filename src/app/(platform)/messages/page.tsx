@@ -34,7 +34,7 @@ export default function MessagesPage() {
               )}
             >
               <Bell className="h-4 w-4" />
-              通知
+              Notifications
               {(unread?.notifications ?? 0) > 0 && (
                 <span className="rounded-full bg-quantum-red/80 px-1.5 py-0.5 text-xs text-white">{unread.notifications}</span>
               )}
@@ -47,7 +47,7 @@ export default function MessagesPage() {
               )}
             >
               <MessageCircle className="h-4 w-4" />
-              私信
+              Messages
               {(unread?.messages ?? 0) > 0 && (
                 <span className="rounded-full bg-quantum-red/80 px-1.5 py-0.5 text-xs text-white">{unread.messages}</span>
               )}

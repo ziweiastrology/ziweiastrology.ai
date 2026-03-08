@@ -6,6 +6,7 @@ import { TrendingUp, ArrowRight, MessageSquare, ChevronUp } from "lucide-react";
 
 interface TrendingPost {
   id: string;
+  slug?: string | null;
   title: string;
   voteScore: number;
   _count: { comments: number };
@@ -32,7 +33,7 @@ export default function TrendingPostsCard() {
         {posts.map((post, i) => (
           <Link
             key={post.id}
-            href={`/community/post/${post.id}`}
+            href={`/community/post/${post.slug || post.id}`}
             className="flex items-start gap-2 rounded-md px-2 py-1.5 hover:bg-celestial-700/30 transition-colors"
           >
             <span className="mt-0.5 text-xs font-bold text-parchment-700">{i + 1}</span>

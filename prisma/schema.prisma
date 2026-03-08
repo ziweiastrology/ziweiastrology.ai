@@ -65,6 +65,7 @@ model User {
   following        Follow[]         @relation("Followers")
   matchesAsA       UserMatch[]      @relation("MatchesAsA")
   matchesAsB       UserMatch[]      @relation("MatchesAsB")
+  dailyInsights    DailyInsight[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -276,6 +277,7 @@ model Resource {
 model Post {
   id       String   @id @default(cuid())
   title    String
+  slug     String?  @unique
   content  String   @db.Text
   type     PostType
   category String?
@@ -669,6 +671,23 @@ model DirectMessage {
 
   @@index([conversationId, createdAt])
   @@index([senderId])
+}
+
+// ========================
+// Daily Insight (AI-generated)
+// ========================
+
+model DailyInsight {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      String   // "YYYY-MM-DD"
+  content   String   @db.Text
+  palaceKey String?  // primary palace focus e.g. "career"
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date])
+  @@index([userId, date])
 }
 
 // ========================

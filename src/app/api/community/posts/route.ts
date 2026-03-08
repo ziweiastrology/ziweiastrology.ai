@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rateLimit";
 import { getTierLimits } from "@/lib/tierLimits";
+import { uniquePostSlug } from "@/lib/slugify";
 
 export async function GET(request: Request) {
   try {
@@ -170,9 +171,12 @@ export async function POST(request: Request) {
       );
     }
 
+    const slug = await uniquePostSlug(title);
+
     const post = await prisma.post.create({
       data: {
         title,
+        slug,
         content,
         type,
         category: category || null,

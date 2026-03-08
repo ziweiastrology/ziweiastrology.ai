@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
 import { getAllPosts } from "@/lib/blog";
+import { prisma } from "@/lib/prisma";
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.ziweiastrology.ai").trim();
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   /* ── Static routes ───────────────────────────────────── */
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: SITE_URL, changeFrequency: "weekly", priority: 1.0 },
@@ -76,11 +77,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
+  /* ── Dynamic: Community posts ──────────────────────── */
+  const communityPosts = await prisma.post.findMany({
+    where: { slug: { not: null } },
+    select: { slug: true, updatedAt: true },
+    orderBy: { createdAt: "desc" },
+    take: 500,
+  });
+
+  const communityRoutes: MetadataRoute.Sitemap = communityPosts.map((post) => ({
+    url: `${SITE_URL}/community/post/${post.slug}`,
+    lastModified: post.updatedAt,
+    changeFrequency: "weekly",
+    priority: 0.6,
+  }));
+
   /* ── Merge all ───────────────────────────────────────── */
   return [
     ...staticRoutes.map((route) => ({ ...route, lastModified: new Date() })),
     ...resourceRoutes,
     ...courseRoutes,
     ...blogRoutes,
+    ...communityRoutes,
   ];
 }

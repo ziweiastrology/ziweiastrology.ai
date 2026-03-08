@@ -3,6 +3,9 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getTierLimits } from "@/lib/tierLimits";
 
+const EDITORIAL_EMAIL =
+  process.env.EDITORIAL_USER_EMAIL || "editorial@ziweiastrology.ai";
+
 // GET conversations list
 export async function GET() {
   const session = await auth();
@@ -62,30 +65,57 @@ export async function POST(request: Request) {
     }
   }
 
-  const { recipientId, content } = await request.json();
+  const { recipientId, conversationId: existingConvId, content } = await request.json();
 
-  if (!recipientId || !content?.trim()) {
+  if (!content?.trim()) {
     return NextResponse.json({ error: "invalid_input" }, { status: 400 });
   }
 
-  // Find existing conversation or create new
-  let conversation = await prisma.dMConversation.findFirst({
-    where: {
-      AND: [
-        { participants: { some: { id: session.user.id } } },
-        { participants: { some: { id: recipientId } } },
-      ],
-    },
-  });
+  if (!recipientId && !existingConvId) {
+    return NextResponse.json({ error: "recipientId or conversationId required" }, { status: 400 });
+  }
 
-  if (!conversation) {
-    conversation = await prisma.dMConversation.create({
-      data: {
-        participants: {
-          connect: [{ id: session.user.id }, { id: recipientId }],
-        },
+  let conversation;
+  let recipientUserId = recipientId;
+
+  if (existingConvId) {
+    // Sending to an existing conversation
+    conversation = await prisma.dMConversation.findFirst({
+      where: {
+        id: existingConvId,
+        participants: { some: { id: session.user.id } },
+      },
+      include: {
+        participants: { select: { id: true } },
       },
     });
+    if (!conversation) {
+      return NextResponse.json({ error: "conversation_not_found" }, { status: 404 });
+    }
+    // Find the other participant for notification
+    recipientUserId = conversation.participants.find(
+      (p: { id: string }) => p.id !== session.user.id
+    )?.id;
+  } else {
+    // Find existing conversation or create new
+    conversation = await prisma.dMConversation.findFirst({
+      where: {
+        AND: [
+          { participants: { some: { id: session.user.id } } },
+          { participants: { some: { id: recipientId } } },
+        ],
+      },
+    });
+
+    if (!conversation) {
+      conversation = await prisma.dMConversation.create({
+        data: {
+          participants: {
+            connect: [{ id: session.user.id }, { id: recipientId }],
+          },
+        },
+      });
+    }
   }
 
   const message = await prisma.directMessage.create({
@@ -103,15 +133,46 @@ export async function POST(request: Request) {
   });
 
   // Notification
-  await prisma.notification.create({
-    data: {
-      userId: recipientId,
-      type: "SYSTEM",
-      title: "新私信",
-      content: `${session.user.name || "Someone"} 给你发了私信`,
-      link: `/messages`,
-    },
-  });
+  if (recipientUserId) {
+    await prisma.notification.create({
+      data: {
+        userId: recipientUserId,
+        type: "SYSTEM",
+        title: "New Message",
+        content: `${session.user.name || "Someone"} sent you a message`,
+        link: `/messages`,
+      },
+    });
+  }
+
+  // Auto-reply: if recipient is the editorial account, trigger AI response
+  if (recipientUserId) {
+    const recipient = await prisma.user.findUnique({
+      where: { id: recipientUserId },
+      select: { email: true },
+    });
+
+    if (recipient?.email === EDITORIAL_EMAIL) {
+      // Fire-and-forget with 3-5s delay for natural feel
+      const delay = 3000 + Math.random() * 2000;
+      const baseUrl = process.env.AUTH_URL || "http://localhost:3000";
+
+      setTimeout(() => {
+        fetch(`${baseUrl}/api/messages/auto-reply`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-internal-secret": process.env.AUTH_SECRET || "",
+          },
+          body: JSON.stringify({
+            conversationId: conversation.id,
+            userMessage: content.trim(),
+            userId: session.user!.id,
+          }),
+        }).catch((err) => console.error("Auto-reply trigger failed:", err));
+      }, delay);
+    }
+  }
 
   return NextResponse.json({ conversationId: conversation.id, message });
 }

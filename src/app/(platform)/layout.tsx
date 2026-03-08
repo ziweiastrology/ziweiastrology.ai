@@ -1,5 +1,6 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { PlatformCopilot } from "@/components/layout/PlatformCopilot";
 
 export default function PlatformLayout({
   children,
@@ -11,6 +12,7 @@ export default function PlatformLayout({
       <Navbar />
       <main className="flex-1">{children}</main>
       <Footer />
+      <PlatformCopilot />
     </div>
   );
 }
