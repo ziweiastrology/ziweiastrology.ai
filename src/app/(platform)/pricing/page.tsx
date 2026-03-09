@@ -20,6 +20,7 @@ export default function PricingPage() {
   const [annual, setAnnual] = useState(true);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -112,6 +113,7 @@ export default function PricingPage() {
     if (tierKey === "FREE") return;
 
     setLoadingTier(tierKey);
+    setError(null);
     try {
       const res = await fetch("/api/payments/checkout", {
         method: "POST",
@@ -124,9 +126,11 @@ export default function PricingPage() {
       const data = await res.json();
       if (data.url) {
         window.location.href = data.url;
+      } else {
+        setError(data.error || t("checkoutError"));
       }
     } catch {
-      // Checkout failed
+      setError(t("checkoutError"));
     } finally {
       setLoadingTier(null);
     }
@@ -138,6 +142,13 @@ export default function PricingPage() {
         title={t("pageTitle")}
         subtitle={t("pageSubtitle")}
       />
+
+      {/* Error banner */}
+      {error && (
+        <div className="mb-6 rounded-lg border border-quantum-red/30 bg-quantum-red/10 px-4 py-3 text-center text-sm text-quantum-red">
+          {error}
+        </div>
+      )}
 
       {/* Billing toggle */}
       <div className="flex items-center justify-center gap-4 mb-12">

@@ -334,7 +334,8 @@
     "faqPaymentQ": "What payment methods do you accept?",
     "faqPaymentA": "We accept all major credit cards, debit cards, and Apple Pay / Google Pay through Stripe's secure payment system.",
     "faqDataQ": "Is my birth data safe?",
-    "faqDataA": "Absolutely. Your birth data is encrypted and never shared. AI conversations are private to your account. We follow strict data protection practices."
+    "faqDataA": "Absolutely. Your birth data is encrypted and never shared. AI conversations are private to your account. We follow strict data protection practices.",
+    "checkoutError": "Unable to start checkout. Please try again later."
   },
   "dashboard": {
     "welcomeBack": "Welcome back, {name}",

@@ -334,7 +334,8 @@
     "faqPaymentQ": "接受哪些支付方式？",
     "faqPaymentA": "我们通过 Stripe 安全支付系统接受所有主要信用卡、借记卡以及 Apple Pay / Google Pay。",
     "faqDataQ": "我的出生数据安全吗？",
-    "faqDataA": "绝对安全。你的出生数据已加密且不会被分享。AI对话仅限你的账户可见。我们遵循严格的数据保护规范。"
+    "faqDataA": "绝对安全。你的出生数据已加密且不会被分享。AI对话仅限你的账户可见。我们遵循严格的数据保护规范。",
+    "checkoutError": "无法启动结账，请稍后重试。"
   },
   "dashboard": {
     "welcomeBack": "欢迎回来，{name}",
