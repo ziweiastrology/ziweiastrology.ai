@@ -384,5 +384,13 @@
   "language": {
     "en": "EN",
     "zh": "中文"
+  },
+  "meta": {
+    "title": "ziweiastrology.ai — 解码你的命运",
+    "titleTemplate": "%s | ziweiastrology.ai",
+    "description": "千年紫微斗数智慧融合量子概率建模。解码你的命运，优化你的未来。",
+    "ogTitle": "ziweiastrology.ai — 解码你的命运",
+    "ogDescription": "千年紫微斗数智慧融合量子概率建模。解码你的命运，优化你的未来。",
+    "twitterDescription": "千年紫微斗数智慧融合量子概率建模。"
   }
 }

@@ -384,5 +384,13 @@
   "language": {
     "en": "EN",
     "zh": "中文"
+  },
+  "meta": {
+    "title": "ziweiastrology.ai — Decode Your Reality",
+    "titleTemplate": "%s | ziweiastrology.ai",
+    "description": "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling. Decode your reality. Optimize your future.",
+    "ogTitle": "ziweiastrology.ai — Decode Your Reality",
+    "ogDescription": "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling. Decode your reality. Optimize your future.",
+    "twitterDescription": "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling."
   }
 }

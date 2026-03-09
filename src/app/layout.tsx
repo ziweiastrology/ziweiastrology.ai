@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Cinzel_Decorative, Merriweather } from "next/font/google";
-import { getLocale, getMessages } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import Providers from "@/components/Providers";
 import Analytics from "@/components/Analytics";
 import CookieConsent from "@/components/CookieConsent";
@@ -28,108 +28,47 @@ const merriweather = Merriweather({
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.ziweiastrology.ai").trim();
 
-export const metadata: Metadata = {
-  title: {
-    default: "ziweiastrology.ai — Decode Your Reality",
-    template: "%s | ziweiastrology.ai",
-  },
-  description:
-    "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling. Decode your reality. Optimize your future.",
-  keywords: [
-    // Tier 1 — Brand Core
-    "zi wei dou shu",
-    "紫微斗数",
-    "purple star astrology",
-    "zwds",
-    "ziwei dou shu",
-    "ziwei astrology",
-    // Tier 2 — High-Volume Category
-    "chinese astrology",
-    "chinese horoscope",
-    "chinese zodiac",
-    "astrology AI",
-    "birth chart",
-    "destiny chart",
-    // Tier 3 — Feature / Transactional
-    "zi wei dou shu calculator",
-    "zi wei dou shu chart",
-    "zi wei dou shu reading",
-    "free astrology reading",
-    "chinese astrology chart",
-    "purple star astrology chart",
-    "astrology birth chart calculator",
-    // Tier 6 — Life Domain
-    "feng shui",
-    "quantum probability astrology",
-  ],
-  metadataBase: new URL(SITE_URL),
-  alternates: {
-    canonical: SITE_URL,
-    types: {
-      "application/rss+xml": "/blog/feed.xml",
-    },
-  },
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: SITE_URL,
-    siteName: "ziweiastrology.ai",
-    title: "ziweiastrology.ai — Decode Your Reality",
-    description:
-      "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling. Decode your reality. Optimize your future.",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "ziweiastrology.ai — Decode Your Reality",
-    description:
-      "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling.",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta");
+  const locale = await getLocale();
+  const ogLocale = locale === "zh" ? "zh_CN" : "en_US";
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": `${SITE_URL}/#organization`,
-      name: "ziweiastrology.ai",
-      url: SITE_URL,
-      logo: {
-        "@type": "ImageObject",
-        "@id": `${SITE_URL}/#logo`,
-        url: `${SITE_URL}/logo.jpg`,
-        width: 512,
-        height: 512,
-        caption: "ziweiastrology.ai",
-      },
-      image: { "@id": `${SITE_URL}/#logo` },
-      description:
-        "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling. Decode your reality. Optimize your future.",
-      sameAs: [],
+  return {
+    title: {
+      default: t("title"),
+      template: t("titleTemplate"),
     },
-    {
-      "@type": "WebSite",
-      "@id": `${SITE_URL}/#website`,
-      url: SITE_URL,
-      name: "ziweiastrology.ai",
-      description:
-        "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling.",
-      publisher: { "@id": `${SITE_URL}/#organization` },
-      inLanguage: "en-US",
+    description: t("description"),
+    keywords: [
+      "zi wei dou shu", "紫微斗数", "purple star astrology", "zwds",
+      "ziwei dou shu", "ziwei astrology", "chinese astrology",
+      "chinese horoscope", "chinese zodiac", "astrology AI",
+      "birth chart", "destiny chart", "zi wei dou shu calculator",
+      "zi wei dou shu chart", "zi wei dou shu reading",
+      "free astrology reading", "chinese astrology chart",
+      "purple star astrology chart", "astrology birth chart calculator",
+      "feng shui", "quantum probability astrology",
+    ],
+    metadataBase: new URL(SITE_URL),
+    alternates: {
+      canonical: SITE_URL,
+      types: { "application/rss+xml": "/blog/feed.xml" },
     },
-    {
-      "@type": "WebPage",
-      "@id": `${SITE_URL}/#webpage`,
+    openGraph: {
+      type: "website",
+      locale: ogLocale,
       url: SITE_URL,
-      name: "ziweiastrology.ai — Decode Your Reality",
-      isPartOf: { "@id": `${SITE_URL}/#website` },
-      about: { "@id": `${SITE_URL}/#organization` },
-      description:
-        "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling. Decode your reality. Optimize your future.",
-      inLanguage: "en-US",
+      siteName: "ziweiastrology.ai",
+      title: t("ogTitle"),
+      description: t("ogDescription"),
     },
-  ],
-};
+    twitter: {
+      card: "summary_large_image",
+      title: t("ogTitle"),
+      description: t("twitterDescription"),
+    },
+  };
+}
 
 export default async function RootLayout({
   children,
@@ -138,6 +77,50 @@ export default async function RootLayout({
 }>) {
   const locale = await getLocale();
   const messages = await getMessages();
+  const t = await getTranslations("meta");
+  const inLanguage = locale === "zh" ? "zh-CN" : "en-US";
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: "ziweiastrology.ai",
+        url: SITE_URL,
+        logo: {
+          "@type": "ImageObject",
+          "@id": `${SITE_URL}/#logo`,
+          url: `${SITE_URL}/logo.jpg`,
+          width: 512,
+          height: 512,
+          caption: "ziweiastrology.ai",
+        },
+        image: { "@id": `${SITE_URL}/#logo` },
+        description: t("description"),
+        sameAs: [],
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        url: SITE_URL,
+        name: "ziweiastrology.ai",
+        description: t("twitterDescription"),
+        publisher: { "@id": `${SITE_URL}/#organization` },
+        inLanguage,
+      },
+      {
+        "@type": "WebPage",
+        "@id": `${SITE_URL}/#webpage`,
+        url: SITE_URL,
+        name: t("title"),
+        isPartOf: { "@id": `${SITE_URL}/#website` },
+        about: { "@id": `${SITE_URL}/#organization` },
+        description: t("description"),
+        inLanguage,
+      },
+    ],
+  };
 
   return (
     <html lang={locale} className="dark">
