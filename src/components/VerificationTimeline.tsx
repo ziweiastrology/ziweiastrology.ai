@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { useVerificationStore } from "@/stores/useVerificationStore";
 import { useMatrixStore } from "@/stores/useMatrixStore";
@@ -31,6 +32,7 @@ interface VerificationTimelineProps {
 export default function VerificationTimeline({
   onAllVerified,
 }: VerificationTimelineProps) {
+  const t = useTranslations("verification");
   const {
     deductions,
     responses,
@@ -163,7 +165,7 @@ export default function VerificationTimeline({
         <div className="inline-flex items-center gap-3 mb-4">
           <div className="h-px w-10 bg-gradient-to-r from-transparent to-gold-600/40" />
           <span className="text-[10px] text-gold-400 tracking-[0.4em] uppercase font-mono">
-            {phase === "recalibrating" ? "Recalibrating" : "Phase One"}
+            {phase === "recalibrating" ? t("recalibrating") : t("phaseOne")}
           </span>
           <div className="h-px w-10 bg-gradient-to-l from-transparent to-gold-600/40" />
         </div>
@@ -180,12 +182,12 @@ export default function VerificationTimeline({
           }}
         >
           {phase === "form" || phase === "transitioning"
-            ? "Calibration Input"
+            ? t("calibrationInput")
             : phase === "recalibrating"
-              ? "Recalibrating Engine"
+              ? t("recalibratingEngine")
               : phase === "birth_time_warning"
-                ? "Calibration Alert"
-                : "Verification Phase"}
+                ? t("calibrationAlert")
+                : t("verificationPhase")}
         </h2>
         <p
           className="text-base max-w-xl mx-auto leading-relaxed"
@@ -195,14 +197,14 @@ export default function VerificationTimeline({
           }}
         >
           {phase === "form" || phase === "transitioning"
-            ? "Enter your celestial coordinates to initialize the quantum probability engine."
+            ? t("formSubtitle")
             : phase === "recalibrating"
-              ? "Adjusting parameters and generating secondary verification set..."
+              ? t("recalibratingSubtitle")
               : phase === "birth_time_warning"
-                ? "The engine could not verify your birth time with sufficient confidence."
+                ? t("warningSubtitle")
                 : currentBatch === 1
-                  ? "Secondary verification set generated. Please respond to recalibrate."
-                  : "The engine has generated deductions from your natal coordinates. Respond to calibrate."}
+                  ? t("secondarySubtitle")
+                  : t("defaultSubtitle")}
         </p>
       </div>
 
@@ -239,7 +241,7 @@ export default function VerificationTimeline({
                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
               />
               <span className="text-sm font-mono text-gold-400/70 tracking-wider">
-                RECALIBRATING QUANTUM FIELD...
+                {t("recalibratingSpinner")}
               </span>
             </div>
           </motion.div>
@@ -291,7 +293,7 @@ export default function VerificationTimeline({
                 className="text-lg font-bold text-parchment-100 mb-3"
                 style={{ fontFamily: "var(--font-cinzel)" }}
               >
-                Birth Time Verification Inconclusive
+                {t("warningTitle")}
               </h3>
               <p
                 className="text-sm leading-relaxed mb-6"
@@ -300,8 +302,7 @@ export default function VerificationTimeline({
                   color: "rgba(200,210,230,0.5)",
                 }}
               >
-                The engine could not verify your chart with sufficient confidence. Please check
-                the following and try again:
+                {t("warningDescription")}
               </p>
               <ul
                 className="text-sm text-left list-disc list-inside mb-6 space-y-2"
@@ -310,8 +311,8 @@ export default function VerificationTimeline({
                   color: "rgba(200,210,230,0.6)",
                 }}
               >
-                <li>Is your <strong className="text-parchment-200">birth hour (时辰)</strong> correct? Even one hour off shifts your entire chart.</li>
-                <li>Is your <strong className="text-parchment-200">birth location</strong> correct? Longitude affects the true solar time calculation.</li>
+                <li dangerouslySetInnerHTML={{ __html: t("warningBirthHour") }} />
+                <li dangerouslySetInnerHTML={{ __html: t("warningBirthLocation") }} />
               </ul>
               <button
                 onClick={handleReturnToForm}
@@ -327,7 +328,7 @@ export default function VerificationTimeline({
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                Return to Calibration
+                {t("returnToCalibration")}
               </button>
             </div>
           </motion.div>
@@ -366,6 +367,7 @@ function DeductionCard({
   response: DeductionResponse | null;
   onRespond: (id: string, response: DeductionResponse) => void;
 }) {
+  const t = useTranslations("verification");
   const borderClass =
     response === "yes"
       ? "border border-gold-500/60 shadow-[0_0_30px_rgba(212,165,40,0.15)]"
@@ -396,10 +398,10 @@ function DeductionCard({
         {/* Top label */}
         <div className="flex items-center justify-between mb-4">
           <span className="text-[10px] font-mono text-gold-400/70 tracking-[0.3em] uppercase">
-            [ENGINE DEDUCTION #{index + 1}]
+            {t("engineDeduction", { index: index + 1 })}
           </span>
           <span className="text-[10px] font-mono text-parchment-500/40 tracking-wider">
-            AGE {deduction.yearRange}
+            {t("age", { range: deduction.yearRange })}
           </span>
         </div>
 
@@ -490,7 +492,7 @@ function DeductionCard({
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
-                Yes
+                {t("yes")}
               </button>
               <button
                 onClick={() => onRespond(deduction.id, "no")}
@@ -505,7 +507,7 @@ function DeductionCard({
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
-                No
+                {t("no")}
               </button>
               <button
                 onClick={() => onRespond(deduction.id, "unsure")}
@@ -520,7 +522,7 @@ function DeductionCard({
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01" />
                 </svg>
-                Unsure
+                {t("unsure")}
               </button>
             </div>
           ) : (
@@ -537,13 +539,15 @@ function DeductionCard({
    ============================================ */
 
 function ResponseBadge({ response }: { response: DeductionResponse }) {
+  const t = useTranslations("verification");
+
   if (response === "yes") {
     return (
       <span className="inline-flex items-center gap-2 text-sm text-gold-400 font-semibold tracking-wider">
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
-        CONFIRMED
+        {t("confirmed")}
       </span>
     );
   }
@@ -554,7 +558,7 @@ function ResponseBadge({ response }: { response: DeductionResponse }) {
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
-        DENIED
+        {t("denied")}
       </span>
     );
   }
@@ -564,7 +568,7 @@ function ResponseBadge({ response }: { response: DeductionResponse }) {
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01" />
       </svg>
-      UNCERTAIN
+      {t("uncertain")}
     </span>
   );
 }
@@ -574,6 +578,7 @@ function ResponseBadge({ response }: { response: DeductionResponse }) {
    ============================================ */
 
 function UnlockOverlay() {
+  const t = useTranslations("verification");
   return (
     <motion.div
       key="unlock"
@@ -622,7 +627,7 @@ function UnlockOverlay() {
             filter: "drop-shadow(0 0 30px rgba(212,165,40,0.4))",
           }}
         >
-          Quantum Field Unlocked
+          {t("unlockTitle")}
         </h2>
         <motion.p
           className="mt-3 text-xs font-mono tracking-[0.2em]"
@@ -631,7 +636,7 @@ function UnlockOverlay() {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.8 }}
         >
-          [SYS] DESTINY MATRIX CALIBRATED ✓
+          {t("unlockStatus")}
         </motion.p>
       </motion.div>
     </motion.div>

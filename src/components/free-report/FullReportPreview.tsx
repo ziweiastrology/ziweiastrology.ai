@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Lock, FileText, Calendar, Star, TrendingUp, Coins, Loader2 } from "lucide-react";
 import type { PalaceDetail, ChartMeta } from "@/types";
 
@@ -16,35 +17,36 @@ const SAMPLE_ANALYSIS = "Your Soul Palace reveals a rare convergence of celestia
 const SECTIONS = [
   {
     icon: Star,
-    title: "12 Palace Deep Analysis",
-    desc: "In-depth analysis of every palace — stars, interactions, and hidden patterns",
+    titleKey: "section12Palace" as const,
+    descKey: "section12PalaceDesc" as const,
     color: "text-quantum-cyan",
     borderColor: "border-quantum-cyan/20",
   },
   {
     icon: Calendar,
-    title: "Decade-by-Decade Timeline",
-    desc: "Your life unfolds in 10-year chapters — see the energy shifts ahead",
+    titleKey: "sectionDecade" as const,
+    descKey: "sectionDecadeDesc" as const,
     color: "text-quantum-orange",
     borderColor: "border-quantum-orange/20",
   },
   {
     icon: TrendingUp,
-    title: "Overall Life-Path Assessment",
-    desc: "Personality profile, wealth pattern, key timing, and life advice",
+    titleKey: "sectionLifePath" as const,
+    descKey: "sectionLifePathDesc" as const,
     color: "text-quantum-green",
     borderColor: "border-quantum-green/20",
   },
   {
     icon: FileText,
-    title: "Career & Business Suitability",
-    desc: "Which industries and roles align with your chart's energy signature",
+    titleKey: "sectionCareer" as const,
+    descKey: "sectionCareerDesc" as const,
     color: "text-gold-400",
     borderColor: "border-gold-500/20",
   },
 ];
 
 export default function FullReportPreview({ palaces, chartMeta, credits, onGenerate, generating }: Props) {
+  const t = useTranslations("freeReport");
   const hasEnoughCredits = credits >= 8;
 
   return (
@@ -55,16 +57,16 @@ export default function FullReportPreview({ palaces, chartMeta, credits, onGener
       {/* Header */}
       <div className="text-center mb-8">
         <span className="inline-block px-3 py-1 text-[10px] font-mono tracking-[0.3em] uppercase text-quantum-cyan/80 border border-quantum-cyan/30 rounded-sm mb-4">
-          [FULL REPORT PREVIEW]
+          {t("fullReportPreview")}
         </span>
         <h3
           className="text-2xl sm:text-3xl font-bold gold-gradient-text"
           style={{ fontFamily: "var(--font-cinzel)" }}
         >
-          Your Complete Life-Path Analysis
+          {t("completeAnalysis")}
         </h3>
         <p className="text-sm text-parchment-400/70 mt-2 max-w-lg mx-auto">
-          Go beyond the surface — unlock AI-powered deep analysis of every palace, decade, and life pattern in your chart.
+          {t("completeAnalysisDesc")}
         </p>
       </div>
 
@@ -72,7 +74,7 @@ export default function FullReportPreview({ palaces, chartMeta, credits, onGener
       <div className="grid sm:grid-cols-2 gap-4 mb-6">
         {SECTIONS.map((section) => (
           <div
-            key={section.title}
+            key={section.titleKey}
             className={`relative p-4 rounded-lg border ${section.borderColor} bg-celestial-900/60 overflow-hidden`}
           >
             <div className="flex items-start gap-3">
@@ -81,10 +83,10 @@ export default function FullReportPreview({ palaces, chartMeta, credits, onGener
               </div>
               <div className="min-w-0">
                 <h4 className="text-sm font-semibold text-parchment-200 mb-1">
-                  {section.title}
+                  {t(section.titleKey)}
                 </h4>
                 <p className="text-xs text-parchment-500 leading-relaxed">
-                  {section.desc}
+                  {t(section.descKey)}
                 </p>
               </div>
             </div>
@@ -99,7 +101,7 @@ export default function FullReportPreview({ palaces, chartMeta, credits, onGener
       {/* Palace list preview */}
       <div className="mb-6 p-4 rounded-lg border border-gold-700/15 bg-celestial-900/30">
         <p className="text-[10px] font-mono tracking-[0.2em] uppercase text-gold-600 mb-3">
-          Palaces included
+          {t("palacesIncluded")}
         </p>
         <div className="flex flex-wrap gap-2">
           {palaces.map((p) => (
@@ -122,7 +124,7 @@ export default function FullReportPreview({ palaces, chartMeta, credits, onGener
         <div className="absolute inset-0 flex items-center justify-center bg-celestial-900/20">
           <div className="flex items-center gap-2 px-4 py-2 rounded-sm bg-celestial-800/90 border border-gold-700/30">
             <Lock className="h-4 w-4 text-gold-500" />
-            <span className="text-xs text-gold-400 font-medium">Generate to unlock</span>
+            <span className="text-xs text-gold-400 font-medium">{t("generateToUnlock")}</span>
           </div>
         </div>
       </div>
@@ -132,11 +134,11 @@ export default function FullReportPreview({ palaces, chartMeta, credits, onGener
         <div className="flex items-center justify-center gap-4 text-sm">
           <span className="flex items-center gap-1.5 text-parchment-400">
             <Coins className="h-4 w-4 text-gold-500" />
-            Cost: <span className="font-semibold text-gold-400">8 credits</span>
+            {t("cost")} <span className="font-semibold text-gold-400">{t("creditsCost")}</span>
           </span>
           <span className="text-parchment-600">|</span>
           <span className="text-parchment-400">
-            Balance: <span className={`font-semibold ${hasEnoughCredits ? "text-quantum-green" : "text-quantum-red"}`}>{credits}</span>
+            {t("balance")} <span className={`font-semibold ${hasEnoughCredits ? "text-quantum-green" : "text-quantum-red"}`}>{credits}</span>
           </span>
         </div>
 
@@ -153,21 +155,21 @@ export default function FullReportPreview({ palaces, chartMeta, credits, onGener
           {generating ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              Generating Report...
+              {t("generatingReport")}
             </>
           ) : !hasEnoughCredits ? (
-            "Not Enough Credits"
+            t("notEnoughCredits")
           ) : (
-            "Generate My Full Report →"
+            t("generateFullReport")
           )}
         </button>
 
         {!hasEnoughCredits && (
           <p className="text-xs text-parchment-500">
             <a href="/pricing" className="text-gold-400 hover:text-gold-300 underline">
-              Upgrade your plan
+              {t("upgradePlan")}
             </a>
-            {" "}to earn more daily credits
+            {" "}{t("upgradeForCredits")}
           </p>
         )}
       </div>

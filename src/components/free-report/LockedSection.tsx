@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Lock } from "lucide-react";
 import { hasMinTier } from "@/lib/credits";
 
@@ -18,6 +19,8 @@ export default function LockedSection({
   children,
   preview,
 }: LockedSectionProps) {
+  const t = useTranslations("freeReport");
+
   if (hasMinTier(userTier, requiredTier)) {
     return <>{children}</>;
   }
@@ -43,10 +46,10 @@ export default function LockedSection({
               background: "linear-gradient(135deg, #8f6b17, #d4a528, #8f6b17)",
             }}
           >
-            Subscribe to Unlock
+            {t("subscribeToUnlock")}
           </a>
           <p className="text-[10px] text-parchment-500/60 font-mono">
-            Requires {requiredTier}+ membership
+            {t("requiresMembership", { tier: requiredTier })}
           </p>
         </div>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 
 const ParticleField = dynamic(() => import("./ParticleField"), { ssr: false });
@@ -82,6 +83,7 @@ function TypewriterLine({
 }
 
 export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
+  const t = useTranslations("hero");
   // Defer heavy decorative components until browser is idle
   const [deferred, setDeferred] = useState(false);
 
@@ -133,13 +135,13 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
           <div className="flex items-center gap-2 mb-2">
             <div className="w-1.5 h-1.5 rounded-full bg-quantum-green animate-glow-pulse" />
             <span className="text-[10px] text-gold-400 tracking-[0.2em] uppercase font-semibold">
-              System: Active
+              {t("systemActive")}
             </span>
           </div>
           <div className="space-y-1">
-            <StatusLine label="Status" value={"Dormant 1000yr \u2192 REACTIVATION"} />
-            <StatusLine label="Mode" value="Awaiting Calibrant" />
-            <StatusLine label="Uptime" value={"\u221E"} />
+            <StatusLine label={t("statusLabel")} value={t("statusValue")} />
+            <StatusLine label={t("modeLabel")} value={t("modeValue")} />
+            <StatusLine label={t("uptimeLabel")} value={"\u221E"} />
           </div>
         </div>
       </div>
@@ -162,7 +164,7 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
             filter: "drop-shadow(0 0 20px rgba(212,165,40,0.25))",
           }}
         >
-          紫微斗数
+          {t("title")}
         </h1>
 
         {/* English subtitle — SOVEREIGN CALIBRATION ENGINE */}
@@ -176,7 +178,7 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
             animation: "fade-in 0.8s ease-out 0.3s forwards",
           }}
         >
-          Sovereign Calibration Engine
+          {t("sovereignEngine")}
         </p>
 
         {/* Subtitle — tagline */}
@@ -192,7 +194,7 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
               textShadow: "0 0 12px rgba(255,215,0,0.2)",
             }}
           >
-            The Emperor&apos;s Forbidden Algorithm — Now Sovereign in Your Hands
+            {t("tagline")}
           </p>
           <p
             className="text-xs tracking-[0.15em]"
@@ -202,7 +204,7 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
               textShadow: "0 0 10px rgba(0,209,255,0.1)",
             }}
           >
-            帝王禁术 — 今归主权于你
+            {t("taglineCn")}
           </p>
         </div>
 
@@ -216,10 +218,9 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
             animation: "fade-in 0.8s ease-out 0.7s forwards",
           }}
         >
-          For a thousand years, this 108-star calibration algorithm was locked inside the
-          Forbidden City&apos;s 钦天监 — the emperor&apos;s exclusive science.{" "}
+          {t("narrative")}{" "}
           <span style={{ color: "rgba(212,165,40,0.5)" }}>
-            The seal is broken. Your sovereign life-path calibration begins now.
+            {t("narrativeHighlight")}
           </span>
         </p>
 
@@ -229,7 +230,7 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
           style={{ opacity: 0, animation: "fade-in 0.4s ease-out 1.0s forwards" }}
         >
           <TypewriterLine
-            text="> CALIBRATION ENGINE INITIALIZED. AWAITING NATAL COORDINATES..."
+            text={t("typewriterText")}
             delay={1200}
             className="text-[11px] font-mono text-quantum-green/70 tracking-wider"
           />
@@ -256,7 +257,7 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
             }}
           >
             <span className="relative z-10 tracking-[0.25em] uppercase">
-              Begin Calibration
+              {t("cta")}
             </span>
             <span className="absolute inset-0 rounded-sm border border-gold-300/50 animate-glow-pulse" />
             <span className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
@@ -285,7 +286,7 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
                 color: "rgba(100,180,255,0.4)",
               }}
             >
-              SYSTEM: ACTIVE &nbsp;//&nbsp; 108 PARAMETERS LOADED &nbsp;//&nbsp; AWAITING NATAL COORDINATES
+              {t("statusTicker")}
             </p>
           </div>
         </div>

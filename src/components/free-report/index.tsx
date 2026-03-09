@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import { useMatrixStore } from "@/stores/useMatrixStore";
 import { useVerificationStore } from "@/stores/useVerificationStore";
@@ -20,6 +21,7 @@ import { useCredits } from "@/hooks/useCredits";
 /* ─── Main Component ─── */
 
 export default function FreeReport() {
+  const t = useTranslations("freeReport");
   const isUnlocked = useDashboardStore((s) => s.isUnlocked);
   const palaces = useMatrixStore((s) => s.palaces);
   const chartMeta = useMatrixStore((s) => s.chartMeta);
@@ -112,13 +114,13 @@ export default function FreeReport() {
         {/* ─── 1A: Report Header ─── */}
         <div className="text-center space-y-4">
           <span className="inline-block px-3 py-1 text-[10px] font-mono tracking-[0.3em] uppercase text-quantum-green/80 border border-quantum-green/30 rounded-sm">
-            [REPORT GENERATED]
+            {t("reportGenerated")}
           </span>
           <h2
             className="text-3xl sm:text-4xl font-bold gold-gradient-text"
             style={{ fontFamily: "var(--font-cinzel)" }}
           >
-            Your Sovereign Life-Path Report
+            {t("sovereignReport")}
           </h2>
           <p className="text-gold-300/60 text-sm tracking-widest font-mono">
             {userSummary}
@@ -144,11 +146,10 @@ export default function FreeReport() {
               className="text-2xl sm:text-3xl font-bold gold-gradient-text mb-3"
               style={{ fontFamily: "var(--font-cinzel)" }}
             >
-              Unlock Your Full Reading
+              {t("unlockFullReading")}
             </h3>
             <p className="text-sm text-parchment-400/70 max-w-md mx-auto mb-8">
-              Create a free account to unlock consciousness readings, pattern analysis,
-              decade overview, and preview premium content.
+              {t("unlockFullReadingDesc")}
             </p>
             <button
               onClick={() => openAuthModal("full_reading")}
@@ -157,7 +158,7 @@ export default function FreeReport() {
                 background: "linear-gradient(135deg, #8f6b17, #d4a528, #8f6b17)",
               }}
             >
-              Create Free Account to Continue
+              {t("createFreeAccountCta")}
             </button>
           </div>
         )}
@@ -171,7 +172,7 @@ export default function FreeReport() {
         {isLoggedIn && (
           <div className="relative p-6 rounded-lg border border-gold-700/20 bg-celestial-900/40">
             <span className="inline-block px-2 py-0.5 text-[10px] font-mono tracking-[0.3em] uppercase text-quantum-cyan/70 border border-quantum-cyan/20 rounded-sm mb-4">
-              [PATTERN ANALYSIS]
+              {t("patternAnalysis")}
             </span>
             <p className="text-sm text-parchment-300/80 leading-relaxed">
               {narrative}
@@ -218,10 +219,10 @@ export default function FreeReport() {
               className="text-xl sm:text-2xl font-bold gold-gradient-text mb-3"
               style={{ fontFamily: "var(--font-cinzel)" }}
             >
-              Go Deeper
+              {t("goDeeper")}
             </h3>
             <p className="text-sm text-parchment-400/70 max-w-md mx-auto mb-6">
-              Unlock palace fables, decade deep analysis, and more with a BASIC subscription.
+              {t("goDeeperDesc")}
             </p>
             <a
               href="/pricing"
@@ -230,7 +231,7 @@ export default function FreeReport() {
                 background: "linear-gradient(135deg, #8f6b17, #d4a528, #8f6b17)",
               }}
             >
-              View Plans
+              {t("viewPlans")}
             </a>
           </div>
         )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { Clock, Save } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { signIn } from "next-auth/react";
@@ -10,6 +11,7 @@ import { Button } from "@/components/ui/Button";
 const SNAPSHOT_DURATION = 900; // 15 minutes in seconds
 
 export default function SnapshotBanner() {
+  const t = useTranslations("snapshot");
   const { data: session } = useSession();
   const isUnlocked = useDashboardStore((s) => s.isUnlocked);
   const snapshotExpired = useDashboardStore((s) => s.snapshotExpired);
@@ -62,13 +64,13 @@ export default function SnapshotBanner() {
       <div className="relative mx-auto max-w-4xl px-4 py-6">
         <div className="rounded-lg border border-quantum-red/30 bg-celestial-900/80 backdrop-blur-sm p-5 text-center space-y-3">
           <p className="text-sm text-quantum-red font-semibold">
-            Snapshot Expired
+            {t("expired")}
           </p>
           <p className="text-xs text-parchment-400">
-            Register to restore your reading and save your chart permanently.
+            {t("expiredDesc")}
           </p>
           <Button onClick={() => openAuthModal("full_reading")}>
-            Create Free Account
+            {t("createFreeAccount")}
           </Button>
         </div>
       </div>
@@ -103,9 +105,9 @@ export default function SnapshotBanner() {
 
           {/* Message */}
           <p className="flex-1 text-xs sm:text-sm text-parchment-400 text-center sm:text-left">
-            Your free reading snapshot is{" "}
-            <span className="text-gold-300 font-medium">temporary</span>.
-            Register to save it permanently.
+            {t("tempReading")}{" "}
+            <span className="text-gold-300 font-medium">{t("temporary")}</span>.
+            {" "}{t("registerToSave")}
           </p>
 
           {/* Actions */}
@@ -116,13 +118,13 @@ export default function SnapshotBanner() {
               className="gap-1.5"
             >
               <Save className="h-3.5 w-3.5" />
-              Save My Reading
+              {t("saveMyReading")}
             </Button>
             <button
               onClick={() => signIn("google", { callbackUrl: "/" })}
               className="rounded-md border border-gold-700/30 bg-celestial-800/60 px-3 py-1.5 text-xs text-parchment-300 hover:border-gold-500/50 hover:bg-celestial-700/40 transition-colors"
             >
-              Google Sign In
+              {t("googleSignIn")}
             </button>
           </div>
         </div>
