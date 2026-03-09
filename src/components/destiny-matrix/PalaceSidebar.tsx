@@ -2,7 +2,10 @@
 
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSession } from "next-auth/react";
 import { useMatrixStore } from "@/stores/useMatrixStore";
+import { useDashboardStore } from "@/stores/useDashboardStore";
+import { hasMinTier } from "@/lib/credits";
 import { PALACE_ICON_MAP } from "./palaceIcons";
 
 const STATE_LABELS: Record<string, { label: string; color: string }> = {
@@ -35,6 +38,9 @@ export default function PalaceSidebar() {
   const closeSidebar = useMatrixStore((s) => s.closeSidebar);
   const selectedPalaceId = useMatrixStore((s) => s.selectedPalaceId);
   const palaces = useMatrixStore((s) => s.palaces);
+
+  const { data: session } = useSession();
+  const openAuthModal = useDashboardStore((s) => s.openAuthModal);
 
   const palace = palaces.find((p) => p.id === selectedPalaceId);
   const IconComponent = palace ? PALACE_ICON_MAP[palace.icon] : null;
@@ -227,9 +233,11 @@ export default function PalaceSidebar() {
                 variants={childVariants}
               />
 
-              {/* CTA Button */}
+              {/* CTA Button — hidden for BASIC+ subscribers */}
+              {!hasMinTier(session?.user?.tier, "BASIC") && (
               <motion.div variants={childVariants}>
                 <button
+                  onClick={() => openAuthModal("full_reading")}
                   className="w-full flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-semibold
                              uppercase tracking-[0.2em] text-celestial-900 rounded-sm cursor-pointer
                              transition-all duration-300
@@ -265,6 +273,7 @@ export default function PalaceSidebar() {
                   </a>
                 </div>
               </motion.div>
+              )}
             </motion.div>
           </motion.div>
         </>

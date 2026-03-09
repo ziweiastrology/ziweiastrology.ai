@@ -187,28 +187,34 @@ export default function SettingsPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1 block text-xs text-parchment-500">Birth Hour (0-23)</label>
-              <input
-                type="number"
-                min={0}
-                max={23}
+              <label className="mb-1 block text-xs text-parchment-500">Birth Hour</label>
+              <select
                 value={birthHour}
                 onChange={(e) => setBirthHour(e.target.value)}
-                placeholder="e.g. 14"
-                className="w-full rounded-md border border-gold-700/30 bg-celestial-700/50 px-3 py-2 text-sm text-parchment-200 focus:border-gold-500/50 focus:outline-none"
-              />
+                className="select-field w-full rounded-md border border-gold-700/30 bg-celestial-700/50 px-3 py-2 text-sm text-parchment-200 focus:border-gold-500/50 focus:outline-none"
+              >
+                <option value="">Select...</option>
+                {Array.from({ length: 24 }, (_, i) => (
+                  <option key={i} value={String(i).padStart(2, "0")}>
+                    {String(i).padStart(2, "0")}:00 {i < 12 ? "AM" : "PM"}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
-              <label className="mb-1 block text-xs text-parchment-500">Birth Minute (0-59)</label>
-              <input
-                type="number"
-                min={0}
-                max={59}
+              <label className="mb-1 block text-xs text-parchment-500">Birth Minute</label>
+              <select
                 value={birthMinute}
                 onChange={(e) => setBirthMinute(e.target.value)}
-                placeholder="e.g. 30"
-                className="w-full rounded-md border border-gold-700/30 bg-celestial-700/50 px-3 py-2 text-sm text-parchment-200 focus:border-gold-500/50 focus:outline-none"
-              />
+                className="select-field w-full rounded-md border border-gold-700/30 bg-celestial-700/50 px-3 py-2 text-sm text-parchment-200 focus:border-gold-500/50 focus:outline-none"
+              >
+                <option value="">Select...</option>
+                {Array.from({ length: 60 }, (_, i) => (
+                  <option key={i} value={String(i).padStart(2, "0")}>
+                    :{String(i).padStart(2, "0")}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
           <div>
