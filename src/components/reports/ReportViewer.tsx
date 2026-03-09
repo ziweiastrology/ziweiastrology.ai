@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { ChevronRight, List, X } from "lucide-react";
 import ReportStatusBar from "./ReportStatusBar";
 import ReportSectionCard from "./ReportSectionCard";
+import MatchingCards from "./MatchingCards";
+import ReportPDFExport from "./ReportPDFExport";
 
 interface Section {
   id: string;
@@ -232,6 +234,16 @@ export default function ReportViewer({ reportId }: Props) {
             </div>
           )}
 
+          {/* Matching Analysis Cards */}
+          {report.status === "COMPLETE" && report.sections.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-gold-500/70">
+                Matching Analysis
+              </h3>
+              <MatchingCards sections={report.sections} />
+            </div>
+          )}
+
           {/* Topic Deep Dives */}
           {deepDiveSections.length > 0 && (
             <div className="space-y-4">
@@ -248,6 +260,11 @@ export default function ReportViewer({ reportId }: Props) {
                 </div>
               ))}
             </div>
+          )}
+
+          {/* PDF Export */}
+          {report.status === "COMPLETE" && (
+            <ReportPDFExport report={report} />
           )}
         </div>
       </div>
