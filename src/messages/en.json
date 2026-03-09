@@ -334,7 +334,39 @@
     "lifePathReport": "Life-Path Report",
     "sections": "{count} sections",
     "statusComplete": "Complete",
-    "statusGenerating": "Generating"
+    "statusGenerating": "Generating",
+    "todaysInsight": "Today's Insight",
+    "enterBirthDetails": "Enter your birth details in {settings} to unlock personalized daily insights from the twelve palaces.",
+    "settingsLink": "Settings",
+    "readingStars": "Reading the stars for you...",
+    "insightError": "Could not generate today's insight. Please try refreshing.",
+    "askSifu": "Ask ZiWei Sifu for details →",
+    "destinyChart": "Destiny Chart",
+    "addBirthDetails": "Add your birth details to see your ZiWei chart snapshot.",
+    "setBirthInfo": "Set birth info →",
+    "computingChart": "Computing chart...",
+    "mainStar": "Main Star 命主星",
+    "starsMapped": "{count} stars mapped",
+    "viewFullChart": "View full chart →",
+    "unableToCompute": "Unable to compute chart. Please check your birth details.",
+    "credits": "Credits",
+    "availableCredits": "available credits",
+    "upgradeForMore": "Upgrade for more credits",
+    "quickActions": "Quick Actions",
+    "chartReading": "Chart Reading",
+    "communityAction": "Community",
+    "academyAction": "Academy",
+    "resourcesAction": "Resources",
+    "groupsAction": "Groups",
+    "bookmarksAction": "Bookmarks",
+    "notifications": "Notifications",
+    "noNotifications": "No notifications",
+    "viewAllNotifs": "View all",
+    "recentActivity": "Recent Activity",
+    "noActivity": "No activity yet. Start by {link}.",
+    "joiningCommunity": "joining the community",
+    "comments": "{count} comments",
+    "repliedOn": "Replied on \"{title}\""
   },
   "academy": {
     "pageTitle": "Academy",
@@ -367,7 +399,15 @@
     "pageSubtitle": "The stars speak through emperors, poets, and visionaries. See Zi Wei Dou Shu decode their destinies.",
     "suggest": "Suggest",
     "suggestTitle": "Suggest a Case Study",
-    "suggestDescription": "Submit a public figure's birth details. Our AI agent will analyze their Zi Wei chart and publish a live case study — think of it as destiny verification in real-time."
+    "suggestDescription": "Submit a public figure's birth details. Our AI agent will analyze their Zi Wei chart and publish a live case study — think of it as destiny verification in real-time.",
+    "learnTopic": "Learn how to read this topic",
+    "hideGuide": "Hide reading guide",
+    "alsoExamine": "Also examine:",
+    "exploreCase": "Explore this case",
+    "readMore": "Read more",
+    "showLess": "Show less",
+    "outcome": "Outcome",
+    "collapse": "Collapse"
   },
   "common": {
     "save": "Save",
@@ -392,5 +432,12 @@
     "ogTitle": "ziweiastrology.ai — Decode Your Reality",
     "ogDescription": "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling. Decode your reality. Optimize your future.",
     "twitterDescription": "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling."
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "In-depth articles on Zi Wei Dou Shu — history, star analysis, celebrity case studies, and the mathematics behind the cosmos.",
+    "all": "All",
+    "minRead": "{time} min read",
+    "noPosts": "No posts yet. Check back soon!"
   }
 }

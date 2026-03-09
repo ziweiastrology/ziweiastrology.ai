@@ -2,6 +2,7 @@
 
 import { Coins, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 interface CreditBalanceCardProps {
   credits: number;
@@ -12,12 +13,14 @@ export default function CreditBalanceCard({
   credits,
   tier,
 }: CreditBalanceCardProps) {
+  const t = useTranslations("dashboard");
+
   return (
     <div className="gold-frame rounded-xl p-5">
       <div className="mb-3 flex items-center justify-between">
         <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-gold-400">
           <Coins className="h-4 w-4" />
-          Credits
+          {t("credits")}
         </h3>
         <span className="rounded-full bg-gold-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gold-400">
           {tier}
@@ -26,7 +29,7 @@ export default function CreditBalanceCard({
 
       <div className="mb-4">
         <p className="text-3xl font-bold text-parchment-100">{credits}</p>
-        <p className="text-xs text-parchment-600">available credits</p>
+        <p className="text-xs text-parchment-600">{t("availableCredits")}</p>
       </div>
 
       {tier === "FREE" && (
@@ -35,7 +38,7 @@ export default function CreditBalanceCard({
           className="flex items-center gap-1 text-xs text-gold-400 hover:text-gold-300 transition-colors"
         >
           <TrendingUp className="h-3 w-3" />
-          Upgrade for more credits
+          {t("upgradeForMore")}
         </Link>
       )}
     </div>

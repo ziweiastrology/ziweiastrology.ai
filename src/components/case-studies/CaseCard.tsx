@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import type { CaseExample } from "./topicData";
 import { cn } from "@/lib/utils";
 import CaseReactionBar from "./CaseReactionBar";
@@ -24,6 +25,7 @@ export default function CaseCard({
   autoExpand = false,
   isHighlighted = false,
 }: CaseCardProps) {
+  const t = useTranslations("caseStudies");
   const [expanded, setExpanded] = useState(false);
   const [analysisExpanded, setAnalysisExpanded] = useState(false);
 
@@ -104,7 +106,7 @@ export default function CaseCard({
             "opacity-80 hover:opacity-100"
           )}
         >
-          Explore this case
+          {t("exploreCase")}
           <ChevronRight className="h-3 w-3" />
         </button>
       )}
@@ -148,7 +150,7 @@ export default function CaseCard({
                 }}
                 className="mt-2 flex items-center gap-1 text-xs font-medium text-gold-500 transition-colors hover:text-gold-400"
               >
-                {analysisExpanded ? "Show less" : "Read more"}
+                {analysisExpanded ? t("showLess") : t("readMore")}
                 <ChevronRight
                   className={cn(
                     "h-3 w-3 transition-transform",
@@ -161,7 +163,7 @@ export default function CaseCard({
             {/* Outcome */}
             <div className="mt-4 rounded bg-celestial-800/50 p-3">
               <p className="text-xs font-semibold uppercase tracking-wider text-parchment-500">
-                Outcome
+                {t("outcome")}
               </p>
               <p
                 className="mt-1 text-sm leading-relaxed text-parchment-300"
@@ -208,7 +210,7 @@ export default function CaseCard({
               }}
               className="mt-4 flex items-center gap-1 text-xs font-medium text-parchment-500 transition-colors hover:text-parchment-300"
             >
-              Collapse
+              {t("collapse")}
               <ChevronRight className="h-3 w-3 -rotate-90" />
             </button>
           </motion.div>

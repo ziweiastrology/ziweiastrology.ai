@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
   HealthIcon,
   CareerIcon,
@@ -21,6 +22,7 @@ const ICON_MAP: Record<string, React.FC<{ stroke?: string }>> = {
 };
 
 export default function TopicNav() {
+  const t = useTranslations("caseStudies");
   const [active, setActive] = useState(TOPICS[0].id);
   const navRef = useRef<HTMLDivElement>(null);
 
@@ -84,7 +86,7 @@ export default function TopicNav() {
           className="animate-glow-pulse flex shrink-0 items-center gap-1.5 rounded-full bg-gold-500/15 px-3.5 py-1.5 text-sm font-semibold text-gold-400 ring-1 ring-gold-500/40 transition-all hover:scale-105 hover:bg-gold-500/25 hover:text-gold-300 hover:ring-gold-400/60"
         >
           <Sparkles className="h-4 w-4" />
-          <span className="whitespace-nowrap">Suggest</span>
+          <span className="whitespace-nowrap">{t("suggest")}</span>
         </button>
       </div>
     </div>

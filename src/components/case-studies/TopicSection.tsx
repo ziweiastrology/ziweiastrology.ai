@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
   HealthIcon,
   CareerIcon,
@@ -29,6 +30,7 @@ interface TopicSectionProps {
 }
 
 export default function TopicSection({ topic, index, activeCaseId }: TopicSectionProps) {
+  const t = useTranslations("caseStudies");
   const Icon = ICON_MAP[topic.id];
   const [introOpen, setIntroOpen] = useState(false);
 
@@ -111,7 +113,7 @@ export default function TopicSection({ topic, index, activeCaseId }: TopicSectio
               {/* Related palaces */}
               <div className="mt-4 flex flex-wrap items-center gap-2">
                 <span className="text-xs font-medium text-parchment-500">
-                  Also examine:
+                  {t("alsoExamine")}
                 </span>
                 {topic.relatedPalaces.map((palace) => (
                   <span
@@ -154,7 +156,7 @@ export default function TopicSection({ topic, index, activeCaseId }: TopicSectio
             "opacity-80 hover:opacity-100"
           )}
         >
-          {introOpen ? "Hide reading guide" : "Learn how to read this topic"}
+          {introOpen ? t("hideGuide") : t("learnTopic")}
           <ChevronRight
             className={cn(
               "h-3 w-3 transition-transform",

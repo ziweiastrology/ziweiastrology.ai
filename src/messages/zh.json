@@ -334,7 +334,39 @@
     "lifePathReport": "命途报告",
     "sections": "{count} 个章节",
     "statusComplete": "已完成",
-    "statusGenerating": "生成中"
+    "statusGenerating": "生成中",
+    "todaysInsight": "今日洞察",
+    "enterBirthDetails": "在{settings}中输入您的出生信息，解锁十二宫个性化每日洞察。",
+    "settingsLink": "设置",
+    "readingStars": "正在为您解读星象...",
+    "insightError": "无法生成今日洞察，请刷新页面重试。",
+    "askSifu": "向紫微师傅请教详情 →",
+    "destinyChart": "命运星盘",
+    "addBirthDetails": "添加您的出生信息以查看紫微星盘概览。",
+    "setBirthInfo": "设置出生信息 →",
+    "computingChart": "正在计算星盘...",
+    "mainStar": "命主星",
+    "starsMapped": "{count} 颗星曜已映射",
+    "viewFullChart": "查看完整星盘 →",
+    "unableToCompute": "无法计算星盘，请检查您的出生信息。",
+    "credits": "积分",
+    "availableCredits": "可用积分",
+    "upgradeForMore": "升级获取更多积分",
+    "quickActions": "快捷操作",
+    "chartReading": "星盘解读",
+    "communityAction": "社区",
+    "academyAction": "学院",
+    "resourcesAction": "资源",
+    "groupsAction": "群组",
+    "bookmarksAction": "收藏夹",
+    "notifications": "通知",
+    "noNotifications": "暂无通知",
+    "viewAllNotifs": "查看全部",
+    "recentActivity": "最近活动",
+    "noActivity": "暂无活动。先{link}吧。",
+    "joiningCommunity": "加入社区",
+    "comments": "{count} 条评论",
+    "repliedOn": "回复了「{title}」"
   },
   "academy": {
     "pageTitle": "学院",
@@ -365,9 +397,17 @@
   "caseStudies": {
     "pageTitle": "案例研究",
     "pageSubtitle": "星辰通过帝王、诗人和远见者说话。看紫微斗数解码他们的命运。",
-    "suggest": "建议",
+    "suggest": "推荐",
     "suggestTitle": "建议案例研究",
-    "suggestDescription": "提交一位公众人物的出生信息。我们的AI代理将分析他们的紫微命盘并发布实时案例研究——可视为实时命运验证。"
+    "suggestDescription": "提交一位公众人物的出生信息。我们的AI代理将分析他们的紫微命盘并发布实时案例研究——可视为实时命运验证。",
+    "learnTopic": "了解如何解读此主题",
+    "hideGuide": "隐藏解读指南",
+    "alsoExamine": "同时参考：",
+    "exploreCase": "探索此案例",
+    "readMore": "阅读更多",
+    "showLess": "收起",
+    "outcome": "结果",
+    "collapse": "收起"
   },
   "common": {
     "save": "保存",
@@ -392,5 +432,12 @@
     "ogTitle": "ziweiastrology.ai — 解码你的命运",
     "ogDescription": "千年紫微斗数智慧融合量子概率建模。解码你的命运，优化你的未来。",
     "twitterDescription": "千年紫微斗数智慧融合量子概率建模。"
+  },
+  "blog": {
+    "title": "博客",
+    "subtitle": "紫微斗数深度文章 —— 历史、星曜分析、名人案例研究及宇宙背后的数学。",
+    "all": "全部",
+    "minRead": "{time} 分钟阅读",
+    "noPosts": "暂无文章，请稍后再来！"
   }
 }

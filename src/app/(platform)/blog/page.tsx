@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Calendar, Clock, Tag, ArrowRight } from "lucide-react";
+import { getTranslations, getLocale } from "next-intl/server";
 import { getAllPosts, getAllTags } from "@/lib/blog";
 import PageHeader from "@/components/layout/PageHeader";
 
@@ -19,6 +20,8 @@ async function BlogIndex({
   const { tag: activeTag } = await searchParamsPromise;
   const allPosts = getAllPosts();
   const allTags = getAllTags();
+  const t = await getTranslations("blog");
+  const locale = await getLocale();
 
   const posts = activeTag
     ? allPosts.filter((p) => p.tags.includes(activeTag))
@@ -27,8 +30,8 @@ async function BlogIndex({
   return (
     <main className="mx-auto max-w-5xl px-4 pb-20 sm:px-6 lg:px-8">
       <PageHeader
-        title="Blog"
-        subtitle="In-depth articles on Zi Wei Dou Shu — history, star analysis, celebrity case studies, and the mathematics behind the cosmos."
+        title={t("title")}
+        subtitle={t("subtitle")}
       />
 
       {/* Tag filter */}
@@ -43,7 +46,7 @@ async function BlogIndex({
                 : "bg-celestial-800/50 text-parchment-500 hover:bg-celestial-700/60"
             }`}
           >
-            All
+            {t("all")}
           </Link>
           {allTags.map((t) => (
             <Link
@@ -64,7 +67,7 @@ async function BlogIndex({
       {/* Post grid */}
       {posts.length === 0 ? (
         <p className="py-20 text-center text-parchment-600">
-          No posts yet. Check back soon!
+          {t("noPosts")}
         </p>
       ) : (
         <div className="grid gap-8 sm:grid-cols-2">
@@ -76,7 +79,7 @@ async function BlogIndex({
               <div className="mb-3 flex flex-wrap items-center gap-3 text-xs text-parchment-600">
                 <span className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
-                  {new Date(post.date).toLocaleDateString("en-US", {
+                  {new Date(post.date).toLocaleDateString(locale === "zh" ? "zh-CN" : "en-US", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
@@ -84,7 +87,7 @@ async function BlogIndex({
                 </span>
                 <span className="flex items-center gap-1">
                   <Clock className="h-3 w-3" />
-                  {post.readingTime} min read
+                  {t("minRead", { time: post.readingTime })}
                 </span>
               </div>
 

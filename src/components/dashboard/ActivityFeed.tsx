@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { MessageSquare, FileText, Clock } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface ActivityFeedProps {
   recentPosts: Array<{
@@ -33,19 +34,21 @@ export default function ActivityFeed({
   recentPosts,
   recentComments,
 }: ActivityFeedProps) {
+  const t = useTranslations("dashboard");
+
   const activities = [
     ...recentPosts.map((p) => ({
       type: "post" as const,
       id: p.id,
       title: p.title,
       createdAt: p.createdAt,
-      meta: `${p._count.comments} comments`,
+      meta: t("comments", { count: p._count.comments }),
       href: `/community/feed?post=${p.id}`,
     })),
     ...recentComments.map((c) => ({
       type: "comment" as const,
       id: c.id,
-      title: `Replied on "${c.post.title}"`,
+      title: t("repliedOn", { title: c.post.title }),
       createdAt: c.createdAt,
       meta: c.content.slice(0, 60) + (c.content.length > 60 ? "..." : ""),
       href: `/community/feed?post=${c.post.id}`,
@@ -58,19 +61,18 @@ export default function ActivityFeed({
     <div className="gold-frame rounded-xl p-5">
       <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-gold-400">
         <Clock className="h-4 w-4" />
-        Recent Activity
+        {t("recentActivity")}
       </h3>
 
       {activities.length === 0 ? (
         <p className="text-sm text-parchment-500">
-          No activity yet. Start by{" "}
+          {t("noActivity", { link: "" })}{" "}
           <Link
             href="/community"
             className="text-gold-400 hover:text-gold-300"
           >
-            joining the community
+            {t("joiningCommunity")}
           </Link>
-          .
         </p>
       ) : (
         <div className="space-y-3">

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Sparkles, Star } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useMatrixStore } from "@/stores/useMatrixStore";
 import { useDashboardStore } from "@/stores/useDashboardStore";
 
@@ -24,6 +25,7 @@ export default function ChartSnapshotCard({
   birthHour,
   birthGender,
 }: ChartSnapshotCardProps) {
+  const t = useTranslations("dashboard");
   const [chartData, setChartData] = useState<MiniChartData | null>(null);
   const [loading, setLoading] = useState(false);
   const [chartReady, setChartReady] = useState(false);
@@ -86,16 +88,16 @@ export default function ChartSnapshotCard({
       <div className="gold-frame rounded-xl p-5">
         <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-gold-400">
           <Star className="h-4 w-4" />
-          Destiny Chart
+          {t("destinyChart")}
         </h3>
         <p className="mb-3 text-sm text-parchment-500">
-          Add your birth details to see your ZiWei chart snapshot.
+          {t("addBirthDetails")}
         </p>
         <Link
           href="/settings"
           className="text-xs text-gold-400 hover:text-gold-300 transition-colors"
         >
-          Set birth info →
+          {t("setBirthInfo")}
         </Link>
       </div>
     );
@@ -111,12 +113,12 @@ export default function ChartSnapshotCard({
       {loading ? (
         <div className="flex items-center gap-2 text-sm text-parchment-500">
           <Sparkles className="h-4 w-4 animate-pulse" />
-          Computing chart...
+          {t("computingChart")}
         </div>
       ) : chartData ? (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-parchment-600">Main Star 命主星</span>
+            <span className="text-xs text-parchment-600">{t("mainStar")}</span>
             <span className="text-sm font-medium text-gold-300">
               {chartData.mainStar}
             </span>
@@ -124,7 +126,7 @@ export default function ChartSnapshotCard({
           <div className="flex items-center justify-between">
             <span className="text-xs text-parchment-600">{chartData.mingGongCn} ({chartData.mingGong})</span>
             <span className="text-xs text-parchment-500">
-              {chartData.starCount} stars mapped
+              {t("starsMapped", { count: chartData.starCount })}
             </span>
           </div>
           <div className="mt-3 border-t border-gold-700/20 pt-3">
@@ -133,13 +135,13 @@ export default function ChartSnapshotCard({
               className="flex items-center gap-1 text-xs text-gold-400 hover:text-gold-300 transition-colors"
             >
               <Sparkles className="h-3 w-3" />
-              View full chart →
+              {t("viewFullChart")}
             </Link>
           </div>
         </div>
       ) : (
         <p className="text-sm text-parchment-500">
-          Unable to compute chart. Please check your birth details.
+          {t("unableToCompute")}
         </p>
       )}
     </div>

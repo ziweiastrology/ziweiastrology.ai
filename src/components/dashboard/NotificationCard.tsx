@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { Bell, ArrowRight } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
 import { useUnreadCounts, useNotifications } from "@/hooks/useNotifications";
 
 export default function NotificationCard() {
+  const t = useTranslations("dashboard");
+  const locale = useLocale();
   const { data: unread } = useUnreadCounts();
   const { data: notifData } = useNotifications();
   const notifications = notifData?.notifications?.slice(0, 3) || [];
@@ -14,7 +17,7 @@ export default function NotificationCard() {
       <div className="mb-3 flex items-center justify-between">
         <h3 className="flex items-center gap-2 text-sm font-semibold text-parchment-200">
           <Bell className="h-4 w-4 text-gold-400" />
-          Notifications
+          {t("notifications")}
         </h3>
         {(unread?.notifications ?? 0) > 0 && (
           <span className="rounded-full bg-quantum-red/80 px-2 py-0.5 text-xs font-semibold text-white">
@@ -30,13 +33,13 @@ export default function NotificationCard() {
             <div className="min-w-0">
               <p className="text-xs text-parchment-400 truncate">{n.content}</p>
               <p className="text-xs text-parchment-700">
-                {new Date(n.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                {new Date(n.createdAt).toLocaleDateString(locale === "zh" ? "zh-CN" : "en-US", { month: "short", day: "numeric" })}
               </p>
             </div>
           </div>
         ))}
         {notifications.length === 0 && (
-          <p className="text-xs text-parchment-600">No notifications</p>
+          <p className="text-xs text-parchment-600">{t("noNotifications")}</p>
         )}
       </div>
 
@@ -44,7 +47,7 @@ export default function NotificationCard() {
         href="/messages"
         className="mt-3 flex items-center gap-1 text-xs text-gold-400 hover:underline"
       >
-        View all <ArrowRight className="h-3 w-3" />
+        {t("viewAllNotifs")} <ArrowRight className="h-3 w-3" />
       </Link>
     </div>
   );

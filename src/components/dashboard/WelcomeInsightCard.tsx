@@ -1,6 +1,7 @@
 "use client";
 
 import { Sparkles, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useDashboardStore } from "@/stores/useDashboardStore";
 import { useDailyInsight } from "@/hooks/useDailyInsight";
 
@@ -15,6 +16,7 @@ export default function WelcomeInsightCard({
   birthHour,
   birthGender,
 }: WelcomeInsightCardProps) {
+  const t = useTranslations("dashboard");
   const { setCopilotInitialPrompt } = useDashboardStore();
   const toggleCopilot = useDashboardStore((s) => s.toggleCopilot);
   const copilotOpen = useDashboardStore((s) => s.copilotOpen);
@@ -38,21 +40,19 @@ export default function WelcomeInsightCard({
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="font-heading text-sm font-semibold tracking-wide text-gold-400">
-            Today&apos;s Insight
+            {t("todaysInsight")}
           </h3>
           {!hasBirthData ? (
             <p className="mt-1.5 text-sm leading-relaxed text-parchment-300">
-              Enter your birth details in{" "}
-              <span className="text-gold-400">Settings</span> to unlock
-              personalized daily insights from the twelve palaces.
+              {t("enterBirthDetails", { settings: t("settingsLink") })}
             </p>
           ) : isLoading ? (
             <p className="mt-1.5 text-sm leading-relaxed text-parchment-500">
-              Reading the stars for you...
+              {t("readingStars")}
             </p>
           ) : error || !insight ? (
             <p className="mt-1.5 text-sm leading-relaxed text-parchment-500">
-              Could not generate today&apos;s insight. Please try refreshing.
+              {t("insightError")}
             </p>
           ) : (
             <p className="mt-1.5 text-sm leading-relaxed text-parchment-300">
@@ -69,7 +69,7 @@ export default function WelcomeInsightCard({
               }}
               className="mt-2 inline-flex items-center gap-1 text-xs text-gold-400 transition-colors hover:text-gold-300"
             >
-              Ask ZiWei Sifu for details &rarr;
+              {t("askSifu")}
             </button>
           )}
         </div>
