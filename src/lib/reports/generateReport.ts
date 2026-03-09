@@ -1,6 +1,15 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/prisma";
 import type { PalaceDetail, ChartMeta } from "@/types";
+import {
+  getReportSystemPrompt,
+  getPalaceAnalysisPrompt,
+  getDecadeAnalysisPrompt,
+  getLifeNarrativePrompt,
+  getOverallAssessmentPrompt,
+  getSimpleSummarySystemPrompt,
+  getSimpleSummaryUserPrompt,
+} from "./reportPrompts";
 
 const anthropic = new Anthropic();
 
@@ -52,22 +61,11 @@ Chart Summary:
 ${palaceList}`;
 }
 
-const REPORT_SYSTEM_PROMPT = `You are a master Zi Wei Dou Shu (紫微斗数) analyst specializing in 飞星派 Flying Star school.
-You write deep, insightful natal chart reports in the "Ancient Quantum" narrative style — blending traditional Chinese metaphysics wisdom with modern, accessible language.
-
-Style guidelines:
-- Use Chinese ZWDS terms (宫, 星, 四化) with English explanations
-- Be specific: reference exact stars, their brightness levels, and interactions
-- Frame insights as tendencies and potential, never absolute predictions
-- Use vivid, evocative language — imagine ancient wisdom meeting quantum physics
-- Structure with clear markdown headers (##, ###)
-- Each palace analysis should be 200-400 words
-- Be warm and encouraging while being honest about challenges`;
-
 async function generatePalaceAnalyses(
   palaces: PalaceData[],
   meta: ChartMeta,
-  reportId: string
+  reportId: string,
+  locale: string
 ): Promise<void> {
   const chartContext = buildChartContext(palaces, meta);
 
@@ -79,23 +77,11 @@ async function generatePalaceAnalyses(
     const response = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",
       max_tokens: 4096,
-      system: REPORT_SYSTEM_PROMPT,
+      system: getReportSystemPrompt(locale),
       messages: [
         {
           role: "user",
-          content: `${chartContext}
-
-Generate deep analysis for these 4 palaces: ${palaceNames}
-
-For each palace, write a section with:
-1. **Palace Overview** — the palace's role and significance
-2. **Star Configuration** — analysis of the stars present, their brightness, and interactions
-3. **四化 Transformation Effects** — how the Four Transformations affect this palace
-4. **Life Impact** — practical implications for the person's life
-5. **Advice** — actionable guidance
-
-Format each palace as a separate section with ## header using the palace name.
-Separate each palace section with ---`,
+          content: getPalaceAnalysisPrompt(locale, chartContext, palaceNames),
         },
       ],
     });
@@ -135,7 +121,8 @@ Separate each palace section with ---`,
 async function generateDecadeAnalysis(
   palaces: PalaceData[],
   meta: ChartMeta,
-  reportId: string
+  reportId: string,
+  locale: string
 ): Promise<void> {
   const chartContext = buildChartContext(palaces, meta);
   const currentYear = new Date().getFullYear();
@@ -163,27 +150,11 @@ async function generateDecadeAnalysis(
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
     max_tokens: 3000,
-    system: REPORT_SYSTEM_PROMPT,
+    system: getReportSystemPrompt(locale),
     messages: [
       {
         role: "user",
-        content: `${chartContext}
-
-Current age: ~${currentAge}
-
-IMPORTANT: Use the calendar years provided in parentheses for each decade. Do NOT recalculate years from ages.
-
-Generate a decade-by-decade life timeline analysis covering these decades:
-${decadeList}
-
-For each decade:
-1. **Theme** — the overarching energy and theme
-2. **Key Stars** — which stars dominate and their effects
-3. **Opportunities** — what to leverage during this period
-4. **Challenges** — what to watch out for
-5. **Advice** — strategic guidance for this life chapter
-
-Highlight the CURRENT decade with extra detail. Connect patterns across decades to show the life trajectory.`,
+        content: getDecadeAnalysisPrompt(locale, chartContext, currentAge, decadeList),
       },
     ],
   });
@@ -210,7 +181,8 @@ Highlight the CURRENT decade with extra detail. Connect patterns across decades 
 async function generateLifeNarrative(
   palaces: PalaceData[],
   meta: ChartMeta,
-  reportId: string
+  reportId: string,
+  locale: string
 ): Promise<void> {
   const chartContext = buildChartContext(palaces, meta);
 
@@ -226,34 +198,29 @@ async function generateLifeNarrative(
     ...(fortunePalace?.stars || []),
   ].filter((v, i, a) => a.indexOf(v) === i).slice(0, 8);
 
+  const soulPalaceNameCn = soulPalace?.nameCn || "命宫";
+  const soulStars = soulPalace?.stars.join(", ") || "N/A";
+  const careerStars = careerPalace?.stars.join(", ") || "N/A";
+  const spouseStars = spousePalace?.stars.join(", ") || "N/A";
+  const fortuneStars = fortunePalace?.stars.join(", ") || "N/A";
+
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
     max_tokens: 2500,
-    system: REPORT_SYSTEM_PROMPT,
+    system: getReportSystemPrompt(locale),
     messages: [
       {
         role: "user",
-        content: `${chartContext}
-
-Write a personal life narrative for this person — a "Life Story" (命运故事) in 2nd person ("You are someone who...").
-
-Maximum 500 words. Structure as 3 short chapters:
-
-**Chapter 1 — Origin (起源)**: The childhood energy and core nature from 命宫 (${soulPalace?.nameCn || "命宫"}) with stars: ${soulPalace?.stars.join(", ") || "N/A"}. What kind of child were they? What inner fire or quiet strength did they carry?
-
-**Chapter 2 — Journey (历程)**: Career and relationship patterns from 官禄宫 (${careerPalace?.stars.join(", ") || "N/A"}) and 夫妻宫 (${spousePalace?.stars.join(", ") || "N/A"}). How do they navigate ambition and love? What recurring themes appear?
-
-**Chapter 3 — Destiny (命运)**: Future potential from 福德宫 (${fortunePalace?.stars.join(", ") || "N/A"}) and their decade trajectory. Where is the energy flowing? What is the highest version of themselves?
-
-Key stars to reference specifically: ${keyStars.join(", ")}
-
-Style requirements:
-- Warm, vivid, almost poetic — like a wise elder describing who they are
-- Reference specific stars by name (both Chinese and English) to make it feel uniquely personal
-- Include 1-2 moments of "uncanny accuracy" — specific star combinations that map to specific personality traits
-- End with a forward-looking hook that makes them want to read the detailed palace analyses
-- Do NOT use headers or markdown formatting — write as flowing prose paragraphs
-- Each chapter should be separated by a blank line with the chapter title in bold`,
+        content: getLifeNarrativePrompt(
+          locale,
+          chartContext,
+          soulPalaceNameCn,
+          soulStars,
+          careerStars,
+          spouseStars,
+          fortuneStars,
+          keyStars.join(", ")
+        ),
       },
     ],
   });
@@ -280,7 +247,8 @@ Style requirements:
 async function generateOverallAssessment(
   palaces: PalaceData[],
   meta: ChartMeta,
-  reportId: string
+  reportId: string,
+  locale: string
 ): Promise<void> {
   const chartContext = buildChartContext(palaces, meta);
 
@@ -298,34 +266,11 @@ async function generateOverallAssessment(
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
     max_tokens: 3000,
-    system: REPORT_SYSTEM_PROMPT,
+    system: getReportSystemPrompt(locale),
     messages: [
       {
         role: "user",
-        content: `${chartContext}
-
-Palace analysis summaries:
-${summaries}
-
-Generate a comprehensive Overall Life-Path Assessment covering:
-
-## Personality Profile
-Core personality traits revealed by 命宫, 福德宫, and key star interactions.
-
-## Career Suitability
-Best industries, roles, and work styles based on 官禄宫, 财帛宫, and overall chart energy. Include specific career recommendations.
-
-## Wealth Pattern
-Money-making style, investment tendencies, and financial timing based on 财帛宫 and 田宅宫.
-
-## Key Life Timing
-Most important years and decades — when to push forward, when to consolidate.
-
-## Relationships
-Partnership patterns, compatibility traits, and relationship advice from 夫妻宫 and 福德宫.
-
-## Life Advice
-Synthesize all insights into 3-5 key pieces of strategic life advice. Be specific and actionable.`,
+        content: getOverallAssessmentPrompt(locale, chartContext, summaries),
       },
     ],
   });
@@ -352,7 +297,8 @@ Synthesize all insights into 3-5 key pieces of strategic life advice. Be specifi
 async function generateSimpleSummary(
   palaces: PalaceData[],
   meta: ChartMeta,
-  reportId: string
+  reportId: string,
+  locale: string
 ): Promise<void> {
   // Fetch all completed sections for context
   const existingSections = await prisma.reportSection.findMany({
@@ -368,42 +314,11 @@ async function generateSimpleSummary(
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
     max_tokens: 2000,
-    system: `You are a warm, insightful life advisor. You've analyzed someone's birth chart using an ancient Chinese system. Explain the key findings in plain, everyday language — like talking to a friend over coffee.
-
-STRICT RULES:
-- Do NOT use any Chinese characters or terms
-- Do NOT use astrology jargon (no "palace", "star transformation", "decade luck", "four transformations")
-- Write as if the reader has ZERO knowledge of astrology
-- Use simple, vivid metaphors from everyday life
-- Be warm, encouraging, and specific
-- Write in 2nd person ("You are someone who...")`,
+    system: getSimpleSummarySystemPrompt(locale),
     messages: [
       {
         role: "user",
-        content: `Here is a detailed analysis of someone's birth chart:
-${summaries}
-
-Write a friendly, easy-to-read summary with these 6 sections (## headers), each 100-150 words:
-
-## Who You Are
-Core personality, strengths, what makes you tick.
-
-## Your Career Path
-Best work styles, professional strengths, what to watch out for.
-
-## Love & Relationships
-How you approach partnerships, what you need, patterns to watch.
-
-## Money & Wealth
-Earning style, spending tendencies, practical financial advice.
-
-## Life Seasons
-Broad life rhythm — which periods for building, harvesting, resting. Use age ranges as "life chapters".
-
-## Friendly Advice
-3-5 specific, actionable pieces of advice — like a wise friend talking straight.
-
-Keep total under 1000 words. End with one encouraging sentence.`,
+        content: getSimpleSummaryUserPrompt(locale, summaries),
       },
     ],
   });
@@ -427,7 +342,7 @@ Keep total under 1000 words. End with one encouraging sentence.`,
   });
 }
 
-export async function generateFullReport(reportId: string): Promise<void> {
+export async function generateFullReport(reportId: string, locale: string = "en"): Promise<void> {
   try {
     // Update status to GENERATING
     const report = await prisma.chartReport.update({
@@ -439,19 +354,19 @@ export async function generateFullReport(reportId: string): Promise<void> {
     const meta = report.metaJson as unknown as ChartMeta;
 
     // Phase 1: Palace analyses (must complete first — others depend on it)
-    await generatePalaceAnalyses(palaces, meta, reportId);
+    await generatePalaceAnalyses(palaces, meta, reportId, locale);
 
     // Phase 2: Decade + Narrative in parallel (both independent)
     await Promise.all([
-      generateDecadeAnalysis(palaces, meta, reportId),
-      generateLifeNarrative(palaces, meta, reportId),
+      generateDecadeAnalysis(palaces, meta, reportId, locale),
+      generateLifeNarrative(palaces, meta, reportId, locale),
     ]);
 
     // Phase 3: Overall assessment (reads palace analyses from DB)
-    await generateOverallAssessment(palaces, meta, reportId);
+    await generateOverallAssessment(palaces, meta, reportId, locale);
 
     // Phase 4: Simple summary (reads all sections from DB)
-    await generateSimpleSummary(palaces, meta, reportId);
+    await generateSimpleSummary(palaces, meta, reportId, locale);
 
     // Mark complete
     await prisma.chartReport.update({

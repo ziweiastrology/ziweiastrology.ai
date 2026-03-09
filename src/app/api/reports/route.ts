@@ -1,4 +1,5 @@
 import { NextResponse, after } from "next/server";
+import { cookies } from "next/headers";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { CREDIT_COSTS } from "@/lib/credits";
@@ -14,6 +15,8 @@ export async function POST(request: Request) {
     }
 
     const userId = session.user.id;
+    const cookieStore = await cookies();
+    const locale = cookieStore.get("locale")?.value || "en";
     const { palaces, meta, birthDate, birthHour, birthGender } = await request.json();
 
     if (!palaces || !meta || !birthDate || birthHour == null || !birthGender) {
@@ -73,7 +76,7 @@ export async function POST(request: Request) {
     // Run report generation after response is sent (keeps function alive on Vercel)
     after(async () => {
       try {
-        await generateFullReport(result.reportId!);
+        await generateFullReport(result.reportId!, locale);
       } catch (err) {
         console.error("Background report generation error:", err);
       }
