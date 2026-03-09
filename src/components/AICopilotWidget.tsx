@@ -289,7 +289,8 @@ export default function AICopilotWidget() {
           </div>
 
           {/* Chat area */}
-          <div className="p-4 h-80 flex flex-col justify-end overflow-y-auto overscroll-contain">
+          <div className="p-4 h-80 flex flex-col overflow-y-auto overscroll-contain">
+            <div className="mt-auto" />
             <div className="space-y-3">
               {/* Topic cards — show when no messages */}
               {!hasMessages && !sending && (
