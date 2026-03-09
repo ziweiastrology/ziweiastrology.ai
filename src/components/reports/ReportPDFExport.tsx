@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { Download, Loader2, CheckSquare, Square } from "lucide-react";
 
 interface Section {
@@ -31,16 +32,17 @@ interface Props {
   report: Report;
 }
 
-const SECTION_TYPE_LABELS: Record<string, string> = {
-  PALACE_ANALYSIS: "Palace Analyses",
-  DECADE_ANALYSIS: "Decade Timeline",
-  LIFE_NARRATIVE: "Your Life Story",
-  OVERALL_ASSESSMENT: "Overall Assessment",
-  TOPIC_DEEP_DIVE: "Topic Deep Dives",
-  SIMPLE_SUMMARY: "Quick Summary",
+const SECTION_TYPE_KEYS: Record<string, string> = {
+  PALACE_ANALYSIS: "palaceAnalyses",
+  DECADE_ANALYSIS: "decadeTimeline",
+  LIFE_NARRATIVE: "lifeStory",
+  OVERALL_ASSESSMENT: "overallAssessment",
+  TOPIC_DEEP_DIVE: "topicDeepDives",
+  SIMPLE_SUMMARY: "quickSummary",
 };
 
 export default function ReportPDFExport({ report }: Props) {
+  const t = useTranslations("reports");
   const [selected, setSelected] = useState<Set<string>>(
     () => new Set(report.sections.map((s) => s.id))
   );
@@ -113,14 +115,14 @@ export default function ReportPDFExport({ report }: Props) {
             className="text-lg font-bold text-parchment-100"
             style={{ fontFamily: "var(--font-cinzel)" }}
           >
-            Export PDF
+            {t("exportPdf")}
           </h3>
         </div>
         <button
           onClick={() => setExpanded(!expanded)}
           className="text-xs text-gold-500 hover:text-gold-400 transition-colors"
         >
-          {expanded ? "Hide sections" : "Select sections"}
+          {expanded ? t("hideSections") : t("selectSections")}
         </button>
       </div>
 
@@ -135,13 +137,13 @@ export default function ReportPDFExport({ report }: Props) {
             ) : (
               <Square className="h-3.5 w-3.5" />
             )}
-            {allSelected ? "Deselect All" : "Select All"}
+            {allSelected ? t("deselectAll") : t("selectAll")}
           </button>
 
           {Array.from(grouped.entries()).map(([type, sections]) => (
             <div key={type}>
               <p className="text-[10px] font-mono tracking-[0.15em] uppercase text-parchment-600 mb-1.5">
-                {SECTION_TYPE_LABELS[type] || type}
+                {SECTION_TYPE_KEYS[type] ? t(SECTION_TYPE_KEYS[type]) : type}
               </p>
               <div className="space-y-1">
                 {sections.map((s) => (
@@ -179,13 +181,12 @@ export default function ReportPDFExport({ report }: Props) {
           {generating ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              Generating PDF…
+              {t("generatingPdf")}
             </>
           ) : (
             <>
               <Download className="h-4 w-4" />
-              Download PDF ({selected.size} section
-              {selected.size !== 1 ? "s" : ""})
+              {t("downloadPdf", { count: selected.size })}
             </>
           )}
         </button>

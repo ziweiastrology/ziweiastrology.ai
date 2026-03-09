@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Loader2, CheckCircle, AlertCircle, Clock, Lightbulb } from "lucide-react";
 
 const TIPS: { text: string; href?: string }[] = [
@@ -25,6 +26,8 @@ interface Props {
 }
 
 export default function ReportStatusBar({ status, totalSections, completedSections, onCancel, cancelling }: Props) {
+  const t = useTranslations("reports");
+  const tc = useTranslations("common");
   const [tipIndex, setTipIndex] = useState(0);
   const [visible, setVisible] = useState(true);
   const [dismissed, setDismissed] = useState(false);
@@ -62,17 +65,17 @@ export default function ReportStatusBar({ status, totalSections, completedSectio
           <>
             <Loader2 className="h-5 w-5 text-quantum-cyan animate-spin" />
             <span className="text-sm font-medium text-parchment-200">
-              Generating your report...
+              {t("generating")}
             </span>
             <span className="text-xs text-parchment-500 ml-auto">
-              {completedSections}/{totalSections} sections
+              {t("sections", { completed: completedSections, total: totalSections })}
             </span>
           </>
         ) : status === "FAILED" ? (
           <>
             <AlertCircle className="h-5 w-5 text-quantum-red" />
             <span className="text-sm font-medium text-quantum-red">
-              Generation failed
+              {t("failed")}
             </span>
             {onCancel && (
               <button
@@ -80,7 +83,7 @@ export default function ReportStatusBar({ status, totalSections, completedSectio
                 disabled={cancelling}
                 className="ml-auto text-xs px-3 py-1 rounded border border-quantum-red/30 text-quantum-red hover:bg-quantum-red/10 transition-colors disabled:opacity-50"
               >
-                {cancelling ? "Cancelling..." : "Delete & Refund Credits"}
+                {cancelling ? t("cancelling") : t("deleteRefund")}
               </button>
             )}
           </>
@@ -88,14 +91,14 @@ export default function ReportStatusBar({ status, totalSections, completedSectio
           <>
             <CheckCircle className="h-5 w-5 text-quantum-green" />
             <span className="text-sm font-medium text-quantum-green">
-              Report complete — {totalSections}/{totalSections} sections
+              {t("complete")} — {t("sections", { completed: totalSections, total: totalSections })}
             </span>
           </>
         ) : (
           <>
             <CheckCircle className="h-5 w-5 text-quantum-green" />
             <span className="text-sm font-medium text-parchment-200">
-              Preview
+              {tc("preview")}
             </span>
           </>
         )}
@@ -118,14 +121,14 @@ export default function ReportStatusBar({ status, totalSections, completedSectio
 
           <div className="mt-3 flex items-center gap-1.5 text-xs text-parchment-500">
             <Clock className="h-3.5 w-3.5" />
-            <span>This usually takes 1–2 minutes.</span>
+            <span>{t("usuallyTakes")}</span>
             {onCancel && (
               <button
                 onClick={onCancel}
                 disabled={cancelling}
                 className="ml-auto text-xs text-parchment-600 hover:text-quantum-red transition-colors disabled:opacity-50"
               >
-                {cancelling ? "Cancelling..." : "Cancel & Refund"}
+                {cancelling ? t("cancelling") : t("cancelRefund")}
               </button>
             )}
           </div>

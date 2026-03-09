@@ -1,22 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { X, User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { useDashboardStore } from "@/stores/useDashboardStore";
 
-const REASON_SUBTITLES: Record<string, string> = {
-  palace: "Unlock this palace to explore its full star configuration.",
-  copilot: "Chat with ZiWei Sifu AI for personalized chart insights.",
-  full_reading: "Register to save your chart and unlock all 12 palaces.",
-};
-
 type Mode = "register" | "login";
 
 export default function AuthModal() {
+  const t = useTranslations("auth");
   const authModalOpen = useDashboardStore((s) => s.authModalOpen);
   const authModalReason = useDashboardStore((s) => s.authModalReason);
   const closeAuthModal = useDashboardStore((s) => s.closeAuthModal);
@@ -32,9 +28,24 @@ export default function AuthModal() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
+  // Reset form when modal opens to clear any stale/autofilled values
+  useEffect(() => {
+    if (authModalOpen) {
+      resetForm();
+      setMode("register");
+    }
+  }, [authModalOpen]);
+
   if (!authModalOpen) return null;
 
-  const subtitle = authModalReason ? REASON_SUBTITLES[authModalReason] : "";
+  const reasonKeyMap: Record<string, string> = {
+    palace: "reasonPalace",
+    copilot: "reasonCopilot",
+    full_reading: "reasonFullReading",
+  };
+  const subtitle = authModalReason && reasonKeyMap[authModalReason]
+    ? t(reasonKeyMap[authModalReason] as any)
+    : "";
 
   function clearFieldError(field: string) {
     setFieldErrors((p) => {
@@ -63,8 +74,8 @@ export default function AuthModal() {
     e.preventDefault();
     setError("");
     const fe: Record<string, string> = {};
-    if (!email.trim()) fe.email = "Email is required";
-    if (!password) fe.password = "Password is required";
+    if (!email.trim()) fe.email = t("emailRequired");
+    if (!password) fe.password = t("passwordRequired");
     if (Object.keys(fe).length > 0) {
       setFieldErrors(fe);
       return;
@@ -79,11 +90,11 @@ export default function AuthModal() {
     });
 
     if (result?.error) {
-      setError("Invalid email or password");
-      toast.error("Invalid email or password");
+      setError(t("invalidCredentials"));
+      toast.error(t("invalidCredentials"));
       setLoading(false);
     } else {
-      toast.success("Welcome back!");
+      toast.success(t("welcomeBackToast"));
       closeAuthModal();
       router.refresh();
       setLoading(false);
@@ -94,12 +105,12 @@ export default function AuthModal() {
     e.preventDefault();
     setError("");
     const fe: Record<string, string> = {};
-    if (!name.trim()) fe.name = "Name is required";
-    if (!email.trim()) fe.email = "Email is required";
-    if (!password) fe.password = "Password is required";
-    else if (password.length < 8) fe.password = "At least 8 characters";
-    if (!confirmPassword) fe.confirmPassword = "Please confirm password";
-    else if (password !== confirmPassword) fe.confirmPassword = "Passwords don't match";
+    if (!name.trim()) fe.name = t("nameRequired");
+    if (!email.trim()) fe.email = t("emailRequired");
+    if (!password) fe.password = t("passwordRequired");
+    else if (password.length < 8) fe.password = t("passwordMinLength");
+    if (!confirmPassword) fe.confirmPassword = t("confirmPasswordRequired");
+    else if (password !== confirmPassword) fe.confirmPassword = t("passwordMismatch");
     if (Object.keys(fe).length > 0) {
       setFieldErrors(fe);
       return;
@@ -115,13 +126,13 @@ export default function AuthModal() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Registration failed");
-        toast.error(data.error || "Registration failed");
+        setError(data.error || t("registrationFailed"));
+        toast.error(data.error || t("registrationFailed"));
         setLoading(false);
         return;
       }
 
-      toast.success("Account created! Signing you in...");
+      toast.success(t("accountCreated"));
       const result = await signIn("credentials", {
         email,
         password,
@@ -129,7 +140,7 @@ export default function AuthModal() {
       });
 
       if (result?.error) {
-        setError("Account created but sign-in failed. Try logging in.");
+        setError(t("signInFailed"));
         setLoading(false);
       } else {
         closeAuthModal();
@@ -137,8 +148,8 @@ export default function AuthModal() {
         setLoading(false);
       }
     } catch {
-      setError("Something went wrong. Please try again.");
-      toast.error("Something went wrong.");
+      setError(t("somethingWrong"));
+      toast.error(t("somethingWrong"));
       setLoading(false);
     }
   }
@@ -175,14 +186,14 @@ export default function AuthModal() {
               className="text-lg font-bold text-gold-300"
               style={{ fontFamily: "var(--font-cinzel)" }}
             >
-              {mode === "register" ? "Create Your Account" : "Welcome Back"}
+              {mode === "register" ? t("createAccount") : t("welcomeBack")}
             </h3>
             {subtitle && (
               <p className="text-sm text-parchment-400">{subtitle}</p>
             )}
             {mode === "register" && (
               <p className="text-xs text-quantum-green/80">
-                +5 bonus credits on registration
+                {t("bonusCredits")}
               </p>
             )}
           </div>
@@ -197,11 +208,12 @@ export default function AuthModal() {
           <form
             onSubmit={mode === "register" ? handleRegister : handleLogin}
             className="space-y-4"
+            autoComplete="off"
           >
             {mode === "register" && (
               <div>
                 <label className="mb-1.5 block text-sm text-parchment-400">
-                  Full Name
+                  {t("fullName")}
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-parchment-600" />
@@ -212,8 +224,9 @@ export default function AuthModal() {
                       setName(e.target.value);
                       clearFieldError("name");
                     }}
-                    placeholder="Your name"
+                    placeholder={t("yourNamePlaceholder")}
                     required
+                    autoComplete="off"
                     className={inputCls("name")}
                   />
                 </div>
@@ -227,7 +240,7 @@ export default function AuthModal() {
 
             <div>
               <label className="mb-1.5 block text-sm text-parchment-400">
-                Email
+                {t("email")}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-parchment-600" />
@@ -238,8 +251,9 @@ export default function AuthModal() {
                     setEmail(e.target.value);
                     clearFieldError("email");
                   }}
-                  placeholder="you@example.com"
+                  placeholder={t("emailPlaceholder")}
                   required
+                  autoComplete="off"
                   className={inputCls("email")}
                 />
               </div>
@@ -252,7 +266,7 @@ export default function AuthModal() {
 
             <div>
               <label className="mb-1.5 block text-sm text-parchment-400">
-                Password
+                {t("password")}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-parchment-600" />
@@ -264,9 +278,10 @@ export default function AuthModal() {
                     clearFieldError("password");
                   }}
                   placeholder={
-                    mode === "register" ? "At least 8 characters" : "Your password"
+                    mode === "register" ? t("passwordPlaceholderRegister") : t("passwordPlaceholderLogin")
                   }
                   required
+                  autoComplete="new-password"
                   className={`${inputCls("password").replace("pr-4", "pr-10")}`}
                 />
                 <button
@@ -291,7 +306,7 @@ export default function AuthModal() {
             {mode === "register" && (
               <div>
                 <label className="mb-1.5 block text-sm text-parchment-400">
-                  Confirm Password
+                  {t("confirmPassword")}
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-parchment-600" />
@@ -302,8 +317,9 @@ export default function AuthModal() {
                       setConfirmPassword(e.target.value);
                       clearFieldError("confirmPassword");
                     }}
-                    placeholder="Repeat your password"
+                    placeholder={t("confirmPasswordPlaceholder")}
                     required
+                    autoComplete="new-password"
                     className={inputCls("confirmPassword")}
                   />
                 </div>
@@ -318,18 +334,18 @@ export default function AuthModal() {
             <Button type="submit" className="w-full" disabled={loading}>
               {loading
                 ? mode === "register"
-                  ? "Creating account..."
-                  : "Signing in..."
+                  ? t("creatingAccount")
+                  : t("signingIn")
                 : mode === "register"
-                  ? "Create Account"
-                  : "Sign In"}
+                  ? t("signUp")
+                  : t("signIn")}
             </Button>
           </form>
 
           {/* Divider */}
           <div className="flex items-center gap-3">
             <div className="h-px flex-1 bg-gold-700/20" />
-            <span className="text-xs text-parchment-600">or</span>
+            <span className="text-xs text-parchment-600">{t("or")}</span>
             <div className="h-px flex-1 bg-gold-700/20" />
           </div>
 
@@ -340,11 +356,10 @@ export default function AuthModal() {
               className="w-full"
               onClick={() => signIn("google", { callbackUrl: "/" })}
             >
-              Continue with Google
+              {t("continueWithGoogle")}
             </Button>
             <p className="text-[10px] text-center text-parchment-600">
-              Google sign-in will reload the page. You may need to re-enter your
-              birth details.
+              {t("googleReloadNote")}
             </p>
           </div>
 
@@ -352,24 +367,24 @@ export default function AuthModal() {
           <p className="text-center text-sm text-parchment-500">
             {mode === "register" ? (
               <>
-                Already have an account?{" "}
+                {t("haveAccount")}{" "}
                 <button
                   type="button"
                   onClick={() => switchMode("login")}
                   className="font-medium text-gold-400 hover:text-gold-300"
                 >
-                  Sign in
+                  {t("signInLink")}
                 </button>
               </>
             ) : (
               <>
-                Don&apos;t have an account?{" "}
+                {t("noAccount")}{" "}
                 <button
                   type="button"
                   onClick={() => switchMode("register")}
                   className="font-medium text-gold-400 hover:text-gold-300"
                 >
-                  Create one
+                  {t("createOneLink")}
                 </button>
               </>
             )}

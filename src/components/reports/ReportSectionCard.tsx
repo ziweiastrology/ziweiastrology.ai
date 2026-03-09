@@ -1,6 +1,7 @@
 "use client";
 
-import { Star, Calendar, TrendingUp, MessageCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Star, Calendar, TrendingUp, MessageCircle, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { Components } from "react-markdown";
@@ -24,6 +25,7 @@ const TYPE_CONFIG: Record<string, { icon: typeof Star; color: string }> = {
   DECADE_ANALYSIS: { icon: Calendar, color: "text-quantum-orange" },
   OVERALL_ASSESSMENT: { icon: TrendingUp, color: "text-quantum-green" },
   TOPIC_DEEP_DIVE: { icon: MessageCircle, color: "text-gold-400" },
+  SIMPLE_SUMMARY: { icon: Sparkles, color: "text-gold-400" },
 };
 
 function askSifu(term: string) {
@@ -116,6 +118,7 @@ export default function ReportSectionCard({
   type,
   showDeepDiveCTA,
 }: Props) {
+  const t = useTranslations("reports");
   const config = TYPE_CONFIG[type] || TYPE_CONFIG.PALACE_ANALYSIS;
   const Icon = config.icon;
 
@@ -196,7 +199,7 @@ export default function ReportSectionCard({
             onClick={() => askSifu(title)}
           >
             <MessageCircle className="h-3.5 w-3.5" />
-            Deep Dive with Sifu →
+            {t("deepDiveWithSifu")} →
           </button>
         </div>
       )}

@@ -3,10 +3,12 @@
 import { useState, useRef, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { User, LogOut, Settings, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function UserMenu() {
+  const t = useTranslations("auth");
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -33,7 +35,7 @@ export default function UserMenu() {
       >
         <User className="h-4 w-4" />
         <span className="hidden sm:inline">
-          {session.user?.name?.split(" ")[0] || "Account"}
+          {session.user?.name?.split(" ")[0] || t("account")}
         </span>
       </button>
 
@@ -57,7 +59,7 @@ export default function UserMenu() {
             )}
           >
             <LayoutDashboard className="h-4 w-4" />
-            Dashboard
+            {t("dashboard")}
           </Link>
 
           <Link
@@ -66,7 +68,7 @@ export default function UserMenu() {
             className="flex items-center gap-2 px-4 py-2 text-sm text-parchment-400 transition-colors hover:bg-celestial-700/50 hover:text-parchment-200"
           >
             <Settings className="h-4 w-4" />
-            Settings
+            {t("settings")}
           </Link>
 
           <div className="my-1 border-t border-gold-700/20" />
@@ -76,7 +78,7 @@ export default function UserMenu() {
             className="flex w-full items-center gap-2 px-4 py-2 text-sm text-quantum-red/80 transition-colors hover:bg-celestial-700/50 hover:text-quantum-red"
           >
             <LogOut className="h-4 w-4" />
-            Sign Out
+            {t("signOut")}
           </button>
         </div>
       )}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { ChevronRight, List, X, Sparkles, BookOpen } from "lucide-react";
 import ReportStatusBar from "./ReportStatusBar";
 import ReportSectionCard from "./ReportSectionCard";
@@ -38,6 +39,8 @@ interface Props {
 
 export default function ReportViewer({ reportId }: Props) {
   const router = useRouter();
+  const t = useTranslations("reports");
+  const tc = useTranslations("common");
   const [report, setReport] = useState<Report | null>(null);
   const [loading, setLoading] = useState(true);
   const [tocOpen, setTocOpen] = useState(false);
@@ -47,7 +50,7 @@ export default function ReportViewer({ reportId }: Props) {
 
   const handleCancel = useCallback(async () => {
     if (cancelling) return;
-    if (!confirm("Cancel this report and get your credits back?")) return;
+    if (!confirm(t("cancelConfirm"))) return;
     setCancelling(true);
     try {
       const res = await fetch(`/api/reports/${reportId}`, { method: "DELETE" });
@@ -113,7 +116,7 @@ export default function ReportViewer({ reportId }: Props) {
   if (!report) {
     return (
       <div className="rounded-xl border border-quantum-red/30 bg-quantum-red/5 p-8 text-center">
-        <p className="text-sm text-quantum-red">Report not found.</p>
+        <p className="text-sm text-quantum-red">{t("notFound")}</p>
       </div>
     );
   }
@@ -169,7 +172,7 @@ export default function ReportViewer({ reportId }: Props) {
         >
           <div className="lg:rounded-xl lg:border lg:border-gold-700/20 lg:bg-celestial-900/40 lg:p-4">
             <h4 className="text-xs font-mono tracking-[0.2em] uppercase text-gold-600 mb-3">
-              Table of Contents
+              {t("tableOfContents")}
             </h4>
             <nav className="space-y-1">
               {tocSections.map((section) => (
@@ -195,13 +198,13 @@ export default function ReportViewer({ reportId }: Props) {
           {/* Header */}
           <div className="text-center space-y-3">
             <span className="inline-block px-3 py-1 text-[10px] font-mono tracking-[0.3em] uppercase text-quantum-green/80 border border-quantum-green/30 rounded-sm">
-              [FULL REPORT]
+              [{tc("fullReport")}]
             </span>
             <h2
               className="text-2xl sm:text-3xl font-bold gold-gradient-text"
               style={{ fontFamily: "var(--font-cinzel)" }}
             >
-              Complete Life-Path Analysis
+              {t("title")}
             </h2>
             {report.metaJson && (
               <p className="text-sm text-parchment-500">
@@ -227,7 +230,7 @@ export default function ReportViewer({ reportId }: Props) {
                   }`}
                 >
                   <Sparkles className="h-3.5 w-3.5" />
-                  精简版 Simple
+                  {t("simpleView")}
                 </button>
                 <button
                   onClick={() => setViewMode("detailed")}
@@ -238,7 +241,7 @@ export default function ReportViewer({ reportId }: Props) {
                   }`}
                 >
                   <BookOpen className="h-3.5 w-3.5" />
-                  详细版 Detailed
+                  {t("detailedView")}
                 </button>
               </div>
             )}
@@ -269,7 +272,7 @@ export default function ReportViewer({ reportId }: Props) {
                 onClick={() => setViewMode("detailed")}
                 className="w-full py-4 text-center text-sm text-gold-500 hover:text-gold-400 transition-colors"
               >
-                Want the full picture? Switch to Detailed View →
+                {t("switchDetailed")} →
               </button>
 
               {/* PDF Export */}
@@ -283,7 +286,7 @@ export default function ReportViewer({ reportId }: Props) {
               {overallSections.length > 0 && (
                 <div className="space-y-4">
                   <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-quantum-green/70">
-                    Overall Assessment
+                    {t("overallAssessment")}
                   </h3>
                   {overallSections.map((section) => (
                     <div key={section.id} id={`section-${section.key}`}>
@@ -301,7 +304,7 @@ export default function ReportViewer({ reportId }: Props) {
               {report.status === "COMPLETE" && report.sections.length > 0 && (
                 <div className="space-y-4">
                   <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-gold-500/70">
-                    Matching Analysis
+                    {t("matchingAnalysis")}
                   </h3>
                   <MatchingCards sections={report.sections} />
                 </div>
@@ -311,7 +314,7 @@ export default function ReportViewer({ reportId }: Props) {
               {decadeSections.length > 0 && (
                 <div className="space-y-4">
                   <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-quantum-orange/70">
-                    Decade Timeline
+                    {t("decadeTimeline")}
                   </h3>
                   {decadeSections.map((section) => (
                     <div key={section.id} id={`section-${section.key}`}>
@@ -352,7 +355,7 @@ export default function ReportViewer({ reportId }: Props) {
               {palaceSections.length > 0 && (
                 <div className="space-y-4">
                   <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-quantum-cyan/70">
-                    12 Palace Deep Analysis
+                    {t("palaceAnalysis")}
                   </h3>
                   {palaceSections.map((section) => (
                     <div key={section.id} id={`section-${section.key}`}>
@@ -371,7 +374,7 @@ export default function ReportViewer({ reportId }: Props) {
               {deepDiveSections.length > 0 && (
                 <div className="space-y-4">
                   <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-gold-500/70">
-                    Topic Deep Dives
+                    {t("topicDeepDives")}
                   </h3>
                   {deepDiveSections.map((section) => (
                     <div key={section.id} id={`section-${section.key}`}>
