@@ -16,6 +16,11 @@ interface PalaceData {
   earthlyBranch?: string;
 }
 
+function ageRangeToYears(ageRange: [number, number], birthYear: number): [number, number] {
+  // iztro uses 虚岁 (nominal age, starts at 1). Calendar year = birthYear + age - 1
+  return [birthYear + ageRange[0] - 1, birthYear + ageRange[1] - 1];
+}
+
 function buildChartContext(palaces: PalaceData[], meta: ChartMeta): string {
   const palaceList = palaces
     .map((p) => {
@@ -23,7 +28,13 @@ function buildChartContext(palaces: PalaceData[], meta: ChartMeta): string {
         p.state !== "neutral"
           ? ` [${p.state === "lu" ? "禄" : p.state === "quan" ? "权" : p.state === "ke" ? "科" : "忌"}]`
           : "";
-      return `- ${p.nameCn} ${p.name}: Stars: ${p.stars.join(", ")}${stateLabel} | Energy: ${p.energy}%${p.decadeRange ? ` | 大限: ${p.decadeRange[0]}–${p.decadeRange[1]}` : ""}${p.earthlyBranch ? ` | 地支: ${p.earthlyBranch}` : ""}${p.decadeHeavenlyStem ? ` | 天干: ${p.decadeHeavenlyStem}` : ""}`;
+      const decadeLabel = (() => {
+        if (!p.decadeRange) return "";
+        const birthYear = meta.birthYear || new Date().getFullYear() - 30;
+        const [yearStart, yearEnd] = ageRangeToYears(p.decadeRange, birthYear);
+        return ` | 大限: Age ${p.decadeRange[0]}–${p.decadeRange[1]} (${yearStart}–${yearEnd})`;
+      })();
+      return `- ${p.nameCn} ${p.name}: Stars: ${p.stars.join(", ")}${stateLabel} | Energy: ${p.energy}%${decadeLabel}${p.earthlyBranch ? ` | 地支: ${p.earthlyBranch}` : ""}${p.decadeHeavenlyStem ? ` | 天干: ${p.decadeHeavenlyStem}` : ""}`;
     })
     .join("\n");
 
@@ -143,7 +154,10 @@ async function generateDecadeAnalysis(
   });
 
   const decadeList = (relevantDecades.length > 0 ? relevantDecades : decadePalaces)
-    .map((p) => `${p.nameCn} ${p.name}: Age ${p.decadeRange![0]}-${p.decadeRange![1]} | Stars: ${p.stars.join(", ")}`)
+    .map((p) => {
+      const [yearStart, yearEnd] = ageRangeToYears(p.decadeRange!, birthYear);
+      return `${p.nameCn} ${p.name}: Age ${p.decadeRange![0]}-${p.decadeRange![1]} (Years ${yearStart}-${yearEnd}) | Stars: ${p.stars.join(", ")}`;
+    })
     .join("\n");
 
   const response = await anthropic.messages.create({
@@ -156,6 +170,8 @@ async function generateDecadeAnalysis(
         content: `${chartContext}
 
 Current age: ~${currentAge}
+
+IMPORTANT: Use the calendar years provided in parentheses for each decade. Do NOT recalculate years from ages.
 
 Generate a decade-by-decade life timeline analysis covering these decades:
 ${decadeList}
@@ -333,6 +349,84 @@ Synthesize all insights into 3-5 key pieces of strategic life advice. Be specifi
   });
 }
 
+async function generateSimpleSummary(
+  palaces: PalaceData[],
+  meta: ChartMeta,
+  reportId: string
+): Promise<void> {
+  // Fetch all completed sections for context
+  const existingSections = await prisma.reportSection.findMany({
+    where: { reportId },
+    select: { title: true, content: true },
+    orderBy: { orderIndex: "asc" },
+  });
+
+  const summaries = existingSections
+    .map((s) => `### ${s.title}\n${s.content.slice(0, 400)}`)
+    .join("\n\n");
+
+  const response = await anthropic.messages.create({
+    model: "claude-sonnet-4-20250514",
+    max_tokens: 2000,
+    system: `You are a warm, insightful life advisor. You've analyzed someone's birth chart using an ancient Chinese system. Explain the key findings in plain, everyday language — like talking to a friend over coffee.
+
+STRICT RULES:
+- Do NOT use any Chinese characters or terms
+- Do NOT use astrology jargon (no "palace", "star transformation", "decade luck", "four transformations")
+- Write as if the reader has ZERO knowledge of astrology
+- Use simple, vivid metaphors from everyday life
+- Be warm, encouraging, and specific
+- Write in 2nd person ("You are someone who...")`,
+    messages: [
+      {
+        role: "user",
+        content: `Here is a detailed analysis of someone's birth chart:
+${summaries}
+
+Write a friendly, easy-to-read summary with these 6 sections (## headers), each 100-150 words:
+
+## Who You Are
+Core personality, strengths, what makes you tick.
+
+## Your Career Path
+Best work styles, professional strengths, what to watch out for.
+
+## Love & Relationships
+How you approach partnerships, what you need, patterns to watch.
+
+## Money & Wealth
+Earning style, spending tendencies, practical financial advice.
+
+## Life Seasons
+Broad life rhythm — which periods for building, harvesting, resting. Use age ranges as "life chapters".
+
+## Friendly Advice
+3-5 specific, actionable pieces of advice — like a wise friend talking straight.
+
+Keep total under 1000 words. End with one encouraging sentence.`,
+      },
+    ],
+  });
+
+  const content =
+    response.content[0].type === "text" ? response.content[0].text : "";
+
+  await prisma.reportSection.upsert({
+    where: {
+      reportId_key: { reportId, key: "simple_summary" },
+    },
+    create: {
+      reportId,
+      type: "SIMPLE_SUMMARY",
+      key: "simple_summary",
+      title: "Your Chart at a Glance",
+      content,
+      orderIndex: -1,
+    },
+    update: { content },
+  });
+}
+
 export async function generateFullReport(reportId: string): Promise<void> {
   try {
     // Update status to GENERATING
@@ -344,11 +438,20 @@ export async function generateFullReport(reportId: string): Promise<void> {
     const palaces = report.palacesJson as unknown as PalaceData[];
     const meta = report.metaJson as unknown as ChartMeta;
 
-    // Generate sections sequentially (each builds on previous)
-    await generatePalaceAnalyses(palaces, meta, reportId);   // 0-11
-    await generateDecadeAnalysis(palaces, meta, reportId);    // 12
-    await generateLifeNarrative(palaces, meta, reportId);     // 13
-    await generateOverallAssessment(palaces, meta, reportId); // 14
+    // Phase 1: Palace analyses (must complete first — others depend on it)
+    await generatePalaceAnalyses(palaces, meta, reportId);
+
+    // Phase 2: Decade + Narrative in parallel (both independent)
+    await Promise.all([
+      generateDecadeAnalysis(palaces, meta, reportId),
+      generateLifeNarrative(palaces, meta, reportId),
+    ]);
+
+    // Phase 3: Overall assessment (reads palace analyses from DB)
+    await generateOverallAssessment(palaces, meta, reportId);
+
+    // Phase 4: Simple summary (reads all sections from DB)
+    await generateSimpleSummary(palaces, meta, reportId);
 
     // Mark complete
     await prisma.chartReport.update({

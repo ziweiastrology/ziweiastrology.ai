@@ -1,8 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { CREDIT_COSTS } from "@/lib/credits";
 import { generateFullReport } from "@/lib/reports/generateReport";
+
+export const maxDuration = 300; // seconds — requires Vercel Pro for >60s
 
 export async function POST(request: Request) {
   try {
@@ -68,10 +70,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Trigger generation in background (non-blocking)
-    generateFullReport(result.reportId!).catch((err) =>
-      console.error("Background report generation error:", err)
-    );
+    // Run report generation after response is sent (keeps function alive on Vercel)
+    after(async () => {
+      try {
+        await generateFullReport(result.reportId!);
+      } catch (err) {
+        console.error("Background report generation error:", err);
+      }
+    });
 
     return NextResponse.json({
       reportId: result.reportId,

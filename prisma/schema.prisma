@@ -138,6 +138,7 @@ enum CreditActionType {
   FULL_READING
   PURCHASE
   REPORT_GENERATION
+  REPORT_REFUND
 }
 
 enum ReportStatus {
@@ -153,6 +154,7 @@ enum ReportSectionType {
   LIFE_NARRATIVE
   OVERALL_ASSESSMENT
   TOPIC_DEEP_DIVE
+  SIMPLE_SUMMARY
 }
 
 enum ResourceType {

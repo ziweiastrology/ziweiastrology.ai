@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ChevronRight, List, X } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { ChevronRight, List, X, Sparkles, BookOpen } from "lucide-react";
 import ReportStatusBar from "./ReportStatusBar";
 import ReportSectionCard from "./ReportSectionCard";
 import MatchingCards from "./MatchingCards";
@@ -36,10 +37,32 @@ interface Props {
 }
 
 export default function ReportViewer({ reportId }: Props) {
+  const router = useRouter();
   const [report, setReport] = useState<Report | null>(null);
   const [loading, setLoading] = useState(true);
   const [tocOpen, setTocOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<"simple" | "detailed">("detailed");
+  const [cancelling, setCancelling] = useState(false);
+
+  const handleCancel = useCallback(async () => {
+    if (cancelling) return;
+    if (!confirm("Cancel this report and get your credits back?")) return;
+    setCancelling(true);
+    try {
+      const res = await fetch(`/api/reports/${reportId}`, { method: "DELETE" });
+      if (res.ok) {
+        router.push("/reports");
+      } else {
+        const data = await res.json();
+        alert(data.error === "cannot_cancel_completed" ? "Completed reports cannot be cancelled." : "Failed to cancel. Please try again.");
+        setCancelling(false);
+      }
+    } catch {
+      alert("Failed to cancel. Please try again.");
+      setCancelling(false);
+    }
+  }, [reportId, cancelling, router]);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
@@ -50,6 +73,11 @@ export default function ReportViewer({ reportId }: Props) {
         if (!res.ok) return;
         const data = await res.json();
         setReport(data.report);
+
+        // Default to simple view for completed reports with a simple summary
+        if (data.report.status === "COMPLETE" && data.report.sections.some((s: Section) => s.type === "SIMPLE_SUMMARY")) {
+          setViewMode("simple");
+        }
 
         // Stop polling when complete or failed
         if (data.report.status === "COMPLETE" || data.report.status === "FAILED") {
@@ -95,9 +123,10 @@ export default function ReportViewer({ reportId }: Props) {
   const overallSections = report.sections.filter((s) => s.type === "OVERALL_ASSESSMENT");
   const narrativeSections = report.sections.filter((s) => s.type === "LIFE_NARRATIVE");
   const deepDiveSections = report.sections.filter((s) => s.type === "TOPIC_DEEP_DIVE");
+  const simpleSummary = report.sections.find((s) => s.type === "SIMPLE_SUMMARY");
 
-  // Expected total: 12 palaces + 1 decade + 1 narrative + 1 overall = 15
-  const expectedTotal = 15;
+  // Expected total: 12 palaces + 1 decade + 1 narrative + 1 overall + 1 simple summary = 16
+  const expectedTotal = 16;
 
   // TOC order: overall → decade → narrative → palaces → deep dives
   const tocSectionOrder: Record<string, number> = {
@@ -120,20 +149,22 @@ export default function ReportViewer({ reportId }: Props) {
 
   return (
     <div className="relative">
-      {/* Mobile TOC toggle */}
-      <button
-        onClick={() => setTocOpen(!tocOpen)}
-        className="lg:hidden fixed bottom-6 left-6 z-40 w-12 h-12 rounded-full bg-celestial-800 border border-gold-700 shadow-lg flex items-center justify-center"
-      >
-        {tocOpen ? <X className="h-5 w-5 text-gold-400" /> : <List className="h-5 w-5 text-gold-400" />}
-      </button>
+      {/* Mobile TOC toggle — hidden in simple mode */}
+      {viewMode === "detailed" && (
+        <button
+          onClick={() => setTocOpen(!tocOpen)}
+          className="lg:hidden fixed bottom-6 left-6 z-40 w-12 h-12 rounded-full bg-celestial-800 border border-gold-700 shadow-lg flex items-center justify-center"
+        >
+          {tocOpen ? <X className="h-5 w-5 text-gold-400" /> : <List className="h-5 w-5 text-gold-400" />}
+        </button>
+      )}
 
       <div className="flex gap-8">
-        {/* TOC Sidebar */}
+        {/* TOC Sidebar — hidden in simple mode */}
         <aside
           className={`
-            ${tocOpen ? "fixed inset-0 z-30 bg-celestial-900/95 p-6 overflow-y-auto" : "hidden"}
-            lg:block lg:sticky lg:top-28 lg:self-start lg:w-64 lg:flex-shrink-0 lg:relative lg:inset-auto lg:z-auto lg:bg-transparent lg:p-0
+            ${viewMode === "simple" ? "hidden" : tocOpen ? "fixed inset-0 z-30 bg-celestial-900/95 p-6 overflow-y-auto" : "hidden"}
+            ${viewMode === "simple" ? "" : "lg:block lg:sticky lg:top-28 lg:self-start lg:w-64 lg:flex-shrink-0 lg:relative lg:inset-auto lg:z-auto lg:bg-transparent lg:p-0"}
           `}
         >
           <div className="lg:rounded-xl lg:border lg:border-gold-700/20 lg:bg-celestial-900/40 lg:p-4">
@@ -183,6 +214,34 @@ export default function ReportViewer({ reportId }: Props) {
                   .join(" · ")}
               </p>
             )}
+
+            {/* View mode toggle */}
+            {simpleSummary && (
+              <div className="flex items-center justify-center gap-2 mt-4">
+                <button
+                  onClick={() => setViewMode("simple")}
+                  className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium border transition-all ${
+                    viewMode === "simple"
+                      ? "bg-gold-500/20 text-gold-400 border-gold-500/40"
+                      : "text-parchment-500 hover:text-parchment-300 border-transparent"
+                  }`}
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  精简版 Simple
+                </button>
+                <button
+                  onClick={() => setViewMode("detailed")}
+                  className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium border transition-all ${
+                    viewMode === "detailed"
+                      ? "bg-gold-500/20 text-gold-400 border-gold-500/40"
+                      : "text-parchment-500 hover:text-parchment-300 border-transparent"
+                  }`}
+                >
+                  <BookOpen className="h-3.5 w-3.5" />
+                  详细版 Detailed
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Status bar */}
@@ -190,117 +249,147 @@ export default function ReportViewer({ reportId }: Props) {
             status={report.status}
             totalSections={expectedTotal}
             completedSections={report.sections.length}
+            onCancel={report.status === "GENERATING" || report.status === "FAILED" ? handleCancel : undefined}
+            cancelling={cancelling}
           />
 
-          {/* Overall Assessment — first content section (anchoring bias) */}
-          {overallSections.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-quantum-green/70">
-                Overall Assessment
-              </h3>
-              {overallSections.map((section) => (
-                <div key={section.id} id={`section-${section.key}`}>
-                  <ReportSectionCard
-                    title={section.title}
-                    content={section.content}
-                    type={section.type}
-                  />
+          {/* Simple view */}
+          {viewMode === "simple" && simpleSummary ? (
+            <>
+              <div id={`section-${simpleSummary.key}`}>
+                <ReportSectionCard
+                  title={simpleSummary.title}
+                  content={simpleSummary.content}
+                  type={simpleSummary.type}
+                />
+              </div>
+
+              {/* CTA to switch to detailed */}
+              <button
+                onClick={() => setViewMode("detailed")}
+                className="w-full py-4 text-center text-sm text-gold-500 hover:text-gold-400 transition-colors"
+              >
+                Want the full picture? Switch to Detailed View →
+              </button>
+
+              {/* PDF Export */}
+              {report.status === "COMPLETE" && (
+                <ReportPDFExport report={report} />
+              )}
+            </>
+          ) : (
+            <>
+              {/* Overall Assessment — first content section (anchoring bias) */}
+              {overallSections.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-quantum-green/70">
+                    Overall Assessment
+                  </h3>
+                  {overallSections.map((section) => (
+                    <div key={section.id} id={`section-${section.key}`}>
+                      <ReportSectionCard
+                        title={section.title}
+                        content={section.content}
+                        type={section.type}
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
+              )}
 
-          {/* Matching Analysis Cards — visual reinforcement after overview */}
-          {report.status === "COMPLETE" && report.sections.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-gold-500/70">
-                Matching Analysis
-              </h3>
-              <MatchingCards sections={report.sections} />
-            </div>
-          )}
-
-          {/* Decade Analysis — personal life phases */}
-          {decadeSections.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-quantum-orange/70">
-                Decade Timeline
-              </h3>
-              {decadeSections.map((section) => (
-                <div key={section.id} id={`section-${section.key}`}>
-                  <ReportSectionCard
-                    title={section.title}
-                    content={section.content}
-                    type={section.type}
-                  />
+              {/* Matching Analysis Cards — visual reinforcement after overview */}
+              {report.status === "COMPLETE" && report.sections.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-gold-500/70">
+                    Matching Analysis
+                  </h3>
+                  <MatchingCards sections={report.sections} />
                 </div>
-              ))}
-            </div>
-          )}
+              )}
 
-          {/* Life Narrative — emotional hook / personal story */}
-          {narrativeSections.length > 0 && (
-            <div className="space-y-4">
-              {narrativeSections.map((section) => (
-                <div key={section.id} id={`section-${section.key}`}>
-                  <div className="rounded-xl border border-gold-700/20 bg-parchment-900/5 border-l-2 border-l-gold-500/40 overflow-hidden">
-                    <div className="px-6 py-5">
-                      <h3
-                        className="text-xl font-bold gold-gradient-text mb-4"
-                        style={{ fontFamily: "var(--font-cinzel)" }}
-                      >
-                        {section.title}
-                      </h3>
-                      <div className="prose-ancient text-base text-parchment-300 leading-relaxed whitespace-pre-line">
-                        {section.content}
+              {/* Decade Analysis — personal life phases */}
+              {decadeSections.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-quantum-orange/70">
+                    Decade Timeline
+                  </h3>
+                  {decadeSections.map((section) => (
+                    <div key={section.id} id={`section-${section.key}`}>
+                      <ReportSectionCard
+                        title={section.title}
+                        content={section.content}
+                        type={section.type}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Life Narrative — emotional hook / personal story */}
+              {narrativeSections.length > 0 && (
+                <div className="space-y-4">
+                  {narrativeSections.map((section) => (
+                    <div key={section.id} id={`section-${section.key}`}>
+                      <div className="rounded-xl border border-gold-700/20 bg-parchment-900/5 border-l-2 border-l-gold-500/40 overflow-hidden">
+                        <div className="px-6 py-5">
+                          <h3
+                            className="text-xl font-bold gold-gradient-text mb-4"
+                            style={{ fontFamily: "var(--font-cinzel)" }}
+                          >
+                            {section.title}
+                          </h3>
+                          <div className="prose-ancient text-base text-parchment-300 leading-relaxed whitespace-pre-line">
+                            {section.content}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
+              )}
 
-          {/* Palace Analyses — detailed reading (user is primed) */}
-          {palaceSections.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-quantum-cyan/70">
-                12 Palace Deep Analysis
-              </h3>
-              {palaceSections.map((section) => (
-                <div key={section.id} id={`section-${section.key}`}>
-                  <ReportSectionCard
-                    title={section.title}
-                    content={section.content}
-                    type={section.type}
-                    showDeepDiveCTA
-                  />
+              {/* Palace Analyses — detailed reading (user is primed) */}
+              {palaceSections.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-quantum-cyan/70">
+                    12 Palace Deep Analysis
+                  </h3>
+                  {palaceSections.map((section) => (
+                    <div key={section.id} id={`section-${section.key}`}>
+                      <ReportSectionCard
+                        title={section.title}
+                        content={section.content}
+                        type={section.type}
+                        showDeepDiveCTA
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
+              )}
 
-          {/* Topic Deep Dives */}
-          {deepDiveSections.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-gold-500/70">
-                Topic Deep Dives
-              </h3>
-              {deepDiveSections.map((section) => (
-                <div key={section.id} id={`section-${section.key}`}>
-                  <ReportSectionCard
-                    title={section.title}
-                    content={section.content}
-                    type={section.type}
-                  />
+              {/* Topic Deep Dives */}
+              {deepDiveSections.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-gold-500/70">
+                    Topic Deep Dives
+                  </h3>
+                  {deepDiveSections.map((section) => (
+                    <div key={section.id} id={`section-${section.key}`}>
+                      <ReportSectionCard
+                        title={section.title}
+                        content={section.content}
+                        type={section.type}
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
+              )}
 
-          {/* PDF Export */}
-          {report.status === "COMPLETE" && (
-            <ReportPDFExport report={report} />
+              {/* PDF Export */}
+              {report.status === "COMPLETE" && (
+                <ReportPDFExport report={report} />
+              )}
+            </>
           )}
         </div>
       </div>
