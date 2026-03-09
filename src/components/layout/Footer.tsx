@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
-  BookOpen, Users, GraduationCap, Info, Mail, FlaskConical,
+  BookOpen, Users, GraduationCap, Info, Mail, FlaskConical, CreditCard,
   Youtube, Facebook, Instagram, Github, Send,
 } from "lucide-react";
 
@@ -51,6 +51,7 @@ const FOOTER_LINKS = {
     { href: "/case-studies", labelKey: "caseStudies", icon: FlaskConical },
     { href: "/community", labelKey: "community", icon: Users },
     { href: "/academy", labelKey: "academy", icon: GraduationCap },
+    { href: "/pricing", labelKey: "pricing", icon: CreditCard },
   ],
   Legal: [
     { href: "/privacy", labelKey: "privacyPolicy" },

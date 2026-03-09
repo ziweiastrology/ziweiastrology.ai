@@ -14,6 +14,7 @@ import {
   Info,
   LogIn,
   FlaskConical,
+  CreditCard,
   ChevronDown,
   Bell,
   MessageCircle,
@@ -64,6 +65,7 @@ const NAV_LINKS = [
   { href: "/case-studies", labelKey: "caseStudies", icon: FlaskConical },
   { href: "/community", labelKey: "community", icon: Users },
   { href: "/academy", labelKey: "academy", icon: GraduationCap },
+  { href: "/pricing", labelKey: "pricing", icon: CreditCard },
 ] as const;
 
 const LEARN_DROPDOWN = [
