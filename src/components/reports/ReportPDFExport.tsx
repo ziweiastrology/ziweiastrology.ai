@@ -45,6 +45,7 @@ export default function ReportPDFExport({ report }: Props) {
     () => new Set(report.sections.map((s) => s.id))
   );
   const [generating, setGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
 
   const allSelected = selected.size === report.sections.length;
@@ -69,6 +70,7 @@ export default function ReportPDFExport({ report }: Props) {
   const generatePDF = useCallback(async () => {
     if (selected.size === 0) return;
     setGenerating(true);
+    setError(null);
 
     try {
       const [{ pdf }, { default: ReportPDFDocument }] = await Promise.all([
@@ -82,10 +84,13 @@ export default function ReportPDFExport({ report }: Props) {
       const a = document.createElement("a");
       a.href = url;
       a.download = "zwds-life-path-report.pdf";
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (err) {
       console.error("PDF generation failed:", err);
+      setError(err instanceof Error ? err.message : "PDF generation failed. Please try again.");
     } finally {
       setGenerating(false);
     }
@@ -160,7 +165,12 @@ export default function ReportPDFExport({ report }: Props) {
         </div>
       )}
 
-      <div className="px-6 py-4">
+      <div className="px-6 py-4 space-y-2">
+        {error && (
+          <p className="text-xs text-quantum-red bg-quantum-red/10 border border-quantum-red/20 rounded px-3 py-2">
+            {error}
+          </p>
+        )}
         <button
           onClick={generatePDF}
           disabled={generating || selected.size === 0}

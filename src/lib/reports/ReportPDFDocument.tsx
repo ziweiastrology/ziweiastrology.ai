@@ -9,21 +9,27 @@ import {
 import { markdownToPdfElements } from "./markdownToPdfElements";
 
 // ── Font registration ──────────────────────────────────────────────
+// Use absolute URL — relative paths fail in @react-pdf worker context
+const FONT_BASE =
+  typeof window !== "undefined"
+    ? `${window.location.origin}/fonts`
+    : "https://ziweiastrology.ai/fonts";
+
 Font.register({
   family: "Cinzel",
   fonts: [
-    { src: "/fonts/CinzelDecorative-Regular.ttf", fontWeight: "normal" },
-    { src: "/fonts/CinzelDecorative-Bold.ttf", fontWeight: "bold" },
+    { src: `${FONT_BASE}/CinzelDecorative-Regular.ttf`, fontWeight: "normal" },
+    { src: `${FONT_BASE}/CinzelDecorative-Bold.ttf`, fontWeight: "bold" },
   ],
 });
 
 Font.register({
   family: "Merriweather",
   fonts: [
-    { src: "/fonts/Merriweather-Regular.ttf", fontWeight: "normal" },
-    { src: "/fonts/Merriweather-Bold.ttf", fontWeight: "bold" },
+    { src: `${FONT_BASE}/Merriweather-Regular.ttf`, fontWeight: "normal" },
+    { src: `${FONT_BASE}/Merriweather-Bold.ttf`, fontWeight: "bold" },
     {
-      src: "/fonts/Merriweather-Italic.ttf",
+      src: `${FONT_BASE}/Merriweather-Italic.ttf`,
       fontWeight: "normal",
       fontStyle: "italic",
     },
@@ -32,7 +38,7 @@ Font.register({
 
 Font.register({
   family: "NotoSansSC",
-  src: "/fonts/NotoSansSC-Regular.ttf",
+  src: `${FONT_BASE}/NotoSansSC-Regular.ttf`,
 });
 
 // Enable hyphenation fallback for CJK
