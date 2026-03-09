@@ -83,6 +83,17 @@ function escapeRegex(s: string) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+// Recursively extract plain text from React children
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function extractText(node: any): string {
+  if (typeof node === "string") return node;
+  if (typeof node === "number") return String(node);
+  if (!node) return "";
+  if (Array.isArray(node)) return node.map(extractText).join("");
+  if (node?.props?.children) return extractText(node.props.children);
+  return "";
+}
+
 // Process text node: apply % badges and term links
 function processTextNode(text: string): (string | React.ReactElement)[] {
   // First split by percentages
@@ -126,19 +137,21 @@ export default function ReportSectionCard({
       </h3>
     ),
     strong: ({ children }) => {
-      const text = typeof children === "string" ? children : String(children);
-      // Check if this is a star name
-      if (ALL_STAR_NAMES.has(text)) {
-        const color = STAR_COLOR_MAP.get(text) || "#D4A528";
-        return (
-          <button
-            onClick={() => askSifu(text)}
-            className="font-bold underline decoration-dotted decoration-gold-700/50 hover:opacity-80 cursor-pointer transition-opacity"
-            style={{ color }}
-          >
-            {text}
-          </button>
-        );
+      // Extract plain text from children (may be string or React nodes)
+      const text = extractText(children);
+      // Check if this bold text contains a star name
+      for (const [starName, color] of STAR_COLOR_MAP) {
+        if (text.includes(starName)) {
+          return (
+            <button
+              onClick={() => askSifu(starName)}
+              className="font-bold underline decoration-dotted decoration-gold-700/50 hover:opacity-80 cursor-pointer transition-opacity"
+              style={{ color }}
+            >
+              {children}
+            </button>
+          );
+        }
       }
       return <strong>{children}</strong>;
     },

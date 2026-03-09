@@ -75,14 +75,6 @@ export default function AICopilotWidget() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, sending]);
 
-  // Handle initial prompt from FreeReport teaser
-  useEffect(() => {
-    if (copilotOpen && copilotInitialPrompt) {
-      setInput(copilotInitialPrompt);
-      setCopilotInitialPrompt(null);
-    }
-  }, [copilotOpen, copilotInitialPrompt, setCopilotInitialPrompt]);
-
   const handleFabClick = useCallback(() => {
     if (!session) {
       openAuthModal("copilot");
@@ -244,7 +236,22 @@ export default function AICopilotWidget() {
     [sendMessage]
   );
 
-  if (!isUnlocked) return null;
+  // Handle initial prompt from FreeReport teaser or Report page Ask Sifu
+  useEffect(() => {
+    if (copilotOpen && copilotInitialPrompt) {
+      const prompt = copilotInitialPrompt;
+      setCopilotInitialPrompt(null);
+      // Auto-send if it looks like a report "Ask Sifu" click
+      if (prompt.startsWith("Tell me more about")) {
+        sendMessage(prompt);
+      } else {
+        setInput(prompt);
+      }
+    }
+  }, [copilotOpen, copilotInitialPrompt, setCopilotInitialPrompt, sendMessage]);
+
+  // Show on dashboard (unlocked) OR when opened via external trigger (e.g., report page)
+  if (!isUnlocked && !copilotOpen) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
