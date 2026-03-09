@@ -37,6 +37,7 @@ const SECTION_TYPE_LABELS: Record<string, string> = {
   LIFE_NARRATIVE: "Your Life Story",
   OVERALL_ASSESSMENT: "Overall Assessment",
   TOPIC_DEEP_DIVE: "Topic Deep Dives",
+  SIMPLE_SUMMARY: "Quick Summary",
 };
 
 export default function ReportPDFExport({ report }: Props) {
@@ -70,99 +71,19 @@ export default function ReportPDFExport({ report }: Props) {
     setGenerating(true);
 
     try {
-      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
-        import("html2canvas-pro"),
-        import("jspdf"),
+      const [{ pdf }, { default: ReportPDFDocument }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("@/lib/reports/ReportPDFDocument"),
       ]);
-
-      // Create hidden render container
-      const container = document.createElement("div");
-      container.style.cssText =
-        "position:fixed;left:-9999px;top:0;width:794px;padding:40px;background:#0a0e2a;color:#d4c9a8;font-family:Merriweather,serif;line-height:1.8;font-size:13px;";
-      document.body.appendChild(container);
-
-      // Cover page
-      const cover = document.createElement("div");
-      cover.style.cssText =
-        "text-align:center;padding:120px 40px 60px;border-bottom:2px solid rgba(212,165,40,0.3);margin-bottom:40px;";
-      cover.innerHTML = `
-        <h1 style="font-family:Cinzel Decorative,serif;font-size:28px;color:#D4A528;margin-bottom:16px;">Complete Life-Path Analysis</h1>
-        <p style="font-size:14px;color:#b8a07a;margin-bottom:8px;">紫微斗数 · Zi Wei Dou Shu</p>
-        <div style="margin-top:32px;font-size:12px;color:#8a7d6b;">
-          ${[
-            report.metaJson.zodiac,
-            report.metaJson.fiveElementsClass,
-            report.metaJson.soulPalace ? `命宫: ${report.metaJson.soulPalace}` : "",
-            report.metaJson.bodyPalace ? `身宫: ${report.metaJson.bodyPalace}` : "",
-          ]
-            .filter(Boolean)
-            .join(" · ")}
-        </div>
-        <p style="margin-top:16px;font-size:11px;color:#6b6050;">Generated: ${new Date(report.createdAt).toLocaleDateString()}</p>
-      `;
-      container.appendChild(cover);
-
-      // Render selected sections
-      const selectedSections = report.sections.filter((s) =>
-        selected.has(s.id)
-      );
-
-      for (const section of selectedSections) {
-        const sectionEl = document.createElement("div");
-        sectionEl.style.cssText =
-          "margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid rgba(212,165,40,0.15);page-break-inside:avoid;";
-
-        // Convert markdown-ish content to basic HTML
-        const htmlContent = markdownToBasicHTML(section.content);
-
-        sectionEl.innerHTML = `
-          <h2 style="font-family:Cinzel Decorative,serif;font-size:18px;color:#D4A528;margin-bottom:12px;">${section.title}</h2>
-          <div style="color:#c4b896;line-height:1.9;font-size:12px;">${htmlContent}</div>
-        `;
-        container.appendChild(sectionEl);
-      }
-
-      // Wait for fonts
-      await document.fonts.ready;
-      // Small delay for rendering
-      await new Promise((r) => setTimeout(r, 300));
-
-      // Capture
-      const canvas = await html2canvas(container, {
-        scale: 2,
-        backgroundColor: "#0a0e2a",
-        useCORS: true,
-        logging: false,
-      });
-
-      // Generate PDF
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pageWidth = 210;
-      const pageHeight = 297;
-      const imgWidth = pageWidth;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      let position = 0;
-      let pageCount = 0;
-
-      while (position < imgHeight) {
-        if (pageCount > 0) pdf.addPage();
-        pdf.addImage(
-          canvas.toDataURL("image/jpeg", 0.95),
-          "JPEG",
-          0,
-          -position,
-          imgWidth,
-          imgHeight
-        );
-        position += pageHeight;
-        pageCount++;
-      }
-
-      pdf.save("zwds-life-path-report.pdf");
-
-      // Cleanup
-      document.body.removeChild(container);
+      const blob = await pdf(
+        <ReportPDFDocument report={report} selectedSectionIds={selected} />
+      ).toBlob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "zwds-life-path-report.pdf";
+      a.click();
+      URL.revokeObjectURL(url);
     } catch (err) {
       console.error("PDF generation failed:", err);
     } finally {
@@ -261,18 +182,4 @@ export default function ReportPDFExport({ report }: Props) {
       </div>
     </div>
   );
-}
-
-// Simple markdown → HTML converter for PDF rendering
-function markdownToBasicHTML(md: string): string {
-  return md
-    .replace(/^### (.+)$/gm, '<h3 style="font-size:14px;color:#D4A528;margin:16px 0 8px;">$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2 style="font-size:16px;color:#D4A528;margin:20px 0 10px;">$1</h2>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong style="color:#e8d5a3;">$1</strong>')
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    .replace(/^- (.+)$/gm, '<div style="padding-left:16px;margin:4px 0;">• $1</div>')
-    .replace(/^(\d+)\. (.+)$/gm, '<div style="padding-left:16px;margin:4px 0;">$1. $2</div>')
-    .replace(/(\d{1,3})%/g, '<span style="color:#22D3EE;font-family:monospace;">$1%</span>')
-    .replace(/\n\n/g, "<br/><br/>")
-    .replace(/\n/g, "<br/>");
 }
