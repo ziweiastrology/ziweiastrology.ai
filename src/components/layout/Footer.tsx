@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import {
   BookOpen, Users, GraduationCap, Info, Mail, FlaskConical,
   Youtube, Facebook, Instagram, Github, Send,
@@ -43,19 +46,21 @@ const SOCIAL_LINKS = [
 
 const FOOTER_LINKS = {
   Platform: [
-    { href: "/about", label: "About Us", icon: Info },
-    { href: "/resources", label: "Resources", icon: BookOpen },
-    { href: "/case-studies", label: "Case Studies", icon: FlaskConical },
-    { href: "/community", label: "Community", icon: Users },
-    { href: "/academy", label: "Academy", icon: GraduationCap },
+    { href: "/about", labelKey: "aboutUs", icon: Info },
+    { href: "/resources", labelKey: "resources", icon: BookOpen },
+    { href: "/case-studies", labelKey: "caseStudies", icon: FlaskConical },
+    { href: "/community", labelKey: "community", icon: Users },
+    { href: "/academy", labelKey: "academy", icon: GraduationCap },
   ],
   Legal: [
-    { href: "/privacy", label: "Privacy Policy" },
-    { href: "/terms", label: "Terms of Service" },
+    { href: "/privacy", labelKey: "privacyPolicy" },
+    { href: "/terms", labelKey: "termsOfService" },
   ],
-};
+} as const;
 
 export default function Footer() {
+  const t = useTranslations("footer");
+
   return (
     <footer className="relative overflow-hidden">
       {/* Nebula background layer — bold clouds */}
@@ -190,8 +195,7 @@ export default function Footer() {
               </p>
             </div>
             <p className="mt-2 text-sm text-parchment-600">
-              Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling.
-              Decode your reality.
+              {t("tagline")}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {SOCIAL_LINKS.map(({ href, label, icon: Icon }) => (
@@ -215,16 +219,16 @@ export default function Footer() {
               className="mb-3 text-sm font-semibold uppercase tracking-wider text-gold-500"
               style={{ fontFamily: "var(--font-cinzel)" }}
             >
-              Platform
+              {t("platform")}
             </h4>
             <ul className="space-y-2">
-              {FOOTER_LINKS.Platform.map(({ href, label }) => (
+              {FOOTER_LINKS.Platform.map(({ href, labelKey }) => (
                 <li key={href}>
                   <Link
                     href={href}
                     className="text-sm text-parchment-500 transition-colors hover:text-gold-400"
                   >
-                    {label}
+                    {t(labelKey)}
                   </Link>
                 </li>
               ))}
@@ -237,16 +241,16 @@ export default function Footer() {
               className="mb-3 text-sm font-semibold uppercase tracking-wider text-gold-500"
               style={{ fontFamily: "var(--font-cinzel)" }}
             >
-              Legal
+              {t("legal")}
             </h4>
             <ul className="space-y-2">
-              {FOOTER_LINKS.Legal.map(({ href, label }) => (
+              {FOOTER_LINKS.Legal.map(({ href, labelKey }) => (
                 <li key={href}>
                   <Link
                     href={href}
                     className="text-sm text-parchment-500 transition-colors hover:text-gold-400"
                   >
-                    {label}
+                    {t(labelKey)}
                   </Link>
                 </li>
               ))}
@@ -259,7 +263,7 @@ export default function Footer() {
               className="mb-3 text-sm font-semibold uppercase tracking-wider text-gold-500"
               style={{ fontFamily: "var(--font-cinzel)" }}
             >
-              Contact
+              {t("contact")}
             </h4>
             <a
               href="mailto:support@ziweiastrology.ai"
@@ -276,8 +280,7 @@ export default function Footer() {
             className="text-xs text-parchment-600/60 tracking-widest uppercase"
             style={{ fontFamily: "var(--font-cinzel)" }}
           >
-            &copy; {new Date().getFullYear()} ziweiastrology.ai — Ancient
-            wisdom. Quantum precision.
+            &copy; {new Date().getFullYear()} {t("copyright")}
           </p>
         </div>
       </div>

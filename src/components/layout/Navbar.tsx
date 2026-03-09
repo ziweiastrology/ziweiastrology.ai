@@ -19,6 +19,7 @@ import {
   MessageCircle,
   FileText,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import UserMenu from "@/components/auth/UserMenu";
 import CreditBadge from "@/components/credits/CreditBadge";
@@ -59,17 +60,17 @@ function NavBadges() {
 }
 
 const NAV_LINKS = [
-  { href: "/about", label: "About", icon: Info },
-  { href: "/case-studies", label: "Case Studies", icon: FlaskConical },
-  { href: "/community", label: "Community", icon: Users },
-  { href: "/academy", label: "Academy", icon: GraduationCap },
-];
+  { href: "/about", labelKey: "about", icon: Info },
+  { href: "/case-studies", labelKey: "caseStudies", icon: FlaskConical },
+  { href: "/community", labelKey: "community", icon: Users },
+  { href: "/academy", labelKey: "academy", icon: GraduationCap },
+] as const;
 
 const LEARN_DROPDOWN = [
-  { href: "/resources", label: "Resources" },
-  { href: "/blog", label: "Blog" },
-  { href: "/system-comparison", label: "Compare Systems" },
-];
+  { href: "/resources", labelKey: "resources" },
+  { href: "/blog", labelKey: "blog" },
+  { href: "/system-comparison", labelKey: "compareSystems" },
+] as const;
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -79,6 +80,7 @@ export default function Navbar() {
   const learnTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
   const { data: session } = useSession();
+  const t = useTranslations("nav");
 
   const isLearnActive = LEARN_DROPDOWN.some((item) => pathname.startsWith(item.href));
 
@@ -131,7 +133,7 @@ export default function Navbar() {
               )}
             >
               <Info className="h-4 w-4" />
-              About
+              {t("about")}
             </Link>
 
             {/* Learn dropdown */}
@@ -156,7 +158,7 @@ export default function Navbar() {
                 )}
               >
                 <BookOpen className="h-4 w-4" />
-                Learn
+                {t("learn")}
                 <ChevronDown className={cn("h-3 w-3 transition-transform", learnOpen && "rotate-180")} />
               </button>
               {learnOpen && (
@@ -173,7 +175,7 @@ export default function Navbar() {
                           : "text-parchment-400 hover:bg-celestial-800/60 hover:text-parchment-200"
                       )}
                     >
-                      {item.label}
+                      {t(item.labelKey)}
                     </Link>
                   ))}
                 </div>
@@ -181,7 +183,7 @@ export default function Navbar() {
             </div>
 
             {/* Remaining nav links */}
-            {NAV_LINKS.slice(1).map(({ href, label, icon: Icon }) => {
+            {NAV_LINKS.slice(1).map(({ href, labelKey, icon: Icon }) => {
               const isActive = pathname.startsWith(href);
               return (
                 <Link
@@ -196,7 +198,7 @@ export default function Navbar() {
                   )}
                 >
                   <Icon className="h-4 w-4" />
-                  {label}
+                  {t(labelKey)}
                 </Link>
               );
             })}
@@ -212,7 +214,7 @@ export default function Navbar() {
                 )}
               >
                 <FileText className="h-4 w-4" />
-                Reports
+                {t("reports")}
               </Link>
             )}
           </div>
@@ -230,7 +232,7 @@ export default function Navbar() {
                 className="hidden items-center gap-1.5 rounded-md border border-gold-700/40 px-4 py-2 text-sm font-medium text-gold-400 transition-all hover:border-gold-500 hover:bg-gold-500/10 md:flex"
               >
                 <LogIn className="h-4 w-4" />
-                Sign In
+                {t("signIn")}
               </Link>
             )}
 
@@ -238,7 +240,7 @@ export default function Navbar() {
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="rounded-md p-2 text-parchment-400 hover:bg-celestial-800 md:hidden"
-              aria-label="Toggle menu"
+              aria-label={t("toggleMenu")}
             >
               {mobileOpen ? (
                 <X className="h-5 w-5" />
@@ -267,7 +269,7 @@ export default function Navbar() {
               )}
             >
               <Info className="h-4 w-4" />
-              About
+              {t("about")}
             </Link>
 
             {/* Learn — expandable */}
@@ -281,7 +283,7 @@ export default function Navbar() {
               )}
             >
               <BookOpen className="h-4 w-4" />
-              Learn
+              {t("learn")}
               <ChevronDown className={cn("ml-auto h-3 w-3 transition-transform", mobileLearnOpen && "rotate-180")} />
             </button>
             {mobileLearnOpen && (
@@ -298,14 +300,14 @@ export default function Navbar() {
                         : "text-parchment-500 hover:text-parchment-300"
                     )}
                   >
-                    {item.label}
+                    {t(item.labelKey)}
                   </Link>
                 ))}
               </div>
             )}
 
             {/* Remaining links */}
-            {NAV_LINKS.slice(1).map(({ href, label, icon: Icon }) => {
+            {NAV_LINKS.slice(1).map(({ href, labelKey, icon: Icon }) => {
               const isActive = pathname.startsWith(href);
               return (
                 <Link
@@ -321,7 +323,7 @@ export default function Navbar() {
                   )}
                 >
                   <Icon className="h-4 w-4" />
-                  {label}
+                  {t(labelKey)}
                 </Link>
               );
             })}
@@ -338,7 +340,7 @@ export default function Navbar() {
                 )}
               >
                 <FileText className="h-4 w-4" />
-                Reports
+                {t("reports")}
               </Link>
             )}
             <div className="flex items-center gap-2 px-3 py-2">
@@ -351,7 +353,7 @@ export default function Navbar() {
                 className="flex items-center gap-2 rounded-md border border-gold-700/40 px-3 py-2.5 text-sm font-medium text-gold-400 hover:bg-gold-500/10"
               >
                 <LogIn className="h-4 w-4" />
-                Sign In
+                {t("signIn")}
               </Link>
             )}
           </div>
