@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Cinzel_Decorative, Merriweather } from "next/font/google";
+import { getLocale, getMessages } from "next-intl/server";
 import Providers from "@/components/Providers";
 import Analytics from "@/components/Analytics";
 import CookieConsent from "@/components/CookieConsent";
@@ -130,13 +131,16 @@ const jsonLd = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en" className="dark">
+    <html lang={locale} className="dark">
       <head>
         <script
           type="application/ld+json"
@@ -147,7 +151,7 @@ export default function RootLayout({
         className={`${inter.variable} ${cinzel.variable} ${merriweather.variable} font-sans antialiased`}
       >
         <Analytics />
-        <Providers>
+        <Providers locale={locale} messages={messages}>
           <a
             href="#main-content"
             className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-gold-500 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-celestial-900"

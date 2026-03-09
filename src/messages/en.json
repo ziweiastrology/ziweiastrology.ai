@@ -1,0 +1,104 @@
+{
+  "nav": {
+    "about": "About",
+    "learn": "Learn",
+    "resources": "Resources",
+    "blog": "Blog",
+    "compareSystems": "Compare Systems",
+    "caseStudies": "Case Studies",
+    "community": "Community",
+    "academy": "Academy",
+    "reports": "Reports",
+    "signIn": "Sign In",
+    "toggleMenu": "Toggle menu"
+  },
+  "footer": {
+    "platform": "Platform",
+    "legal": "Legal",
+    "contact": "Contact",
+    "aboutUs": "About Us",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "tagline": "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling. Decode your reality.",
+    "copyright": "ziweiastrology.ai — Ancient wisdom, quantum precision."
+  },
+  "auth": {
+    "createAccount": "Create Account",
+    "welcomeBack": "Welcome Back",
+    "fullName": "Full Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "continueWithGoogle": "Continue with Google",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "signOut": "Sign Out",
+    "reasonPalace": "Unlock this palace to explore the full star configuration.",
+    "reasonCopilot": "Chat with Sifu AI for personalized chart interpretation.",
+    "reasonFullReading": "Sign up to save your chart and unlock all twelve palaces."
+  },
+  "hero": {
+    "title": "Decode Your Reality",
+    "subtitle": "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling",
+    "cta": "Begin Calibration"
+  },
+  "reports": {
+    "title": "Complete Life Chart Analysis",
+    "generating": "Generating report...",
+    "complete": "Report complete",
+    "failed": "Generation failed",
+    "sections": "{completed}/{total} sections",
+    "usuallyTakes": "Usually takes 1-2 minutes.",
+    "cancelRefund": "Cancel & refund",
+    "deleteRefund": "Delete & refund credits",
+    "cancelling": "Cancelling...",
+    "exportPdf": "Export PDF",
+    "selectSections": "Select sections",
+    "downloadPdf": "Download PDF ({count} sections)",
+    "generatingPdf": "Generating PDF...",
+    "simpleView": "Simple view",
+    "detailedView": "Detailed view",
+    "switchDetailed": "Want the full story? Switch to detailed view",
+    "tableOfContents": "Table of Contents",
+    "overallAssessment": "Overall Assessment",
+    "matchingAnalysis": "Matching Analysis",
+    "decadeTimeline": "Decade Timeline",
+    "palaceAnalysis": "Palace Analysis",
+    "topicDeepDives": "Topic Deep Dives",
+    "deepDiveWithSifu": "Deep Dive with Sifu"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "membership": "Membership",
+    "birthDetails": "Birth Details",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "community": {
+    "searchPosts": "Search posts",
+    "postTitle": "Post title",
+    "shareThoughts": "Share your thoughts",
+    "writeReply": "Write a reply",
+    "noPosts": "No posts yet",
+    "noComments": "No comments yet"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "tryAgain": "Try again",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "upgradeNow": "Upgrade Now",
+    "fullReport": "Full Report",
+    "preview": "Preview"
+  },
+  "language": {
+    "en": "EN",
+    "zh": "中文"
+  }
+}

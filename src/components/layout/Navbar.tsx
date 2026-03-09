@@ -22,6 +22,7 @@ import {
 import { cn } from "@/lib/utils";
 import UserMenu from "@/components/auth/UserMenu";
 import CreditBadge from "@/components/credits/CreditBadge";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useUnreadCounts } from "@/hooks/useNotifications";
 
 function NavBadges() {
@@ -218,6 +219,7 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
+            <LanguageSwitcher />
             {session && <CreditBadge />}
             {session && <NavBadges />}
             {session ? (
@@ -339,6 +341,9 @@ export default function Navbar() {
                 Reports
               </Link>
             )}
+            <div className="flex items-center gap-2 px-3 py-2">
+              <LanguageSwitcher />
+            </div>
             {!session && (
               <Link
                 href="/auth/login"

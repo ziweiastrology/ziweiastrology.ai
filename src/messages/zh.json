@@ -1,0 +1,104 @@
+{
+  "nav": {
+    "about": "关于",
+    "learn": "学习",
+    "resources": "资源",
+    "blog": "博客",
+    "compareSystems": "系统比较",
+    "caseStudies": "案例研究",
+    "community": "社区",
+    "academy": "学院",
+    "reports": "报告",
+    "signIn": "登录",
+    "toggleMenu": "切换菜单"
+  },
+  "footer": {
+    "platform": "平台",
+    "legal": "法律",
+    "contact": "联系我们",
+    "aboutUs": "关于我们",
+    "privacyPolicy": "隐私政策",
+    "termsOfService": "服务条款",
+    "tagline": "古老紫微斗数智慧结合量子概率建模。解码你的命运。",
+    "copyright": "ziweiastrology.ai — 古老智慧，量子精准。"
+  },
+  "auth": {
+    "createAccount": "创建账户",
+    "welcomeBack": "欢迎回来",
+    "fullName": "姓名",
+    "email": "邮箱",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "signIn": "登录",
+    "signUp": "注册",
+    "continueWithGoogle": "使用 Google 登录",
+    "haveAccount": "已有账户？",
+    "noAccount": "还没有账户？",
+    "signOut": "退出",
+    "reasonPalace": "解锁此宫位以探索完整星曜配置。",
+    "reasonCopilot": "与紫微师傅 AI 对话，获取个性化命盘解读。",
+    "reasonFullReading": "注册以保存命盘并解锁全部十二宫。"
+  },
+  "hero": {
+    "title": "解码你的命运",
+    "subtitle": "古老紫微斗数智慧结合量子概率建模",
+    "cta": "开始校准"
+  },
+  "reports": {
+    "title": "完整人生命盘分析",
+    "generating": "正在生成报告...",
+    "complete": "报告完成",
+    "failed": "生成失败",
+    "sections": "{completed}/{total} 个章节",
+    "usuallyTakes": "通常需要 1-2 分钟。",
+    "cancelRefund": "取消并退款",
+    "deleteRefund": "删除并退还积分",
+    "cancelling": "取消中...",
+    "exportPdf": "导出 PDF",
+    "selectSections": "选择章节",
+    "downloadPdf": "下载 PDF（{count} 个章节）",
+    "generatingPdf": "正在生成 PDF...",
+    "simpleView": "精简版",
+    "detailedView": "详细版",
+    "switchDetailed": "想要完整内容？切换到详细版",
+    "tableOfContents": "目录",
+    "overallAssessment": "综合评估",
+    "matchingAnalysis": "匹配分析",
+    "decadeTimeline": "大限时间线",
+    "palaceAnalysis": "十二宫深度分析",
+    "topicDeepDives": "专题深入",
+    "deepDiveWithSifu": "与师傅深入探讨"
+  },
+  "settings": {
+    "title": "设置",
+    "profile": "个人资料",
+    "membership": "会员",
+    "birthDetails": "出生信息",
+    "save": "保存",
+    "cancel": "取消"
+  },
+  "community": {
+    "searchPosts": "搜索帖子",
+    "postTitle": "帖子标题",
+    "shareThoughts": "分享你的想法",
+    "writeReply": "写回复",
+    "noPosts": "暂无帖子",
+    "noComments": "暂无评论"
+  },
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "tryAgain": "重试",
+    "loading": "加载中...",
+    "error": "出了点问题",
+    "upgradeNow": "立即升级",
+    "fullReport": "完整报告",
+    "preview": "预览"
+  },
+  "language": {
+    "en": "EN",
+    "zh": "中文"
+  }
+}
