@@ -62,13 +62,13 @@ export default function MatchingCards({ sections }: Props) {
             Career Suitability
           </h4>
         </div>
-        <div className="h-48">
+        <div className="h-56">
           <ResponsiveContainer width="100%" height="100%">
-            <RadarChart data={careerRadar} cx="50%" cy="50%" outerRadius="70%">
+            <RadarChart data={careerRadar} cx="50%" cy="50%" outerRadius="55%">
               <PolarGrid stroke="rgba(212,165,40,0.15)" />
               <PolarAngleAxis
                 dataKey="subject"
-                tick={{ fill: "#b8a07a", fontSize: 9 }}
+                tick={{ fill: "#b8a07a", fontSize: 10 }}
               />
               <PolarRadiusAxis
                 angle={30}
@@ -136,13 +136,13 @@ export default function MatchingCards({ sections }: Props) {
             Spouse Compatibility
           </h4>
         </div>
-        <div className="h-48">
+        <div className="h-56">
           <ResponsiveContainer width="100%" height="100%">
-            <RadarChart data={spouseRadar} cx="50%" cy="50%" outerRadius="70%">
+            <RadarChart data={spouseRadar} cx="50%" cy="50%" outerRadius="55%">
               <PolarGrid stroke="rgba(212,165,40,0.15)" />
               <PolarAngleAxis
                 dataKey="subject"
-                tick={{ fill: "#b8a07a", fontSize: 9 }}
+                tick={{ fill: "#b8a07a", fontSize: 10 }}
               />
               <PolarRadiusAxis
                 angle={30}
