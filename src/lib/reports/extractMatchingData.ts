@@ -40,11 +40,21 @@ function extractPercentages(text: string): number[] {
   return matches ? matches.map((m) => parseInt(m)) : [];
 }
 
+function stripMarkdown(text: string): string {
+  return text
+    .replace(/^#{1,6}\s+/gm, "")   // headers
+    .replace(/\*\*([^*]+)\*\*/g, "$1") // bold
+    .replace(/\*([^*]+)\*/g, "$1")     // italic
+    .replace(/---+/g, "")              // horizontal rules
+    .replace(/\n{2,}/g, " ")          // collapse newlines
+    .trim();
+}
+
 function extractSummary(content: string): string {
-  // Get first sentence or first 120 chars
-  const firstSentence = content.match(/[^.!?。！？]*[.!?。！？]/);
+  const clean = stripMarkdown(content);
+  const firstSentence = clean.match(/[^.!?。！？]*[.!?。！？]/);
   if (firstSentence && firstSentence[0].length < 200) return firstSentence[0].trim();
-  return content.slice(0, 120).trim() + "…";
+  return clean.slice(0, 120).trim() + "...";
 }
 
 export function extractCareerData(sections: Section[]): CareerData {

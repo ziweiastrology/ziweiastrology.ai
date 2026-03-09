@@ -27,6 +27,7 @@ interface Props {
 export default function ReportStatusBar({ status, totalSections, completedSections, onCancel, cancelling }: Props) {
   const [tipIndex, setTipIndex] = useState(0);
   const [visible, setVisible] = useState(true);
+  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     if (status !== "GENERATING") return;
@@ -42,7 +43,14 @@ export default function ReportStatusBar({ status, totalSections, completedSectio
     return () => clearInterval(timer);
   }, [status]);
 
-  if (status === "COMPLETE") return null;
+  // Auto-dismiss 3s after completion
+  useEffect(() => {
+    if (status !== "COMPLETE") return;
+    const timer = setTimeout(() => setDismissed(true), 3000);
+    return () => clearTimeout(timer);
+  }, [status]);
+
+  if (dismissed) return null;
 
   const progress = totalSections > 0 ? (completedSections / totalSections) * 100 : 0;
   const tip = TIPS[tipIndex];
@@ -76,6 +84,13 @@ export default function ReportStatusBar({ status, totalSections, completedSectio
               </button>
             )}
           </>
+        ) : status === "COMPLETE" ? (
+          <>
+            <CheckCircle className="h-5 w-5 text-quantum-green" />
+            <span className="text-sm font-medium text-quantum-green">
+              Report complete — {totalSections}/{totalSections} sections
+            </span>
+          </>
         ) : (
           <>
             <CheckCircle className="h-5 w-5 text-quantum-green" />
@@ -85,6 +100,12 @@ export default function ReportStatusBar({ status, totalSections, completedSectio
           </>
         )}
       </div>
+
+      {status === "COMPLETE" && (
+        <div className="h-1.5 rounded-full bg-celestial-800 overflow-hidden">
+          <div className="h-full rounded-full bg-quantum-green transition-all duration-700" style={{ width: "100%" }} />
+        </div>
+      )}
 
       {status === "GENERATING" && (
         <>
