@@ -3,10 +3,19 @@ import { auth } from "@/lib/auth";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 
-const PRICE_IDS: Record<string, string> = {
-  BASIC: process.env.STRIPE_BASIC_PRICE_ID || "",
-  PREMIUM: process.env.STRIPE_PREMIUM_PRICE_ID || "",
-  SIFU: process.env.STRIPE_SIFU_PRICE_ID || "",
+const PRICE_IDS: Record<string, Record<string, string>> = {
+  BASIC: {
+    month: process.env.STRIPE_BASIC_MONTHLY_PRICE_ID || process.env.STRIPE_BASIC_PRICE_ID || "",
+    year: process.env.STRIPE_BASIC_ANNUAL_PRICE_ID || "",
+  },
+  PREMIUM: {
+    month: process.env.STRIPE_PREMIUM_MONTHLY_PRICE_ID || process.env.STRIPE_PREMIUM_PRICE_ID || "",
+    year: process.env.STRIPE_PREMIUM_ANNUAL_PRICE_ID || "",
+  },
+  SIFU: {
+    month: process.env.STRIPE_SIFU_MONTHLY_PRICE_ID || process.env.STRIPE_SIFU_PRICE_ID || "",
+    year: process.env.STRIPE_SIFU_ANNUAL_PRICE_ID || "",
+  },
 };
 
 export async function POST(request: Request) {
@@ -16,8 +25,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { tier } = await request.json();
-    const priceId = PRICE_IDS[tier];
+    const { tier, interval = "month" } = await request.json();
+    const priceId = PRICE_IDS[tier]?.[interval as string];
 
     if (!priceId) {
       return NextResponse.json({ error: "Invalid tier" }, { status: 400 });

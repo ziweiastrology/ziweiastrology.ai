@@ -55,6 +55,8 @@ const FOOTER_LINKS = {
   Legal: [
     { href: "/privacy", labelKey: "privacyPolicy" },
     { href: "/terms", labelKey: "termsOfService" },
+    { href: "/contact", labelKey: "contactUs" },
+    { href: "/refund", labelKey: "refundPolicy" },
   ],
 } as const;
 
