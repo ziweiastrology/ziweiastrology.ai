@@ -5,14 +5,14 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Loader2, CheckCircle, AlertCircle, Clock, Lightbulb } from "lucide-react";
 
-const TIPS: { text: string; href?: string }[] = [
-  { text: "Complete your profile in Settings for personalized energy matching", href: "/settings" },
-  { text: "Visit the Community Welcome group to introduce yourself", href: "/community" },
-  { text: "Your report covers 12 palaces, decade timeline, life narrative & overall assessment" },
-  { text: "Tip: Save this page — you can revisit your report anytime from your dashboard" },
-  { text: "Each palace represents a life domain — Career, Wealth, Relationships, Health and more" },
-  { text: "紫微斗數 (Zi Wei Dou Shu) dates back over 1,000 years to the Song Dynasty" },
-  { text: "Your decade timeline reveals how star energies shift across each 10-year period" },
+const TIP_KEYS: { key: string; href?: string }[] = [
+  { key: "tip1", href: "/settings" },
+  { key: "tip2", href: "/community" },
+  { key: "tip3" },
+  { key: "tip4" },
+  { key: "tip5" },
+  { key: "tip6" },
+  { key: "tip7" },
 ];
 
 const TIP_INTERVAL = 6000;
@@ -38,7 +38,7 @@ export default function ReportStatusBar({ status, totalSections, completedSectio
     const timer = setInterval(() => {
       setVisible(false);
       setTimeout(() => {
-        setTipIndex((i) => (i + 1) % TIPS.length);
+        setTipIndex((i) => (i + 1) % TIP_KEYS.length);
         setVisible(true);
       }, 400);
     }, TIP_INTERVAL);
@@ -56,7 +56,7 @@ export default function ReportStatusBar({ status, totalSections, completedSectio
   if (dismissed) return null;
 
   const progress = totalSections > 0 ? (completedSections / totalSections) * 100 : 0;
-  const tip = TIPS[tipIndex];
+  const tipDef = TIP_KEYS[tipIndex];
 
   return (
     <div className="rounded-lg border border-gold-700/30 bg-celestial-900/60 p-4">
@@ -139,15 +139,15 @@ export default function ReportStatusBar({ status, totalSections, completedSectio
           >
             <div className="flex items-start gap-2 text-sm text-parchment-300">
               <Lightbulb className="h-4 w-4 mt-0.5 shrink-0 text-gold-500" />
-              {tip.href ? (
+              {tipDef.href ? (
                 <Link
-                  href={tip.href}
+                  href={tipDef.href}
                   className="hover:text-gold-400 transition-colors underline decoration-gold-700/40 underline-offset-2"
                 >
-                  {tip.text} →
+                  {t(tipDef.key)} →
                 </Link>
               ) : (
-                <span>{tip.text}</span>
+                <span>{t(tipDef.key)}</span>
               )}
             </div>
           </div>

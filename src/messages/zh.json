@@ -197,7 +197,14 @@
     "cancelConfirm": "取消此报告并退还积分？",
     "palaceAnalyses": "宫位分析",
     "lifeStory": "你的命运故事",
-    "quickSummary": "快速摘要"
+    "quickSummary": "快速摘要",
+    "tip1": "在设置中完善您的个人资料，获取个性化能量匹配",
+    "tip2": "访问社区欢迎群组，介绍一下自己",
+    "tip3": "您的报告涵盖十二宫、大限时间线、人生故事及综合评估",
+    "tip4": "提示：收藏此页面 — 您随时可以从仪表板重新访问报告",
+    "tip5": "每个宫位代表一个人生领域 — 事业、财富、感情、健康等",
+    "tip6": "紫微斗数起源于一千多年前的宋朝",
+    "tip7": "大限时间线揭示了星曜能量如何在每个十年周期中变化"
   },
   "settings": {
     "title": "设置",
@@ -439,5 +446,23 @@
     "all": "全部",
     "minRead": "{time} 分钟阅读",
     "noPosts": "暂无文章，请稍后再来！"
+  },
+  "thankYou": {
+    "title": "欢迎加入！",
+    "subtitle": "您的会员已激活",
+    "tierUpgraded": "您已升级至 {tier} 会员",
+    "whatsNext": "下一步",
+    "exploreDashboard": "探索您的仪表板",
+    "exploreDashboardDesc": "查看个性化宇宙指挥中心和每日洞察",
+    "generateReport": "生成命途报告",
+    "generateReportDesc": "获取全面的 AI 命盘分析报告",
+    "joinCommunity": "加入社区",
+    "joinCommunityDesc": "与同好交流，分享紫微见解",
+    "startLearning": "开始学习",
+    "startLearningDesc": "访问课程，深入学习紫微斗数",
+    "goToDashboard": "前往仪表板",
+    "viewPricing": "查看方案",
+    "processing": "正在处理您的付款...",
+    "processingDesc": "请稍候，我们正在确认您的订阅。"
   }
 }

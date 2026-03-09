@@ -197,7 +197,14 @@
     "cancelConfirm": "Cancel this report and get your credits back?",
     "palaceAnalyses": "Palace Analyses",
     "lifeStory": "Your Life Story",
-    "quickSummary": "Quick Summary"
+    "quickSummary": "Quick Summary",
+    "tip1": "Complete your profile in Settings for personalized energy matching",
+    "tip2": "Visit the Community Welcome group to introduce yourself",
+    "tip3": "Your report covers 12 palaces, decade timeline, life narrative & overall assessment",
+    "tip4": "Tip: Save this page — you can revisit your report anytime from your dashboard",
+    "tip5": "Each palace represents a life domain — Career, Wealth, Relationships, Health and more",
+    "tip6": "紫微斗數 (Zi Wei Dou Shu) dates back over 1,000 years to the Song Dynasty",
+    "tip7": "Your decade timeline reveals how star energies shift across each 10-year period"
   },
   "settings": {
     "title": "Settings",
@@ -439,5 +446,23 @@
     "all": "All",
     "minRead": "{time} min read",
     "noPosts": "No posts yet. Check back soon!"
+  },
+  "thankYou": {
+    "title": "Welcome Aboard!",
+    "subtitle": "Your membership is now active",
+    "tierUpgraded": "You've been upgraded to {tier}",
+    "whatsNext": "What's Next",
+    "exploreDashboard": "Explore your dashboard",
+    "exploreDashboardDesc": "See your personalized cosmic command center with daily insights",
+    "generateReport": "Generate your Life Path Report",
+    "generateReportDesc": "Get a comprehensive AI analysis of your destiny chart",
+    "joinCommunity": "Join the Community",
+    "joinCommunityDesc": "Connect with fellow practitioners and share insights",
+    "startLearning": "Start Learning",
+    "startLearningDesc": "Access courses and deepen your Zi Wei knowledge",
+    "goToDashboard": "Go to Dashboard",
+    "viewPricing": "View Plans",
+    "processing": "Processing your payment...",
+    "processingDesc": "Please wait while we confirm your subscription."
   }
 }
