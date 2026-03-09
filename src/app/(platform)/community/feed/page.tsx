@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import PageHeader from "@/components/layout/PageHeader";
 import PostCard from "@/components/community/PostCard";
 import PostEditor from "@/components/community/PostEditor";
@@ -11,6 +12,7 @@ import FeedSidebar from "@/components/community/FeedSidebar";
 import { useFeed } from "@/hooks/useCommunity";
 
 export default function CommunityFeedPage() {
+  const t = useTranslations("community");
   const [sort, setSort] = useState<"hot" | "new" | "following">("hot");
   const [search, setSearch] = useState("");
   const handleSearch = useCallback((q: string) => setSearch(q), []);
@@ -39,8 +41,8 @@ export default function CommunityFeedPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <PageHeader
-        title="Community Feed"
-        subtitle="Discussions, insights, and shared discoveries from practitioners worldwide."
+        title={t("feedTitle")}
+        subtitle={t("feedSubtitle")}
       />
 
       <div className="flex gap-8 pb-16">
@@ -63,7 +65,7 @@ export default function CommunityFeedPage() {
             </div>
           ) : posts.length === 0 ? (
             <div className="rounded-lg border border-gold-700/20 bg-celestial-800/30 p-8 text-center">
-              <p className="text-parchment-500">No posts found.</p>
+              <p className="text-parchment-500">{t("noPostsFound")}</p>
             </div>
           ) : (
             <div className="space-y-4">

@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import TopicNav from "@/components/case-studies/TopicNav";
 import TopicSection from "@/components/case-studies/TopicSection";
 import PortraitSidebar from "@/components/case-studies/PortraitSidebar";
@@ -16,6 +17,7 @@ const HERO_PORTRAITS = TOPICS.map((t) => ({
 }));
 
 export default function CaseStudiesPage() {
+  const t = useTranslations("caseStudies");
   const [activeCaseId, setActiveCaseId] = useState<string | null>(null);
 
   // Clear highlight after 3 seconds
@@ -41,11 +43,10 @@ export default function CaseStudiesPage() {
           className="gold-gradient-text-shimmer text-3xl font-bold sm:text-4xl"
           style={{ fontFamily: "var(--font-cinzel)" }}
         >
-          Case Studies
+          {t("pageTitle")}
         </h1>
         <p className="mx-auto mt-3 max-w-2xl text-parchment-500">
-          The stars speak through emperors, poets, and visionaries.
-          See Zi Wei Dou Shu decode their destinies.
+          {t("pageSubtitle")}
         </p>
         <div className="mx-auto mt-6 h-px w-24 bg-gradient-to-r from-transparent via-gold-500 to-transparent" />
 
@@ -111,7 +112,7 @@ export default function CaseStudiesPage() {
       <div className="flex items-center gap-4 py-4">
         <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gold-500/30 to-transparent" />
         <span className="text-xs text-gold-500/50" style={{ fontFamily: "var(--font-cinzel)" }}>
-          Suggest
+          {t("suggest")}
         </span>
         <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gold-500/30 to-transparent" />
       </div>
@@ -122,12 +123,10 @@ export default function CaseStudiesPage() {
           className="mb-2 text-2xl font-bold text-parchment-100"
           style={{ fontFamily: "var(--font-cinzel)" }}
         >
-          Suggest a Case Study
+          {t("suggestTitle")}
         </h2>
         <p className="mb-6 text-sm text-parchment-500">
-          Submit a public figure&apos;s birth details. Our AI agent will analyze their
-          Zi Wei chart and publish a live case study — think of it as destiny
-          verification in real-time.
+          {t("suggestDescription")}
         </p>
         <div className="mx-auto max-w-2xl">
           <CelebritySubmissionForm />

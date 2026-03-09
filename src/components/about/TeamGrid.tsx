@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface TeamMember {
   name: string;
@@ -64,16 +65,17 @@ const TEAM: TeamMember[] = [
 ];
 
 export default function TeamGrid() {
+  const t = useTranslations("about");
   return (
     <section className="py-16">
       <h2
         className="mb-4 text-center text-2xl font-bold text-gold-400 sm:text-3xl"
         style={{ fontFamily: "var(--font-cinzel)" }}
       >
-        The Team
+        {t("theTeam")}
       </h2>
       <p className="mx-auto mb-12 max-w-2xl text-center text-parchment-500">
-        Bridging centuries of wisdom with modern computation.
+        {t("teamSubtitle")}
       </p>
 
       <div className="grid gap-8 sm:grid-cols-2">

@@ -1,17 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import PageHeader from "@/components/layout/PageHeader";
 import CourseCard from "@/components/academy/CourseCard";
 import { cn } from "@/lib/utils";
-
-const LEVELS = [
-  { value: "", label: "All Levels" },
-  { value: "BEGINNER", label: "Beginner" },
-  { value: "INTERMEDIATE", label: "Intermediate" },
-  { value: "ADVANCED", label: "Advanced" },
-  { value: "MASTER", label: "Master" },
-];
 
 const PLACEHOLDER_COURSES = [
   {
@@ -67,7 +60,16 @@ const PLACEHOLDER_COURSES = [
 ];
 
 export default function CourseCatalogPage() {
+  const t = useTranslations("academy");
   const [activeLevel, setActiveLevel] = useState("");
+
+  const LEVELS = [
+    { value: "", label: t("allLevels") },
+    { value: "BEGINNER", label: t("beginner") },
+    { value: "INTERMEDIATE", label: t("intermediate") },
+    { value: "ADVANCED", label: t("advanced") },
+    { value: "MASTER", label: t("master") },
+  ];
 
   const filtered = activeLevel
     ? PLACEHOLDER_COURSES.filter((c) => c.level === activeLevel)
@@ -76,8 +78,8 @@ export default function CourseCatalogPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <PageHeader
-        title="Course Catalog"
-        subtitle="Structured learning from beginner to Sifu master. Each course builds on the last."
+        title={t("catalogTitle")}
+        subtitle={t("catalogSubtitle")}
       />
 
       {/* Level filter */}

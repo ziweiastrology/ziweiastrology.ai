@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { FileText, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useDashboard } from "@/hooks/useDashboard";
 import ChartSnapshotCard from "./ChartSnapshotCard";
 import CreditBalanceCard from "./CreditBalanceCard";
@@ -13,6 +14,7 @@ import NotificationCard from "./NotificationCard";
 import WelcomeInsightCard from "./WelcomeInsightCard";
 
 function ReportHistoryCard() {
+  const t = useTranslations("dashboard");
   const [reports, setReports] = useState<{ id: string; status: string; createdAt: string; sections: { id: string }[] }[]>([]);
 
   useEffect(() => {
@@ -29,13 +31,13 @@ function ReportHistoryCard() {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-parchment-200 flex items-center gap-2">
           <FileText className="h-4 w-4 text-gold-500" />
-          Your Reports
+          {t("yourReports")}
         </h3>
         <Link
           href="/reports"
           className="text-[10px] text-gold-500 hover:text-gold-400 flex items-center gap-1"
         >
-          View all <ChevronRight className="h-3 w-3" />
+          {t("viewAll")} <ChevronRight className="h-3 w-3" />
         </Link>
       </div>
       <div className="space-y-2">
@@ -46,9 +48,9 @@ function ReportHistoryCard() {
             className="flex items-center justify-between p-3 rounded-lg border border-gold-700/10 bg-celestial-800/30 hover:border-gold-500/20 transition-colors"
           >
             <div>
-              <p className="text-xs font-medium text-parchment-300">Life-Path Report</p>
+              <p className="text-xs font-medium text-parchment-300">{t("lifePathReport")}</p>
               <p className="text-[10px] text-parchment-600">
-                {new Date(r.createdAt).toLocaleDateString()} · {r.sections.length} sections
+                {new Date(r.createdAt).toLocaleDateString()} · {t("sections", { count: r.sections.length })}
               </p>
             </div>
             <span className={`text-[10px] px-2 py-0.5 rounded-sm border ${
@@ -56,7 +58,7 @@ function ReportHistoryCard() {
               r.status === "GENERATING" ? "text-quantum-cyan border-quantum-cyan/30" :
               "text-parchment-500 border-parchment-500/30"
             }`}>
-              {r.status === "COMPLETE" ? "Complete" : r.status === "GENERATING" ? "Generating" : r.status}
+              {r.status === "COMPLETE" ? t("statusComplete") : r.status === "GENERATING" ? t("statusGenerating") : r.status}
             </span>
           </Link>
         ))}
@@ -66,6 +68,7 @@ function ReportHistoryCard() {
 }
 
 export default function DashboardOverview() {
+  const t = useTranslations("dashboard");
   const { data, isLoading, error } = useDashboard();
 
   if (isLoading) {
@@ -85,7 +88,7 @@ export default function DashboardOverview() {
     return (
       <div className="rounded-xl border border-quantum-red/30 bg-quantum-red/5 p-6 text-center">
         <p className="text-sm text-quantum-red">
-          Failed to load dashboard data. Please try refreshing.
+          {t("failedToLoad")}
         </p>
       </div>
     );
@@ -98,10 +101,10 @@ export default function DashboardOverview() {
       {/* Welcome */}
       <div>
         <h1 className="font-heading text-2xl text-gold-400">
-          Welcome back, {user.name?.split(" ")[0] || "Explorer"}
+          {t("welcomeBack", { name: user.name?.split(" ")[0] || "Explorer" })}
         </h1>
         <p className="text-sm text-parchment-500">
-          Your cosmic command center
+          {t("cosmicCommandCenter")}
         </p>
       </div>
 

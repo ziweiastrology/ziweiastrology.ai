@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import PostCard from "@/components/community/PostCard";
 import PostEditor from "@/components/community/PostEditor";
 import SearchBar from "@/components/community/SearchBar";
@@ -10,6 +11,7 @@ import FeedSidebar from "@/components/community/FeedSidebar";
 import { useFeed } from "@/hooks/useCommunity";
 
 export default function CommunityPage() {
+  const t = useTranslations("community");
   const [sort, setSort] = useState<"hot" | "new" | "following">("hot");
   const [search, setSearch] = useState("");
   const handleSearch = useCallback((q: string) => setSearch(q), []);
@@ -57,7 +59,7 @@ export default function CommunityPage() {
             </div>
           ) : posts.length === 0 ? (
             <div className="rounded-lg border border-gold-700/20 bg-celestial-800/30 p-8 text-center">
-              <p className="text-parchment-500">No posts yet. Be the first to share!</p>
+              <p className="text-parchment-500">{t("noPostsBeFirst")}</p>
             </div>
           ) : (
             <div className="space-y-4">

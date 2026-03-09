@@ -2,35 +2,10 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-
-const CHAPTERS = [
-  {
-    title: "A Thousand-Year Algorithm",
-    content:
-      "In 1019 CE, the Taoist sage Chen Tuan (陈抟) sat atop Mount Hua and transcribed a mathematical system that would endure for a millennium. Zi Wei Dou Shu — the Purple Star Calculation Method — mapped 14 major celestial bodies across 12 life palaces, creating what may be the world's oldest probability engine.",
-    accent: "from-gold-500/20 to-transparent",
-  },
-  {
-    title: "Not Superstition. Mathematics.",
-    content:
-      "While Western horoscopes paint in broad strokes, Zi Wei Dou Shu operates with surgical precision. It factors birth year, month, day, and hour into a 144-variable matrix. Each configuration yields one of over 500,000 unique life charts. The Four Transformers — Lu (禄), Quan (权), Ke (科), Ji (忌) — act as probability modifiers, shifting outcomes across palaces with mathematical certainty.",
-    accent: "from-celestial-400/20 to-transparent",
-  },
-  {
-    title: "Documented Accuracy",
-    content:
-      "Historical records show Zi Wei practitioners advising Song Dynasty emperors on succession timing, Ming Dynasty generals on campaign strategy, and Qing Dynasty merchants on trade routes. In each case, the system's predictions were verified against outcomes — a practice we continue with modern statistical methods.",
-    accent: "from-quantum-cyan/10 to-transparent",
-  },
-  {
-    title: "The AI Convergence",
-    content:
-      "Today, we're building the first platform to treat Zi Wei Dou Shu as what it truly is: a sophisticated probability model waiting for computational power. By combining traditional calculation methods with machine learning pattern recognition, we decode life trajectories with unprecedented precision. Ancient wisdom, quantum computation, real results.",
-    accent: "from-quantum-green/10 to-transparent",
-  },
-];
+import { useTranslations } from "next-intl";
 
 export default function BrandNarrative() {
+  const t = useTranslations("about");
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -38,6 +13,29 @@ export default function BrandNarrative() {
   });
 
   const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  const CHAPTERS = [
+    {
+      title: t("chapter1Title"),
+      content: t("chapter1Content"),
+      accent: "from-gold-500/20 to-transparent",
+    },
+    {
+      title: t("chapter2Title"),
+      content: t("chapter2Content"),
+      accent: "from-celestial-400/20 to-transparent",
+    },
+    {
+      title: t("chapter3Title"),
+      content: t("chapter3Content"),
+      accent: "from-quantum-cyan/10 to-transparent",
+    },
+    {
+      title: t("chapter4Title"),
+      content: t("chapter4Content"),
+      accent: "from-quantum-green/10 to-transparent",
+    },
+  ];
 
   return (
     <section ref={containerRef} className="relative py-16 overflow-hidden">
@@ -54,7 +52,7 @@ export default function BrandNarrative() {
         className="mb-12 text-center text-2xl font-bold text-gold-400 sm:text-3xl"
         style={{ fontFamily: "var(--font-cinzel)" }}
       >
-        The Origin Story
+        {t("originStory")}
       </h2>
 
       <div className="relative mx-auto max-w-3xl">

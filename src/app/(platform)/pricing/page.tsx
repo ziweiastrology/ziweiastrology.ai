@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   Sparkles,
   Zap,
@@ -14,100 +15,8 @@ import {
 } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
 
-const TIERS = [
-  {
-    key: "FREE",
-    name: "Free",
-    icon: Sparkles,
-    monthlyPrice: 0,
-    annualPrice: 0,
-    dailyCredits: 3,
-    color: "parchment-400",
-    borderColor: "border-gold-700/20",
-    features: [
-      "Full 12-palace natal chart",
-      "3 AI messages per day",
-      "Basic 流年 forecast preview",
-    ],
-  },
-  {
-    key: "BASIC",
-    name: "Basic",
-    icon: Zap,
-    monthlyPrice: 8.88,
-    annualPrice: 88.88,
-    dailyCredits: 10,
-    color: "quantum-cyan",
-    borderColor: "border-quantum-cyan/30",
-    features: [
-      "Everything in Free",
-      "10 AI messages per day",
-      "Conversation history",
-      "Community read access",
-    ],
-  },
-  {
-    key: "PREMIUM",
-    name: "Premium",
-    icon: Crown,
-    monthlyPrice: 18.88,
-    annualPrice: 188.88,
-    dailyCredits: 30,
-    popular: true,
-    color: "quantum-orange",
-    borderColor: "border-quantum-orange/40",
-    features: [
-      "Everything in Basic",
-      "30 AI messages per day",
-      "Advanced 流年 reports",
-      "Post & comment in community",
-      "Academy course access",
-    ],
-  },
-  {
-    key: "SIFU",
-    name: "Sifu Master",
-    icon: Star,
-    monthlyPrice: 38.88,
-    annualPrice: 388.88,
-    dailyCredits: 100,
-    color: "gold-400",
-    borderColor: "border-gold-500/40",
-    features: [
-      "Everything in Premium",
-      "100 AI messages per day",
-      "Priority AI responses",
-      "Certified master badge",
-      "Instructor capabilities",
-      "Priority support",
-    ],
-  },
-];
-
-const FAQ = [
-  {
-    q: "How do credits work?",
-    a: "Each AI message with ZiWei Sifu costs 1 credit. Credits refresh daily at midnight based on your tier. Free users get 3 credits, while paid tiers get 10–100 daily credits.",
-  },
-  {
-    q: "Do unused credits roll over?",
-    a: "Credits reset daily and do not roll over. This keeps the experience fresh and ensures you always have a reason to engage with your chart insights.",
-  },
-  {
-    q: "Can I cancel anytime?",
-    a: "Yes — cancel anytime from your Settings page. You'll keep your current tier benefits until the end of your billing period, then revert to Free.",
-  },
-  {
-    q: "What payment methods do you accept?",
-    a: "We accept all major credit cards, debit cards, and Apple Pay / Google Pay through Stripe's secure payment system.",
-  },
-  {
-    q: "Is my birth data safe?",
-    a: "Absolutely. Your birth data is encrypted and never shared. AI conversations are private to your account. We follow strict data protection practices.",
-  },
-];
-
 export default function PricingPage() {
+  const t = useTranslations("pricing");
   const [annual, setAnnual] = useState(true);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
@@ -115,6 +24,84 @@ export default function PricingPage() {
   const router = useRouter();
 
   const userTier = (session?.user as { tier?: string } | undefined)?.tier || "FREE";
+
+  const TIERS = [
+    {
+      key: "FREE",
+      name: t("tierFree"),
+      icon: Sparkles,
+      monthlyPrice: 0,
+      annualPrice: 0,
+      dailyCredits: 3,
+      color: "parchment-400",
+      borderColor: "border-gold-700/20",
+      features: [
+        t("featureFreeChart"),
+        t("featureFreeMessages"),
+        t("featureFreeForecast"),
+      ],
+    },
+    {
+      key: "BASIC",
+      name: t("tierBasic"),
+      icon: Zap,
+      monthlyPrice: 8.88,
+      annualPrice: 88.88,
+      dailyCredits: 10,
+      color: "quantum-cyan",
+      borderColor: "border-quantum-cyan/30",
+      features: [
+        t("featureBasicAll"),
+        t("featureBasicMessages"),
+        t("featureBasicHistory"),
+        t("featureBasicCommunity"),
+      ],
+    },
+    {
+      key: "PREMIUM",
+      name: t("tierPremium"),
+      icon: Crown,
+      monthlyPrice: 18.88,
+      annualPrice: 188.88,
+      dailyCredits: 30,
+      popular: true,
+      color: "quantum-orange",
+      borderColor: "border-quantum-orange/40",
+      features: [
+        t("featurePremiumAll"),
+        t("featurePremiumMessages"),
+        t("featurePremiumReports"),
+        t("featurePremiumCommunity"),
+        t("featurePremiumAcademy"),
+      ],
+    },
+    {
+      key: "SIFU",
+      name: t("tierSifu"),
+      icon: Star,
+      monthlyPrice: 38.88,
+      annualPrice: 388.88,
+      dailyCredits: 100,
+      color: "gold-400",
+      borderColor: "border-gold-500/40",
+      features: [
+        t("featureSifuAll"),
+        t("featureSifuMessages"),
+        t("featureSifuPriority"),
+        t("featureSifuBadge"),
+        t("featureSifuInstructor"),
+        t("featureSifuSupport"),
+      ],
+    },
+  ];
+
+  const FAQ = [
+    { q: t("faqCreditsQ"), a: t("faqCreditsA") },
+    { q: t("faqRolloverQ"), a: t("faqRolloverA") },
+    { q: t("faqCancelQ"), a: t("faqCancelA") },
+    { q: t("faqPaymentQ"), a: t("faqPaymentA") },
+    { q: t("faqDataQ"), a: t("faqDataA") },
+  ];
 
   async function handleSubscribe(tierKey: string) {
     if (!session) {
@@ -148,8 +135,8 @@ export default function PricingPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
       <PageHeader
-        title="Choose Your Path"
-        subtitle="Unlock deeper insights from ZiWei Sifu — your personal Zi Wei Dou Shu advisor"
+        title={t("pageTitle")}
+        subtitle={t("pageSubtitle")}
       />
 
       {/* Billing toggle */}
@@ -157,7 +144,7 @@ export default function PricingPage() {
         <span
           className={`text-sm transition-colors ${!annual ? "text-parchment-200 font-semibold" : "text-parchment-500"}`}
         >
-          Monthly
+          {t("monthly")}
         </span>
         <button
           onClick={() => setAnnual(!annual)}
@@ -174,11 +161,11 @@ export default function PricingPage() {
         <span
           className={`text-sm transition-colors ${annual ? "text-parchment-200 font-semibold" : "text-parchment-500"}`}
         >
-          Annual
+          {t("annual")}
         </span>
         {annual && (
           <span className="inline-block px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-quantum-green bg-quantum-green/10 border border-quantum-green/30 rounded-full">
-            Save ~17%
+            {t("savePercent")}
           </span>
         )}
       </div>
@@ -203,7 +190,7 @@ export default function PricingPage() {
               {tier.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <span className="inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-celestial-900 bg-quantum-orange rounded-full">
-                    Most Popular
+                    {t("mostPopular")}
                   </span>
                 </div>
               )}
@@ -226,14 +213,14 @@ export default function PricingPage() {
               {/* Price */}
               <div className="mb-1">
                 {price === 0 ? (
-                  <p className="text-3xl font-bold text-parchment-200">Free</p>
+                  <p className="text-3xl font-bold text-parchment-200">{t("free")}</p>
                 ) : (
                   <div className="flex items-baseline gap-1">
                     <span className="text-3xl font-bold text-parchment-200">
                       ${price.toFixed(2)}
                     </span>
                     <span className="text-sm text-parchment-500">
-                      /{annual ? "year" : "month"}
+                      {annual ? t("perYear") : t("perMonth")}
                     </span>
                   </div>
                 )}
@@ -243,7 +230,7 @@ export default function PricingPage() {
               <div className="flex items-center gap-1.5 mb-5 text-sm text-parchment-400">
                 <MessageSquare className="h-3.5 w-3.5" />
                 <span>
-                  {tier.dailyCredits} AI messages/day
+                  {t("aiMessagesPerDay", { count: tier.dailyCredits })}
                 </span>
               </div>
 
@@ -260,11 +247,11 @@ export default function PricingPage() {
               {/* CTA */}
               {isCurrentTier ? (
                 <div className="w-full py-2.5 rounded-lg border border-gold-700/30 bg-celestial-900/50 text-center text-sm font-semibold text-parchment-500">
-                  Current Plan
+                  {t("currentPlan")}
                 </div>
               ) : tier.key === "FREE" ? (
                 <div className="w-full py-2.5 rounded-lg border border-gold-700/20 bg-celestial-900/30 text-center text-sm text-parchment-600">
-                  Free Forever
+                  {t("freeForever")}
                 </div>
               ) : (
                 <button
@@ -281,7 +268,7 @@ export default function PricingPage() {
                       : "linear-gradient(135deg, #8f6b17, #d4a528, #8f6b17)",
                   }}
                 >
-                  {loadingTier === tier.key ? "Redirecting..." : "Subscribe"}
+                  {loadingTier === tier.key ? t("redirecting") : t("subscribe")}
                 </button>
               )}
             </div>
@@ -295,7 +282,7 @@ export default function PricingPage() {
           className="text-2xl font-bold text-center text-parchment-100 mb-8"
           style={{ fontFamily: "var(--font-cinzel)" }}
         >
-          Frequently Asked Questions
+          {t("faq")}
         </h2>
         <div className="space-y-3">
           {FAQ.map((item, i) => (

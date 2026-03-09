@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import PageHeader from "@/components/layout/PageHeader";
 
 export const metadata: Metadata = {
@@ -8,43 +9,41 @@ export const metadata: Metadata = {
     "Learn Zi Wei Dou Shu from beginner to Sifu master level. Structured courses, certification path.",
 };
 
-export default function AcademyPage() {
+export default async function AcademyPage() {
+  const t = await getTranslations("academy");
+
   const levels = [
     {
-      level: "Beginner",
-      title: "Foundation",
-      description:
-        "Understand the 12 palaces, 14 major stars, and basic chart reading.",
-      duration: "4 weeks",
+      level: t("beginner"),
+      title: t("foundationTitle"),
+      description: t("foundationDesc"),
+      duration: t("weeks", { count: 4 }),
     },
     {
-      level: "Intermediate",
-      title: "Four Transformers",
-      description:
-        "Master Lu, Quan, Ke, Ji — the four transformative energies that shape destiny.",
-      duration: "6 weeks",
+      level: t("intermediate"),
+      title: t("fourTransformersTitle"),
+      description: t("fourTransformersDesc"),
+      duration: t("weeks", { count: 6 }),
     },
     {
-      level: "Advanced",
-      title: "Fractal Time",
-      description:
-        "Decadal, annual, and monthly chart overlays. Predict timing with precision.",
-      duration: "8 weeks",
+      level: t("advanced"),
+      title: t("fractalTimeTitle"),
+      description: t("fractalTimeDesc"),
+      duration: t("weeks", { count: 8 }),
     },
     {
-      level: "Master",
-      title: "Sifu Certification",
-      description:
-        "Advanced case analysis, teaching methodology, and practitioner certification.",
-      duration: "12 weeks",
+      level: t("master"),
+      title: t("sifuCertTitle"),
+      description: t("sifuCertDesc"),
+      duration: t("weeks", { count: 12 }),
     },
   ];
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <PageHeader
-        title="Academy"
-        subtitle="A structured path from curious beginner to certified Sifu master. Learn the ancient system with modern rigor."
+        title={t("pageTitle")}
+        subtitle={t("pageSubtitle")}
       />
 
       {/* Certification Path */}
@@ -91,7 +90,7 @@ export default function AcademyPage() {
             href="/academy/courses"
             className="inline-block rounded-md bg-gold-500 px-6 py-2.5 text-sm font-semibold text-celestial-900 transition-colors hover:bg-gold-400"
           >
-            Browse Courses
+            {t("browseCourses")}
           </Link>
         </div>
       </section>

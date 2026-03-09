@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import PageHeader from "@/components/layout/PageHeader";
 import BrandNarrative from "@/components/about/BrandNarrative";
 import TeamGrid from "@/components/about/TeamGrid";
@@ -31,7 +32,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const t = await getTranslations("about");
+
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <BreadcrumbJsonLd items={[{ name: "About", href: "/about" }]} />
@@ -60,8 +63,8 @@ export default function AboutPage() {
         ]}
       />
       <PageHeader
-        title="Our Story"
-        subtitle="Ancient mathematical probability meets modern quantum modeling. This is not superstition — it's precision."
+        title={t("pageTitle")}
+        subtitle={t("pageSubtitle")}
       />
 
       <BrandNarrative />

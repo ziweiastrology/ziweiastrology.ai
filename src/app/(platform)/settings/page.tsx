@@ -4,21 +4,23 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { User, Mail, Crown, CreditCard, ExternalLink, Star, Save, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import PageHeader from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/Button";
 import ProfileForm from "@/components/settings/ProfileForm";
 import TagSelector from "@/components/settings/TagSelector";
 
-const TIER_LABELS: Record<string, { name: string; color: string }> = {
-  FREE: { name: "Free", color: "text-parchment-400" },
-  BASIC: { name: "Basic", color: "text-quantum-cyan" },
-  PREMIUM: { name: "Premium", color: "text-quantum-orange" },
-  SIFU: { name: "Sifu Master", color: "text-gold-400" },
-};
-
 export default function SettingsPage() {
+  const t = useTranslations("settings");
   const { data: session, status } = useSession();
   const router = useRouter();
+
+  const TIER_LABELS: Record<string, { name: string; color: string }> = {
+    FREE: { name: t("tierFree"), color: "text-parchment-400" },
+    BASIC: { name: t("tierBasic"), color: "text-quantum-cyan" },
+    PREMIUM: { name: t("tierPremium"), color: "text-quantum-orange" },
+    SIFU: { name: t("tierSifu"), color: "text-gold-400" },
+  };
 
   // Birth info state — must be declared before any early returns
   const [birthDate, setBirthDate] = useState("");
@@ -57,7 +59,7 @@ export default function SettingsPage() {
   if (status === "loading") {
     return (
       <div className="mx-auto max-w-2xl px-4 pb-16 sm:px-6">
-        <PageHeader title="Settings" />
+        <PageHeader title={t("title")} />
         <div className="animate-pulse space-y-4">
           <div className="h-32 rounded-lg bg-celestial-800/30" />
           <div className="h-24 rounded-lg bg-celestial-800/30" />
@@ -108,7 +110,7 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 pb-16 sm:px-6">
-      <PageHeader title="Settings" subtitle="Manage your account and membership" />
+      <PageHeader title={t("title")} subtitle={t("subtitle")} />
 
       {/* Profile */}
       <div className="mb-6 rounded-lg border border-gold-700/20 bg-celestial-800/30 p-6">
@@ -116,31 +118,31 @@ export default function SettingsPage() {
           className="mb-4 text-lg font-semibold text-parchment-200"
           style={{ fontFamily: "var(--font-cinzel)" }}
         >
-          Profile
+          {t("profile")}
         </h2>
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <User className="h-5 w-5 text-parchment-600" />
             <div>
-              <p className="text-xs text-parchment-600">Name</p>
+              <p className="text-xs text-parchment-600">{t("name")}</p>
               <p className="text-sm text-parchment-200">
-                {session.user?.name || "Not set"}
+                {session.user?.name || t("notSet")}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <Mail className="h-5 w-5 text-parchment-600" />
             <div>
-              <p className="text-xs text-parchment-600">Email</p>
+              <p className="text-xs text-parchment-600">{t("email")}</p>
               <p className="text-sm text-parchment-200">
-                {session.user?.email || "Not set"}
+                {session.user?.email || t("notSet")}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <Crown className="h-5 w-5 text-parchment-600" />
             <div>
-              <p className="text-xs text-parchment-600">Membership</p>
+              <p className="text-xs text-parchment-600">{t("membership")}</p>
               <p className={`text-sm font-semibold ${tierInfo.color}`}>
                 {tierInfo.name}
               </p>
@@ -156,15 +158,15 @@ export default function SettingsPage() {
           style={{ fontFamily: "var(--font-cinzel)" }}
         >
           <Star className="h-5 w-5 text-gold-400" />
-          Birth Information
+          {t("birthInformation")}
         </h2>
         <p className="mb-4 text-xs text-parchment-600">
-          Used for your ZiWei Destiny Chart calculation. All fields are optional.
+          {t("birthInfoDescription")}
         </p>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1 block text-xs text-parchment-500">Birth Date</label>
+              <label className="mb-1 block text-xs text-parchment-500">{t("birthDate")}</label>
               <input
                 type="date"
                 value={birthDate}
@@ -173,27 +175,27 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-parchment-500">Gender</label>
+              <label className="mb-1 block text-xs text-parchment-500">{t("gender")}</label>
               <select
                 value={birthGender}
                 onChange={(e) => setBirthGender(e.target.value)}
                 className="select-field w-full rounded-md border border-gold-700/30 bg-celestial-700/50 px-3 py-2 text-sm text-parchment-200 focus:outline-none"
               >
-                <option value="">Select...</option>
-                <option value="male">Male 男</option>
-                <option value="female">Female 女</option>
+                <option value="">{t("select")}</option>
+                <option value="male">{t("male")}</option>
+                <option value="female">{t("female")}</option>
               </select>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1 block text-xs text-parchment-500">Birth Hour</label>
+              <label className="mb-1 block text-xs text-parchment-500">{t("birthHour")}</label>
               <select
                 value={birthHour}
                 onChange={(e) => setBirthHour(e.target.value)}
                 className="select-field w-full rounded-md border border-gold-700/30 bg-celestial-700/50 px-3 py-2 text-sm text-parchment-200 focus:border-gold-500/50 focus:outline-none"
               >
-                <option value="">Select...</option>
+                <option value="">{t("select")}</option>
                 {Array.from({ length: 24 }, (_, i) => (
                   <option key={i} value={String(i).padStart(2, "0")}>
                     {String(i).padStart(2, "0")}:00 {i < 12 ? "AM" : "PM"}
@@ -202,13 +204,13 @@ export default function SettingsPage() {
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-xs text-parchment-500">Birth Minute</label>
+              <label className="mb-1 block text-xs text-parchment-500">{t("birthMinute")}</label>
               <select
                 value={birthMinute}
                 onChange={(e) => setBirthMinute(e.target.value)}
                 className="select-field w-full rounded-md border border-gold-700/30 bg-celestial-700/50 px-3 py-2 text-sm text-parchment-200 focus:border-gold-500/50 focus:outline-none"
               >
-                <option value="">Select...</option>
+                <option value="">{t("select")}</option>
                 {Array.from({ length: 60 }, (_, i) => (
                   <option key={i} value={String(i).padStart(2, "0")}>
                     :{String(i).padStart(2, "0")}
@@ -218,12 +220,12 @@ export default function SettingsPage() {
             </div>
           </div>
           <div>
-            <label className="mb-1 block text-xs text-parchment-500">Birth Location</label>
+            <label className="mb-1 block text-xs text-parchment-500">{t("birthLocation")}</label>
             <input
               type="text"
               value={birthLocation}
               onChange={(e) => setBirthLocation(e.target.value)}
-              placeholder="e.g. Taipei, Taiwan"
+              placeholder={t("birthLocationPlaceholder")}
               className="w-full rounded-md border border-gold-700/30 bg-celestial-700/50 px-3 py-2 text-sm text-parchment-200 focus:border-gold-500/50 focus:outline-none"
             />
           </div>
@@ -238,10 +240,10 @@ export default function SettingsPage() {
               ) : (
                 <Save className="mr-2 h-4 w-4" />
               )}
-              Save Birth Info
+              {t("saveBirthInfo")}
             </Button>
             {birthSaved && (
-              <span className="text-xs text-quantum-green">Saved successfully!</span>
+              <span className="text-xs text-quantum-green">{t("savedSuccessfully")}</span>
             )}
           </div>
         </div>
@@ -263,28 +265,26 @@ export default function SettingsPage() {
           className="mb-4 text-lg font-semibold text-parchment-200"
           style={{ fontFamily: "var(--font-cinzel)" }}
         >
-          Membership
+          {t("membership")}
         </h2>
 
         {tier === "FREE" ? (
           <div>
             <p className="mb-4 text-sm text-parchment-500">
-              Upgrade your membership to unlock community features, courses, and
-              more.
+              {t("upgradeDescription")}
             </p>
             <Button onClick={() => router.push("/pricing")}>
-              View Plans
+              {t("viewPlans")}
             </Button>
           </div>
         ) : (
           <div>
             <p className="mb-4 text-sm text-parchment-500">
-              Manage your subscription, update payment method, or view billing
-              history through the Stripe billing portal.
+              {t("billingDescription")}
             </p>
             <Button onClick={handleManageBilling}>
               <CreditCard className="mr-2 h-4 w-4" />
-              Manage Billing
+              {t("manageBilling")}
               <ExternalLink className="ml-2 h-3.5 w-3.5" />
             </Button>
           </div>

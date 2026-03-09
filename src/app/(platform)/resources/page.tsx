@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import PageHeader from "@/components/layout/PageHeader";
 import ResourceCard from "@/components/resources/ResourceCard";
 import ResourceFilter from "@/components/resources/ResourceFilter";
@@ -208,6 +209,7 @@ const PLACEHOLDER_RESOURCES = [
 ];
 
 export default function ResourcesPage() {
+  const t = useTranslations("resources");
   const [activeType, setActiveType] = useState("");
   const [activeCategory, setActiveCategory] = useState("");
 
@@ -221,8 +223,8 @@ export default function ResourcesPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <PageHeader
-        title="Resources"
-        subtitle="Articles, research papers, datasets, and case studies exploring the mathematical foundations of Zi Wei Dou Shu."
+        title={t("pageTitle")}
+        subtitle={t("pageSubtitle")}
       />
 
       <ResourceFilter
@@ -236,7 +238,7 @@ export default function ResourcesPage() {
         {displayResources.length === 0 ? (
           <div className="py-16 text-center">
             <p className="text-parchment-500">
-              No resources found matching your filters.
+              {t("noResults")}
             </p>
           </div>
         ) : (
