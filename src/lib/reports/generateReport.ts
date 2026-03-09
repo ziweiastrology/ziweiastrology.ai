@@ -191,6 +191,76 @@ Highlight the CURRENT decade with extra detail. Connect patterns across decades 
   });
 }
 
+async function generateLifeNarrative(
+  palaces: PalaceData[],
+  meta: ChartMeta,
+  reportId: string
+): Promise<void> {
+  const chartContext = buildChartContext(palaces, meta);
+
+  // Find key palaces for the narrative
+  const soulPalace = palaces.find((p) => p.name.toLowerCase().includes("soul") || p.nameCn === "命宫");
+  const careerPalace = palaces.find((p) => p.name.toLowerCase().includes("career") || p.nameCn === "官禄宫");
+  const spousePalace = palaces.find((p) => p.name.toLowerCase().includes("spouse") || p.nameCn === "夫妻宫");
+  const fortunePalace = palaces.find((p) => p.name.toLowerCase().includes("fortune") || p.nameCn === "福德宫");
+
+  const keyStars = [
+    ...(soulPalace?.stars || []),
+    ...(careerPalace?.stars || []),
+    ...(fortunePalace?.stars || []),
+  ].filter((v, i, a) => a.indexOf(v) === i).slice(0, 8);
+
+  const response = await anthropic.messages.create({
+    model: "claude-sonnet-4-20250514",
+    max_tokens: 2500,
+    system: REPORT_SYSTEM_PROMPT,
+    messages: [
+      {
+        role: "user",
+        content: `${chartContext}
+
+Write a personal life narrative for this person — a "Life Story" (命运故事) in 2nd person ("You are someone who...").
+
+Maximum 500 words. Structure as 3 short chapters:
+
+**Chapter 1 — Origin (起源)**: The childhood energy and core nature from 命宫 (${soulPalace?.nameCn || "命宫"}) with stars: ${soulPalace?.stars.join(", ") || "N/A"}. What kind of child were they? What inner fire or quiet strength did they carry?
+
+**Chapter 2 — Journey (历程)**: Career and relationship patterns from 官禄宫 (${careerPalace?.stars.join(", ") || "N/A"}) and 夫妻宫 (${spousePalace?.stars.join(", ") || "N/A"}). How do they navigate ambition and love? What recurring themes appear?
+
+**Chapter 3 — Destiny (命运)**: Future potential from 福德宫 (${fortunePalace?.stars.join(", ") || "N/A"}) and their decade trajectory. Where is the energy flowing? What is the highest version of themselves?
+
+Key stars to reference specifically: ${keyStars.join(", ")}
+
+Style requirements:
+- Warm, vivid, almost poetic — like a wise elder describing who they are
+- Reference specific stars by name (both Chinese and English) to make it feel uniquely personal
+- Include 1-2 moments of "uncanny accuracy" — specific star combinations that map to specific personality traits
+- End with a forward-looking hook that makes them want to read the detailed palace analyses
+- Do NOT use headers or markdown formatting — write as flowing prose paragraphs
+- Each chapter should be separated by a blank line with the chapter title in bold`,
+      },
+    ],
+  });
+
+  const content =
+    response.content[0].type === "text" ? response.content[0].text : "";
+
+  await prisma.reportSection.upsert({
+    where: {
+      reportId_key: { reportId, key: "life_narrative" },
+    },
+    create: {
+      reportId,
+      type: "LIFE_NARRATIVE",
+      key: "life_narrative",
+      title: "Your Life Story · 你的命运故事",
+      content,
+      orderIndex: 13,
+    },
+    update: { content },
+  });
+}
+
 async function generateOverallAssessment(
   palaces: PalaceData[],
   meta: ChartMeta,
@@ -257,7 +327,7 @@ Synthesize all insights into 3-5 key pieces of strategic life advice. Be specifi
       key: "overall_assessment",
       title: "Overall Life-Path Assessment",
       content,
-      orderIndex: 13,
+      orderIndex: 14,
     },
     update: { content },
   });
@@ -275,9 +345,10 @@ export async function generateFullReport(reportId: string): Promise<void> {
     const meta = report.metaJson as unknown as ChartMeta;
 
     // Generate sections sequentially (each builds on previous)
-    await generatePalaceAnalyses(palaces, meta, reportId);
-    await generateDecadeAnalysis(palaces, meta, reportId);
-    await generateOverallAssessment(palaces, meta, reportId);
+    await generatePalaceAnalyses(palaces, meta, reportId);   // 0-11
+    await generateDecadeAnalysis(palaces, meta, reportId);    // 12
+    await generateLifeNarrative(palaces, meta, reportId);     // 13
+    await generateOverallAssessment(palaces, meta, reportId); // 14
 
     // Mark complete
     await prisma.chartReport.update({

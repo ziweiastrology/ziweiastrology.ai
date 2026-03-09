@@ -34,6 +34,7 @@ interface Props {
 const SECTION_TYPE_LABELS: Record<string, string> = {
   PALACE_ANALYSIS: "Palace Analyses",
   DECADE_ANALYSIS: "Decade Timeline",
+  LIFE_NARRATIVE: "Your Life Story",
   OVERALL_ASSESSMENT: "Overall Assessment",
   TOPIC_DEEP_DIVE: "Topic Deep Dives",
 };

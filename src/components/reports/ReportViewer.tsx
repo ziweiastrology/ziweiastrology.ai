@@ -93,10 +93,23 @@ export default function ReportViewer({ reportId }: Props) {
   const palaceSections = report.sections.filter((s) => s.type === "PALACE_ANALYSIS");
   const decadeSections = report.sections.filter((s) => s.type === "DECADE_ANALYSIS");
   const overallSections = report.sections.filter((s) => s.type === "OVERALL_ASSESSMENT");
+  const narrativeSections = report.sections.filter((s) => s.type === "LIFE_NARRATIVE");
   const deepDiveSections = report.sections.filter((s) => s.type === "TOPIC_DEEP_DIVE");
 
-  // Expected total: 12 palaces + 1 decade + 1 overall = 14
-  const expectedTotal = 14;
+  // Expected total: 12 palaces + 1 decade + 1 narrative + 1 overall = 15
+  const expectedTotal = 15;
+
+  // TOC order: overall → decade → narrative → palaces → deep dives
+  const tocSectionOrder: Record<string, number> = {
+    OVERALL_ASSESSMENT: 0,
+    DECADE_ANALYSIS: 1,
+    LIFE_NARRATIVE: 2,
+    PALACE_ANALYSIS: 3,
+    TOPIC_DEEP_DIVE: 4,
+  };
+  const tocSections = [...report.sections].sort(
+    (a, b) => (tocSectionOrder[a.type] ?? 99) - (tocSectionOrder[b.type] ?? 99) || a.orderIndex - b.orderIndex
+  );
 
   const scrollToSection = (key: string) => {
     setActiveSection(key);
@@ -128,7 +141,7 @@ export default function ReportViewer({ reportId }: Props) {
               Table of Contents
             </h4>
             <nav className="space-y-1">
-              {report.sections.map((section) => (
+              {tocSections.map((section) => (
                 <button
                   key={section.key}
                   onClick={() => scrollToSection(section.key)}
@@ -179,44 +192,7 @@ export default function ReportViewer({ reportId }: Props) {
             completedSections={report.sections.length}
           />
 
-          {/* Palace Analyses */}
-          {palaceSections.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-quantum-cyan/70">
-                12 Palace Deep Analysis
-              </h3>
-              {palaceSections.map((section) => (
-                <div key={section.id} id={`section-${section.key}`}>
-                  <ReportSectionCard
-                    title={section.title}
-                    content={section.content}
-                    type={section.type}
-                    showDeepDiveCTA
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Decade Analysis */}
-          {decadeSections.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-quantum-orange/70">
-                Decade Timeline
-              </h3>
-              {decadeSections.map((section) => (
-                <div key={section.id} id={`section-${section.key}`}>
-                  <ReportSectionCard
-                    title={section.title}
-                    content={section.content}
-                    type={section.type}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Overall Assessment */}
+          {/* Overall Assessment — first content section (anchoring bias) */}
           {overallSections.length > 0 && (
             <div className="space-y-4">
               <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-quantum-green/70">
@@ -234,13 +210,73 @@ export default function ReportViewer({ reportId }: Props) {
             </div>
           )}
 
-          {/* Matching Analysis Cards */}
+          {/* Matching Analysis Cards — visual reinforcement after overview */}
           {report.status === "COMPLETE" && report.sections.length > 0 && (
             <div className="space-y-4">
               <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-gold-500/70">
                 Matching Analysis
               </h3>
               <MatchingCards sections={report.sections} />
+            </div>
+          )}
+
+          {/* Decade Analysis — personal life phases */}
+          {decadeSections.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-quantum-orange/70">
+                Decade Timeline
+              </h3>
+              {decadeSections.map((section) => (
+                <div key={section.id} id={`section-${section.key}`}>
+                  <ReportSectionCard
+                    title={section.title}
+                    content={section.content}
+                    type={section.type}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Life Narrative — emotional hook / personal story */}
+          {narrativeSections.length > 0 && (
+            <div className="space-y-4">
+              {narrativeSections.map((section) => (
+                <div key={section.id} id={`section-${section.key}`}>
+                  <div className="rounded-xl border border-gold-700/20 bg-parchment-900/5 border-l-2 border-l-gold-500/40 overflow-hidden">
+                    <div className="px-6 py-5">
+                      <h3
+                        className="text-xl font-bold gold-gradient-text mb-4"
+                        style={{ fontFamily: "var(--font-cinzel)" }}
+                      >
+                        {section.title}
+                      </h3>
+                      <div className="prose-ancient text-base text-parchment-300 leading-relaxed whitespace-pre-line">
+                        {section.content}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Palace Analyses — detailed reading (user is primed) */}
+          {palaceSections.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-xs font-mono tracking-[0.2em] uppercase text-quantum-cyan/70">
+                12 Palace Deep Analysis
+              </h3>
+              {palaceSections.map((section) => (
+                <div key={section.id} id={`section-${section.key}`}>
+                  <ReportSectionCard
+                    title={section.title}
+                    content={section.content}
+                    type={section.type}
+                    showDeepDiveCTA
+                  />
+                </div>
+              ))}
             </div>
           )}
 
