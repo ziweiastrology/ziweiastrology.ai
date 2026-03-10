@@ -155,10 +155,7 @@ export default function VerificationTimeline({
   return (
     <section
       id="calibration"
-      className="relative py-28 px-6 overflow-hidden"
-      style={{
-        background: "linear-gradient(180deg, #050a1a 0%, #0a0e1a 100%)",
-      }}
+      className="relative py-28 px-6 overflow-hidden section-dark-bg"
     >
       {/* Section header */}
       <div className="text-center mb-20 relative z-10">

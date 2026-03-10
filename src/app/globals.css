@@ -278,6 +278,15 @@ body {
     linear-gradient(175deg, #0a0515 0%, #0e0620 40%, #120826 70%, #0a0515 100%);
 }
 
+/* Landing page dark backgrounds */
+.hero-dark-bg {
+  background: radial-gradient(ellipse at 50% 40%, #0a0f2e 0%, #050a1a 35%, #020510 70%, #010208 100%);
+}
+
+.section-dark-bg {
+  background: linear-gradient(180deg, #050a1a 0%, #08041a 50%, #0a0e1a 100%);
+}
+
 /* ============================================
    ETCHED GOLD FRAME — For cards & panels
    ============================================ */
@@ -708,6 +717,50 @@ html:not(.dark) [class*="bg-gold-500/20"] {
 /* Light mode — active nav items */
 html:not(.dark) [class*="bg-celestial-700/60"] {
   background-color: rgba(123, 82, 201, 0.08) !important;
+}
+
+/* ============================================
+   Light mode — Landing page sections
+   ============================================ */
+
+/* Hero background */
+html:not(.dark) .hero-dark-bg {
+  background: radial-gradient(ellipse at 50% 40%, #f0ecf7 0%, #e8e2f3 35%, #f5f2fa 70%, #ffffff 100%);
+}
+
+/* Hero vignette & glow — soften for light */
+html:not(.dark) .bg-\[radial-gradient\(ellipse_at_center\2c transparent_0\%\2c rgba\(2\2c 5\2c 16\2c 0\.45\)_45\%\2c rgba\(2\2c 5\2c 16\2c 0\.92\)_100\%\)\] {
+  background: radial-gradient(ellipse at center, transparent 0%, rgba(240, 236, 247, 0.3) 45%, rgba(255, 255, 255, 0.7) 100%) !important;
+}
+html:not(.dark) .bg-\[radial-gradient\(circle_at_50\%_45\%\2c rgba\(212\2c 165\2c 40\2c 0\.07\)_0\%\2c transparent_35\%\)\] {
+  background: radial-gradient(circle at 50% 45%, rgba(153, 107, 0, 0.06) 0%, transparent 35%) !important;
+}
+
+/* Section dark backgrounds (VerificationTimeline, DestinyMatrix) */
+html:not(.dark) .section-dark-bg {
+  background: linear-gradient(180deg, #f5f2fa 0%, #f0ecf7 50%, #f5f2fa 100%);
+}
+
+/* Hide dark overlays on hero in light mode */
+html:not(.dark) .hero-dark-bg + .absolute[class*="opacity-"] {
+  opacity: 0 !important;
+}
+
+/* ============================================
+   Light mode — Footer
+   ============================================ */
+html:not(.dark) footer {
+  background: linear-gradient(180deg, #f0ecf7 0%, #e4ddf0 50%, #e0d8ed 100%) !important;
+}
+
+/* Hide all dark nebula/star overlay layers in footer */
+html:not(.dark) footer > .absolute {
+  display: none !important;
+}
+
+/* Footer logo — no screen blend on light bg */
+html:not(.dark) footer img.rounded-full {
+  mix-blend-mode: normal !important;
 }
 
 .prose-ancient hr {

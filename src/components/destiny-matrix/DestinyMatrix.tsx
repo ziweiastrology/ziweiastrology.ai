@@ -35,9 +35,8 @@ export default function DestinyMatrix() {
 
   return (
     <section
-      className="relative py-20 md:py-28 overflow-hidden"
+      className="relative py-20 md:py-28 overflow-hidden section-dark-bg"
       style={{
-        background: "#08041a",
         filter: snapshotExpired && !session ? "blur(8px) saturate(0.3)" : "none",
         pointerEvents: snapshotExpired && !session ? "none" : "auto",
         transition: "filter 0.5s ease",

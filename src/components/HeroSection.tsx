@@ -99,13 +99,7 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background: Deep navy-to-black radial + ancient paper texture overlay */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse at 50% 40%, #0a0f2e 0%, #050a1a 35%, #020510 70%, #010208 100%)",
-        }}
-      />
+      <div className="absolute inset-0 hero-dark-bg" />
       {/* Constellation particle network — deferred until browser idle */}
       {deferred && <ParticleField id="hero-particles" />}
       {deferred && <BigDipperOverlay />}
