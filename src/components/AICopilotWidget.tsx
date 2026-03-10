@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import { Coins, Briefcase, Heart, Home, Sparkles } from "lucide-react";
+import { Coins, Briefcase, Heart, Home, Sparkles, Headphones, CreditCard, User, BookOpen, AlertCircle } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useLocale } from "next-intl";
 import Link from "next/link";
 import { useDashboardStore } from "@/stores/useDashboardStore";
 import { useMatrixStore } from "@/stores/useMatrixStore";
@@ -21,21 +22,55 @@ const STATUS_CONFIG: Record<CopilotStatus, { label: string; color: string; pulse
 const TOPIC_CARDS = [
   {
     key: "career",
-    label: "事业 Career",
+    labelEn: "Career",
+    labelZh: "事业 Career",
     icon: Briefcase,
     prompt: "Analyze my 2026 career 流年 based on my 官禄宫 and 财帛宫. What opportunities and challenges do you see?",
   },
   {
     key: "love",
-    label: "感情 Love",
+    labelEn: "Love",
+    labelZh: "感情 Love",
     icon: Heart,
     prompt: "Analyze my 2026 love and relationships 流年 based on my 夫妻宫 and 福德宫. What does the year hold?",
   },
   {
     key: "family",
-    label: "家庭 Family",
+    labelEn: "Family",
+    labelZh: "家庭 Family",
     icon: Home,
     prompt: "Analyze my 2026 family 流年 based on my 田宅宫 and 父母宫. What changes or focus areas do you see?",
+  },
+];
+
+const SUPPORT_CARDS = [
+  {
+    key: "billing",
+    labelEn: "Billing & Payments",
+    labelZh: "账单与付款",
+    icon: CreditCard,
+    prompt: "I have a question about billing or my subscription.",
+  },
+  {
+    key: "account",
+    labelEn: "Account Help",
+    labelZh: "账户帮助",
+    icon: User,
+    prompt: "I need help with my account.",
+  },
+  {
+    key: "features",
+    labelEn: "Features Guide",
+    labelZh: "功能指南",
+    icon: BookOpen,
+    prompt: "Can you explain the features available on each membership tier?",
+  },
+  {
+    key: "issue",
+    labelEn: "Report an Issue",
+    labelZh: "报告问题",
+    icon: AlertCircle,
+    prompt: "I want to report a technical issue.",
   },
 ];
 
@@ -49,6 +84,8 @@ export default function AICopilotWidget() {
     copilotStatus,
     copilotOpen,
     toggleCopilot,
+    supportOpen,
+    toggleSupport,
     isUnlocked,
     openAuthModal,
     copilotInitialPrompt,
@@ -59,6 +96,7 @@ export default function AICopilotWidget() {
   const palaces = useMatrixStore((s) => s.palaces);
   const chartMeta = useMatrixStore((s) => s.chartMeta);
 
+  // Sifu chat state
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [sending, setSending] = useState(false);
@@ -66,22 +104,37 @@ export default function AICopilotWidget() {
   const [conversationId, setConversationId] = useState<string | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
+  // Support chat state
+  const [supportInput, setSupportInput] = useState("");
+  const [supportMessages, setSupportMessages] = useState<ChatMessage[]>([]);
+  const [supportSending, setSupportSending] = useState(false);
+  const [supportConversationId, setSupportConversationId] = useState<string | null>(null);
+  const supportChatEndRef = useRef<HTMLDivElement>(null);
+
+  const locale = useLocale();
+  const isZh = locale === "zh";
+
   const config = STATUS_CONFIG[copilotStatus];
   const credits = creditsData?.credits ?? 0;
   const hasMessages = messages.length > 0;
+  const hasSupportMessages = supportMessages.length > 0;
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, sending]);
 
+  useEffect(() => {
+    supportChatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [supportMessages, supportSending]);
+
   const handleFabClick = useCallback(() => {
-    if (!session) {
-      openAuthModal("copilot");
-      return;
-    }
     toggleCopilot();
-  }, [session, openAuthModal, toggleCopilot]);
+  }, [toggleCopilot]);
+
+  const handleSupportFabClick = useCallback(() => {
+    toggleSupport();
+  }, [toggleSupport]);
 
   const sendMessage = useCallback(
     async (text: string) => {
@@ -98,7 +151,9 @@ export default function AICopilotWidget() {
           ...prev,
           {
             role: "system",
-            content: "I have deeper insights about your chart to share... Upgrade your plan to continue this reading.",
+            content: isZh
+              ? "我们的对话才刚刚揭开你命盘的面纱。升级到 BASIC 即可每天与我对话 10 次，解锁十年深度分析和每日个性化指引。"
+              : "Our conversation has been illuminating — your chart holds many more secrets. Upgrade to BASIC for 10 daily messages and keep exploring with me.",
           },
         ]);
         setShowModal(true);
@@ -222,18 +277,128 @@ export default function AICopilotWidget() {
         setSending(false);
       }
     },
-    [sending, session, credits, palaces, chartMeta, conversationId, openAuthModal]
+    [sending, session, credits, palaces, chartMeta, conversationId, openAuthModal, isZh]
+  );
+
+  const sendSupportMessage = useCallback(
+    async (text: string) => {
+      if (!text.trim() || supportSending) return;
+
+      if (!session) {
+        openAuthModal("copilot");
+        return;
+      }
+
+      setSupportMessages((prev) => [...prev, { role: "user", content: text.trim() }]);
+      setSupportInput("");
+      setSupportSending(true);
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: text.trim(),
+            mode: "support",
+            conversationId: supportConversationId,
+          }),
+        });
+
+        if (!res.ok) {
+          setSupportMessages((prev) => [
+            ...prev,
+            { role: "assistant", content: "I apologize, something went wrong. Please try again." },
+          ]);
+          setSupportSending(false);
+          return;
+        }
+
+        const reader = res.body?.getReader();
+        if (!reader) {
+          setSupportSending(false);
+          return;
+        }
+
+        const decoder = new TextDecoder();
+        let assistantContent = "";
+
+        setSupportMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split("\n");
+
+          for (const line of lines) {
+            if (!line.startsWith("data: ")) continue;
+            try {
+              const data = JSON.parse(line.slice(6));
+
+              if (data.text) {
+                assistantContent += data.text;
+                setSupportMessages((prev) => {
+                  const updated = [...prev];
+                  updated[updated.length - 1] = {
+                    role: "assistant",
+                    content: assistantContent,
+                  };
+                  return updated;
+                });
+              }
+
+              if (data.done && data.conversationId) {
+                setSupportConversationId(data.conversationId);
+              }
+
+              if (data.error) {
+                setSupportMessages((prev) => {
+                  const updated = [...prev];
+                  updated[updated.length - 1] = {
+                    role: "assistant",
+                    content: "I apologize, an error occurred. Please try again.",
+                  };
+                  return updated;
+                });
+              }
+            } catch {
+              // Skip malformed SSE lines
+            }
+          }
+        }
+      } catch {
+        setSupportMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: "Connection lost. Please try again." },
+        ]);
+      } finally {
+        setSupportSending(false);
+      }
+    },
+    [supportSending, session, supportConversationId, openAuthModal]
   );
 
   const handleSend = useCallback(() => {
     sendMessage(input);
   }, [input, sendMessage]);
 
+  const handleSupportSend = useCallback(() => {
+    sendSupportMessage(supportInput);
+  }, [supportInput, sendSupportMessage]);
+
   const handleTopicClick = useCallback(
     (prompt: string) => {
       sendMessage(prompt);
     },
     [sendMessage]
+  );
+
+  const handleSupportCardClick = useCallback(
+    (prompt: string) => {
+      sendSupportMessage(prompt);
+    },
+    [sendSupportMessage]
   );
 
   // Handle initial prompt from FreeReport teaser or Report page Ask Sifu
@@ -250,12 +415,12 @@ export default function AICopilotWidget() {
     }
   }, [copilotOpen, copilotInitialPrompt, setCopilotInitialPrompt, sendMessage]);
 
-  // Show on dashboard (unlocked) OR when opened via external trigger (e.g., report page)
-  if (!isUnlocked && !copilotOpen) return null;
+  // Both FABs always visible on platform pages
+  const showSifuFab = true;
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
-      {/* Expanded panel */}
+      {/* Sifu Expanded panel */}
       {copilotOpen && (
         <div
           className="absolute bottom-20 right-0 w-[22rem] gold-frame rounded-sm bg-celestial-800/95 backdrop-blur-md
@@ -298,7 +463,7 @@ export default function AICopilotWidget() {
                   <div className="flex items-center gap-2 mb-2">
                     <Sparkles className="h-3.5 w-3.5 text-gold-400" />
                     <p className="text-xs text-gold-400 font-medium">
-                      2026 流年 · What would you like to explore?
+                      {isZh ? "2026 流年 · 你想探索什么？" : "2026 Forecast · What would you like to explore?"}
                     </p>
                   </div>
                   {TOPIC_CARDS.map((topic) => (
@@ -312,7 +477,7 @@ export default function AICopilotWidget() {
                         <topic.icon className="h-4 w-4 text-gold-500/70 group-hover:text-gold-400 transition-colors" />
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-parchment-200">{topic.label}</p>
+                        <p className="text-xs font-semibold text-parchment-200">{isZh ? topic.labelZh : topic.labelEn}</p>
                         <p className="text-[10px] text-parchment-500 mt-0.5">
                           Analyze your 2026 {topic.key} fortune
                         </p>
@@ -416,38 +581,174 @@ export default function AICopilotWidget() {
         </div>
       )}
 
-      {/* Floating trigger button */}
-      <button
-        onClick={handleFabClick}
-        className="group relative w-14 h-14 rounded-full
-                   bg-celestial-800 border border-gold-700
-                   shadow-[0_0_20px_rgba(0,0,0,0.4),0_0_10px_rgba(212,165,40,0.1)]
-                   transition-all duration-300
-                   hover:shadow-[0_0_30px_rgba(0,0,0,0.4),0_0_20px_rgba(212,165,40,0.2)]
-                   hover:border-gold-500
-                   active:scale-95
-                   flex items-center justify-center"
-      >
-        {/* Glow ring */}
-        <div className="absolute inset-0 rounded-full border border-gold-500/30 animate-glow-pulse" />
+      {/* Support Expanded panel */}
+      {supportOpen && (
+        <div
+          className={"absolute " + (showSifuFab ? "bottom-20" : "bottom-14") + " right-0 w-[22rem] rounded-sm bg-celestial-800/95 backdrop-blur-md border border-celestial-500/30 shadow-[0_0_40px_rgba(0,0,0,0.5),0_0_15px_rgba(139,92,246,0.15)] animate-fade-in overflow-hidden overscroll-contain"}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-4 py-3 border-b border-celestial-500/30 bg-celestial-900/50">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-quantum-green animate-glow-pulse" />
+              <Headphones className="h-3.5 w-3.5 text-celestial-400" />
+              <span className="text-xs text-celestial-300 tracking-widest uppercase">
+                Live Support
+              </span>
+            </div>
+            <button
+              onClick={toggleSupport}
+              className="text-parchment-500 hover:text-parchment-200 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
 
-        {/* Icon */}
-        <svg className="w-6 h-6 text-gold-400 group-hover:text-gold-300 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"
-          />
-        </svg>
+          {/* Chat area */}
+          <div className="p-4 h-80 flex flex-col overflow-y-auto overscroll-contain">
+            <div className="mt-auto" />
+            <div className="space-y-3">
+              {/* Support quick-start cards */}
+              {!hasSupportMessages && !supportSending && (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Headphones className="h-3.5 w-3.5 text-celestial-400" />
+                    <p className="text-xs text-celestial-300 font-medium">
+                      {isZh ? "需要什么帮助？" : "How can we help you?"}
+                    </p>
+                  </div>
+                  {SUPPORT_CARDS.map((card) => (
+                    <button
+                      key={card.key}
+                      onClick={() => handleSupportCardClick(card.prompt)}
+                      className="w-full flex items-center gap-3 p-3 rounded-lg border border-celestial-600/20 bg-celestial-900/40
+                                 hover:border-celestial-500/40 hover:bg-celestial-800/60 transition-all text-left group"
+                    >
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-celestial-500/10 border border-celestial-600/30 flex items-center justify-center group-hover:border-celestial-500/50 transition-colors">
+                        <card.icon className="h-4 w-4 text-celestial-400/70 group-hover:text-celestial-300 transition-colors" />
+                      </div>
+                      <p className="text-xs font-semibold text-parchment-200">{isZh ? card.labelZh : card.labelEn}</p>
+                    </button>
+                  ))}
+                </div>
+              )}
 
-        {/* Status dot */}
-        <div className="absolute -top-0.5 -right-0.5">
-          <div className={`w-3 h-3 rounded-full ${config.color} border-2 border-celestial-800`} />
-          {config.pulse && (
-            <div className={`absolute inset-0 w-3 h-3 rounded-full ${config.color} animate-ping opacity-75`} />
-          )}
+              {/* Messages */}
+              {supportMessages.map((msg, i) => (
+                <div key={i} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : ""}`}>
+                  {msg.role === "assistant" && (
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-celestial-500/20 border border-celestial-600 flex items-center justify-center">
+                      <Headphones className="w-3 h-3 text-celestial-400" />
+                    </div>
+                  )}
+                  <div
+                    className={`rounded-sm p-3 max-w-[85%] ${
+                      msg.role === "user"
+                        ? "bg-celestial-500/10 border border-celestial-600/20"
+                        : "bg-celestial-700/50"
+                    }`}
+                  >
+                    <p className="text-xs text-parchment-300 leading-relaxed whitespace-pre-wrap">
+                      {msg.content}
+                    </p>
+                  </div>
+                </div>
+              ))}
+
+              {/* Streaming indicator */}
+              {supportSending && supportMessages[supportMessages.length - 1]?.role !== "assistant" && (
+                <div className="flex gap-2">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-celestial-500/20 border border-celestial-600 flex items-center justify-center">
+                    <Headphones className="w-3 h-3 text-celestial-400" />
+                  </div>
+                  <div className="bg-celestial-700/50 rounded-sm p-3">
+                    <p className="text-xs text-parchment-500 animate-pulse">Looking into this...</p>
+                  </div>
+                </div>
+              )}
+
+              <div ref={supportChatEndRef} />
+            </div>
+          </div>
+
+          {/* Footer + Input */}
+          <div className="px-4 pb-4 space-y-2">
+            <div className="flex items-center gap-2 bg-celestial-900/50 border border-celestial-600/30 rounded-sm px-3 py-2">
+              <input
+                type="text"
+                placeholder={session ? (isZh ? "描述您的问题..." : "Describe your issue...") : "Sign in to chat"}
+                className="flex-1 bg-transparent text-xs text-parchment-200 placeholder:text-parchment-600 outline-none"
+                disabled={!session || supportSending}
+                value={supportInput}
+                onChange={(e) => {
+                  if (!session) { openAuthModal("copilot"); return; }
+                  setSupportInput(e.target.value);
+                }}
+                onFocus={() => { if (!session) openAuthModal("copilot"); }}
+                onKeyDown={(e) => e.key === "Enter" && handleSupportSend()}
+              />
+            </div>
+            <p className="text-center text-[9px] text-parchment-600">
+              {isZh
+                ? "AI 客服 · 复杂问题请联系 support@ziweiastrology.ai"
+                : "Powered by AI · Complex issues → support@ziweiastrology.ai"}
+            </p>
+          </div>
         </div>
-      </button>
+      )}
+
+      {/* Support FAB — positioned above Sifu button when both visible, or at bottom when alone/open */}
+      {!copilotOpen && (
+        <button
+          onClick={handleSupportFabClick}
+          className={`group w-11 h-11 rounded-full
+                     bg-celestial-700 border border-celestial-500/40
+                     shadow-lg transition-all duration-300
+                     hover:bg-celestial-600 hover:border-celestial-400/60
+                     hover:shadow-[0_0_20px_rgba(139,92,246,0.2)]
+                     active:scale-95
+                     flex items-center justify-center
+                     ${showSifuFab && !supportOpen ? "absolute -top-[3.5rem] right-0" : ""}`}
+        >
+          <Headphones className="h-5 w-5 text-parchment-300 group-hover:text-parchment-100 transition-colors" />
+        </button>
+      )}
+
+      {/* Sifu FAB — hidden when Support panel is open, only shows when unlocked */}
+      {showSifuFab && !supportOpen && (
+        <button
+          onClick={handleFabClick}
+          className="group relative w-14 h-14 rounded-full
+                     bg-celestial-800 border border-gold-700
+                     shadow-[0_0_20px_rgba(0,0,0,0.4),0_0_10px_rgba(212,165,40,0.1)]
+                     transition-all duration-300
+                     hover:shadow-[0_0_30px_rgba(0,0,0,0.4),0_0_20px_rgba(212,165,40,0.2)]
+                     hover:border-gold-500
+                     active:scale-95
+                     flex items-center justify-center"
+        >
+          {/* Glow ring */}
+          <div className="absolute inset-0 rounded-full border border-gold-500/30 animate-glow-pulse" />
+
+          {/* Icon */}
+          <svg className="w-6 h-6 text-gold-400 group-hover:text-gold-300 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"
+            />
+          </svg>
+
+          {/* Status dot */}
+          <div className="absolute -top-0.5 -right-0.5">
+            <div className={`w-3 h-3 rounded-full ${config.color} border-2 border-celestial-800`} />
+            {config.pulse && (
+              <div className={`absolute inset-0 w-3 h-3 rounded-full ${config.color} animate-ping opacity-75`} />
+            )}
+          </div>
+        </button>
+      )}
 
       {/* Insufficient Credits Modal */}
       <InsufficientCreditsModal

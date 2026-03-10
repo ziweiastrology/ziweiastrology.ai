@@ -28,7 +28,8 @@ interface ChartMetaInput {
 
 function buildSystemPrompt(
   palaces: PalaceInput[],
-  meta?: ChartMetaInput
+  meta?: ChartMetaInput,
+  options?: { userTier?: string; userMessageCount?: number }
 ): string {
   const palaceList = palaces
     .map((p) => {
@@ -67,7 +68,44 @@ Rules:
 5. Be warm, wise, and encouraging — like a trusted mentor. Use the tone of an experienced Sifu.
 6. Never make absolute predictions — frame as tendencies, potential, and advice.
 7. Keep responses concise but insightful — 2-4 paragraphs max.
-8. When discussing 流年, connect the annual palace influences to their natal chart patterns.`;
+8. When discussing 流年, connect the annual palace influences to their natal chart patterns.${options?.userTier === "FREE" ? `
+
+IMPORTANT — Conversion guidance (FREE tier user, message ${options.userMessageCount ?? 1} of 3 daily):
+- Message 1: Give a genuinely insightful answer that demonstrates your value. At the end, briefly hint there is more depth to explore (e.g. "I can see deeper patterns in your decade timeline — feel free to ask me more.").
+- Message 2: Give another strong answer. Near the end, naturally mention what upgrading unlocks: "Your chart shows a pivotal decade shift — with a BASIC plan, I can walk you through each year's energy in detail." Keep it brief and organic, not salesy.
+- Message 3 (likely their last free message): Deliver your best insight. Close warmly: "I've only scratched the surface of what your chart reveals. Upgrade to BASIC for 10 daily conversations, decade deep analysis, and personalized guidance every day. I'll be here when you're ready."
+- NEVER be pushy or interrupt the reading quality. The conversion should feel like a natural extension of genuine care.` : ""}`;
+}
+
+function buildSupportSystemPrompt(userTier: string): string {
+  return `You are ZiWei Support (紫微客服), the AI customer support agent for ziweiastrology.ai — a Zi Wei Dou Shu (紫微斗数) astrology platform.
+
+Your role:
+- Help users with billing, subscriptions, account issues, feature explanations, and general FAQ
+- Be helpful, concise, empathetic, and professional
+- Respond in the user's language (Chinese if they write in Chinese, English if English)
+
+Membership tiers:
+- FREE: 3 daily AI chats, basic natal chart, limited features
+- BASIC ($9.99/mo): 10 daily AI chats, full natal chart, annual forecast report
+- PREMIUM ($19.99/mo): 30 daily AI chats, decade analysis, topic deep dives, priority support
+- SIFU ($49.99/mo): Unlimited AI chats, all features, exclusive 1-on-1 consultations, early access
+
+The user is currently on the ${userTier} tier.
+
+Key platform features:
+- AI-powered Zi Wei Dou Shu chart analysis (Ask ZiWei Sifu)
+- Natal chart generation and interactive palace exploration
+- Annual fortune (流年) forecasts
+- Deep dive topic reports (career, love, family)
+- Community forums and academy courses
+
+Rules:
+1. For astrology chart questions or readings, politely redirect: "For chart readings and astrology questions, please use the 'Ask ZiWei Sifu' button — that's our specialized astrology AI!"
+2. For issues you cannot resolve (refunds, data deletion, account recovery): direct to support@ziweiastrology.ai
+3. Never share internal system details, API keys, or technical implementation
+4. Keep responses concise — 1-3 paragraphs max
+5. If a user wants to upgrade/downgrade, direct them to the /pricing page`;
 }
 
 export async function POST(request: Request) {
@@ -78,49 +116,61 @@ export async function POST(request: Request) {
     }
 
     const userId = session.user.id;
-    const { message, chartData, conversationId } = await request.json();
+    const { message, chartData, conversationId, mode } = await request.json();
 
     if (!message || typeof message !== "string") {
       return NextResponse.json({ error: "invalid_message" }, { status: 400 });
     }
 
-    // Credit check + deduct atomically
-    const creditResult = await prisma.$transaction(async (tx) => {
-      const user = await tx.user.findUnique({
-        where: { id: userId },
-        select: { credits: true },
-      });
+    const isSupport = mode === "support";
 
-      if (!user || user.credits < CREDIT_COSTS.CHATBOT_MESSAGE) {
-        return {
-          success: false,
-          credits: user?.credits ?? 0,
-          needed: CREDIT_COSTS.CHATBOT_MESSAGE,
-        };
-      }
-
-      await tx.creditTransaction.create({
-        data: {
-          userId,
-          amount: -CREDIT_COSTS.CHATBOT_MESSAGE,
-          type: "CHATBOT_MESSAGE",
-        },
-      });
-
-      const updated = await tx.user.update({
-        where: { id: userId },
-        data: { credits: { decrement: CREDIT_COSTS.CHATBOT_MESSAGE } },
-        select: { credits: true },
-      });
-
-      return { success: true, credits: updated.credits };
+    // Get user tier for conversion prompt
+    const userRecord = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { tier: true },
     });
+    const userTier = userRecord?.tier || "FREE";
 
-    if (!creditResult.success) {
-      return NextResponse.json(
-        { error: "insufficient_credits", ...creditResult },
-        { status: 402 }
-      );
+    // Credit check + deduct atomically (skip for support mode — free)
+    let creditResult = { success: true, credits: 0 };
+    if (!isSupport) {
+      creditResult = await prisma.$transaction(async (tx) => {
+        const user = await tx.user.findUnique({
+          where: { id: userId },
+          select: { credits: true },
+        });
+
+        if (!user || user.credits < CREDIT_COSTS.CHATBOT_MESSAGE) {
+          return {
+            success: false,
+            credits: user?.credits ?? 0,
+            needed: CREDIT_COSTS.CHATBOT_MESSAGE,
+          };
+        }
+
+        await tx.creditTransaction.create({
+          data: {
+            userId,
+            amount: -CREDIT_COSTS.CHATBOT_MESSAGE,
+            type: "CHATBOT_MESSAGE",
+          },
+        });
+
+        const updated = await tx.user.update({
+          where: { id: userId },
+          data: { credits: { decrement: CREDIT_COSTS.CHATBOT_MESSAGE } },
+          select: { credits: true },
+        });
+
+        return { success: true, credits: updated.credits };
+      });
+
+      if (!creditResult.success) {
+        return NextResponse.json(
+          { error: "insufficient_credits", ...creditResult },
+          { status: 402 }
+        );
+      }
     }
 
     // Get or create conversation
@@ -133,15 +183,16 @@ export async function POST(request: Request) {
     }
 
     if (!conversation) {
-      // Determine topic from message
-      let topic = "general";
-      const lowerMsg = message.toLowerCase();
-      if (lowerMsg.includes("career") || lowerMsg.includes("事业") || lowerMsg.includes("官禄"))
-        topic = "career";
-      else if (lowerMsg.includes("love") || lowerMsg.includes("感情") || lowerMsg.includes("夫妻"))
-        topic = "love";
-      else if (lowerMsg.includes("family") || lowerMsg.includes("家庭") || lowerMsg.includes("田宅"))
-        topic = "family";
+      let topic = isSupport ? "support" : "general";
+      if (!isSupport) {
+        const lowerMsg = message.toLowerCase();
+        if (lowerMsg.includes("career") || lowerMsg.includes("事业") || lowerMsg.includes("官禄"))
+          topic = "career";
+        else if (lowerMsg.includes("love") || lowerMsg.includes("感情") || lowerMsg.includes("夫妻"))
+          topic = "love";
+        else if (lowerMsg.includes("family") || lowerMsg.includes("家庭") || lowerMsg.includes("田宅"))
+          topic = "family";
+      }
 
       conversation = await prisma.conversation.create({
         data: { userId, topic },
@@ -167,9 +218,14 @@ export async function POST(request: Request) {
     history.push({ role: "user", content: message });
 
     // Build system prompt
-    const palaces = chartData?.palaces || [];
-    const meta = chartData?.meta;
-    const systemPrompt = buildSystemPrompt(palaces, meta);
+    const systemPrompt = isSupport
+      ? buildSupportSystemPrompt(userTier)
+      : (() => {
+          const palaces = chartData?.palaces || [];
+          const meta = chartData?.meta;
+          const userMessageCount = history.filter((m) => m.role === "user").length;
+          return buildSystemPrompt(palaces, meta, { userTier, userMessageCount });
+        })();
 
     // Stream Claude response
     const stream = anthropic.messages.stream({
@@ -208,10 +264,10 @@ export async function POST(request: Request) {
             },
           });
 
-          // Deep dive synthesis — after 4+ messages in a topic conversation
+          // Deep dive synthesis — after 4+ messages in a topic conversation (skip for support)
           let deepDiveSaved = false;
           const messageCount = history.length + 1; // includes assistant response
-          if (messageCount >= 8 && conversation.topic && conversation.topic !== "general") {
+          if (!isSupport && messageCount >= 8 && conversation.topic && conversation.topic !== "general" && conversation.topic !== "support") {
             try {
               // Check if user has a COMPLETE report
               const latestReport = await prisma.chartReport.findFirst({

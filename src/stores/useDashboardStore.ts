@@ -9,6 +9,7 @@ interface DashboardState {
   copilotStatus: CopilotStatus;
   copilotOpen: boolean;
   copilotInitialPrompt: string | null;
+  supportOpen: boolean;
   authModalOpen: boolean;
   authModalReason: AuthModalReason;
   snapshotExpired: boolean;
@@ -17,6 +18,7 @@ interface DashboardState {
   setCopilotStatus: (status: CopilotStatus) => void;
   toggleCopilot: () => void;
   setCopilotInitialPrompt: (prompt: string | null) => void;
+  toggleSupport: () => void;
   openAuthModal: (reason: AuthModalReason) => void;
   closeAuthModal: () => void;
   setSnapshotExpired: (expired: boolean) => void;
@@ -45,6 +47,7 @@ export const useDashboardStore = create<DashboardState>((set) => ({
   copilotStatus: "active",
   copilotOpen: false,
   copilotInitialPrompt: null,
+  supportOpen: false,
   authModalOpen: false,
   authModalReason: null,
   snapshotExpired: false,
@@ -52,8 +55,9 @@ export const useDashboardStore = create<DashboardState>((set) => ({
   setUnlocked: (unlocked) => set({ isUnlocked: unlocked }),
   setData: (data) => set({ data }),
   setCopilotStatus: (status) => set({ copilotStatus: status }),
-  toggleCopilot: () => set((state) => ({ copilotOpen: !state.copilotOpen })),
+  toggleCopilot: () => set((state) => ({ copilotOpen: !state.copilotOpen, supportOpen: false })),
   setCopilotInitialPrompt: (prompt) => set({ copilotInitialPrompt: prompt }),
+  toggleSupport: () => set((state) => ({ supportOpen: !state.supportOpen, copilotOpen: false })),
   openAuthModal: (reason) => set({ authModalOpen: true, authModalReason: reason }),
   closeAuthModal: () => set({ authModalOpen: false, authModalReason: null }),
   setSnapshotExpired: (expired) => set({ snapshotExpired: expired }),
