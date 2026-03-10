@@ -40,6 +40,7 @@ export const authConfig: NextAuthConfig = {
       if (user) {
         token.role = (user as Record<string, unknown>).role;
         token.tier = (user as Record<string, unknown>).tier;
+        token.avatarUrl = (user as Record<string, unknown>).avatarUrl;
       }
       return token;
     },
@@ -48,6 +49,7 @@ export const authConfig: NextAuthConfig = {
         session.user.id = token.sub!;
         (session.user as unknown as Record<string, unknown>).role = token.role;
         (session.user as unknown as Record<string, unknown>).tier = token.tier;
+        (session.user as unknown as Record<string, unknown>).avatarUrl = token.avatarUrl;
       }
       return session;
     },

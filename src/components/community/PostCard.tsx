@@ -1,9 +1,9 @@
 import Link from "next/link";
-import Image from "next/image";
 import { MessageSquare, Crown, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 import VoteButton from "./VoteButton";
 import BookmarkButton from "@/components/ui/BookmarkButton";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 const TYPE_LABELS: Record<string, { label: string; color: string }> = {
   DISCUSSION: { label: "Discussion", color: "text-celestial-300" },
@@ -51,7 +51,6 @@ export default function PostCard({
   href,
 }: PostCardProps) {
   const typeConfig = TYPE_LABELS[type] || TYPE_LABELS.DISCUSSION;
-  const initials = (author.name || "A").charAt(0).toUpperCase();
 
   return (
     <div
@@ -86,19 +85,7 @@ export default function PostCard({
               href={`/profile/${author.id}`}
               className="flex items-center gap-1.5 text-parchment-500 hover:text-parchment-300 transition-colors"
             >
-              {author.avatarUrl ? (
-                <Image
-                  src={author.avatarUrl}
-                  alt={author.name || "Avatar"}
-                  width={16}
-                  height={16}
-                  className="rounded-full object-cover"
-                />
-              ) : (
-                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-celestial-700 text-[10px] font-semibold text-parchment-400">
-                  {initials}
-                </span>
-              )}
+              <UserAvatar size="xs" src={author.avatarUrl} name={author.name} />
               {author.tier === "SIFU" && (
                 <Crown className="h-3 w-3 text-gold-400" />
               )}

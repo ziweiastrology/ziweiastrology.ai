@@ -1,13 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Save, Loader2, Globe, Lock } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Save, Loader2, Globe, Lock, Upload, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { useMyProfile, useUpdateProfile } from "@/hooks/useProfile";
+import UserAvatar from "@/components/ui/UserAvatar";
+import { useMyProfile, useUpdateProfile, useUploadAvatar, useDeleteAvatar } from "@/hooks/useProfile";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+
+const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
+const MAX_SIZE = 2 * 1024 * 1024;
 
 export default function ProfileForm() {
+  const t = useTranslations("settings");
   const { data: profile, isLoading } = useMyProfile();
   const updateProfile = useUpdateProfile();
+  const uploadAvatar = useUploadAvatar();
+  const deleteAvatar = useDeleteAvatar();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState("");
   const [headline, setHeadline] = useState("");
@@ -38,9 +48,35 @@ export default function ProfileForm() {
     setSaved(true);
   }
 
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!ALLOWED_TYPES.has(file.type)) {
+      toast.error(t("avatarInvalidType"));
+      return;
+    }
+    if (file.size > MAX_SIZE) {
+      toast.error(t("avatarTooLarge"));
+      return;
+    }
+    uploadAvatar.mutate(file, {
+      onError: () => toast.error(t("avatarError")),
+    });
+    // Reset input so same file can be re-selected
+    e.target.value = "";
+  }
+
+  function handleRemoveAvatar() {
+    deleteAvatar.mutate(undefined, {
+      onSuccess: () => toast.success(t("avatarRemoved")),
+    });
+  }
+
   if (isLoading) {
     return <div className="h-48 animate-pulse rounded-lg bg-celestial-800/30" />;
   }
+
+  const avatarSrc = profile?.avatarUrl || profile?.image;
 
   return (
     <div className="rounded-lg border border-gold-700/20 bg-celestial-800/30 p-6">
@@ -51,6 +87,49 @@ export default function ProfileForm() {
         Public Profile
       </h2>
       <div className="space-y-4">
+        {/* Avatar upload */}
+        <div className="flex items-center gap-4">
+          <UserAvatar size="xl" src={avatarSrc} name={profile?.name} />
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadAvatar.isPending}
+              >
+                {uploadAvatar.isPending ? (
+                  <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Upload className="mr-1.5 h-3.5 w-3.5" />
+                )}
+                {uploadAvatar.isPending ? t("uploading") : t("uploadPhoto")}
+              </Button>
+              {profile?.avatarUrl && (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={handleRemoveAvatar}
+                  disabled={deleteAvatar.isPending}
+                >
+                  <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+                  {t("removePhoto")}
+                </Button>
+              )}
+            </div>
+            <p className="text-xs text-parchment-600">{t("avatarHint")}</p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              className="hidden"
+              onChange={handleFileSelect}
+            />
+          </div>
+        </div>
+
         <div>
           <label className="mb-1 block text-xs text-parchment-500">Display Name</label>
           <input

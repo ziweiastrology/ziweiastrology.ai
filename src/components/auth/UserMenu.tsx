@@ -4,8 +4,9 @@ import { useState, useRef, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { User, LogOut, Settings, LayoutDashboard } from "lucide-react";
+import { LogOut, Settings, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 export default function UserMenu() {
   const t = useTranslations("auth");
@@ -33,7 +34,7 @@ export default function UserMenu() {
         aria-haspopup="true"
         className="flex items-center gap-2 rounded-full border border-gold-700/30 bg-celestial-800/60 px-3 py-1.5 text-sm text-parchment-300 transition-all hover:border-gold-500/50 hover:text-gold-400"
       >
-        <User className="h-4 w-4" />
+        <UserAvatar size="md" src={session.user?.avatarUrl || session.user?.image} name={session.user?.name} />
         <span className="hidden sm:inline">
           {session.user?.name?.split(" ")[0] || t("account")}
         </span>

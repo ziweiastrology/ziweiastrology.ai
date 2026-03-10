@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowLeft, Eye, Crown } from "lucide-react";
+import UserAvatar from "@/components/ui/UserAvatar";
 import VoteButton from "@/components/community/VoteButton";
 import CommentThread from "@/components/community/CommentThread";
 import CommentEditor from "@/components/community/CommentEditor";
@@ -70,6 +71,7 @@ export default function PostDetailClient({ post }: PostDetailClientProps) {
                 href={`/profile/${post.author.id}`}
                 className="flex items-center gap-1 text-parchment-500 hover:text-parchment-300"
               >
+                <UserAvatar size="xs" src={post.author.avatarUrl || post.author.image} name={post.author.name} />
                 {post.author.tier === "SIFU" && (
                   <Crown className="h-3 w-3 text-gold-400" />
                 )}

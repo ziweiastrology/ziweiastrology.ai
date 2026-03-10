@@ -44,6 +44,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           email: user.email,
           name: user.name,
           image: user.image,
+          avatarUrl: user.avatarUrl,
           role: user.role,
           tier: user.tier,
         };
@@ -64,6 +65,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         token.role = (user as { role: Role }).role;
         token.tier = (user as { tier: Tier }).tier;
+        token.avatarUrl = (user as { avatarUrl?: string | null }).avatarUrl;
       }
       return token;
     },
@@ -72,6 +74,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.id = token.sub!;
         session.user.role = token.role as Role;
         session.user.tier = token.tier as Tier;
+        session.user.avatarUrl = token.avatarUrl as string | null;
       }
       return session;
     },

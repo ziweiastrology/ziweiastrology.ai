@@ -28,7 +28,28 @@
     "academy": "Academy",
     "pricing": "Pricing",
     "tagline": "Ancient Zi Wei Dou Shu wisdom meets quantum probability modeling. Decode your reality.",
-    "copyright": "ziweiastrology.ai — Ancient wisdom, quantum precision."
+    "copyright": "ziweiastrology.ai — Ancient wisdom, quantum precision.",
+    "productHunt": "Find us on Product Hunt"
+  },
+  "banner": {
+    "phLaunch": "We just launched on Product Hunt! Check it out and support us.",
+    "cta": "Try Free Chart",
+    "ctaAlt": "Support on Product Hunt",
+    "dismiss": "Dismiss"
+  },
+  "onboarding": {
+    "welcomeTitle": "Welcome to Ziwei Astrology",
+    "welcomeSubtitle": "Discover the key features to get started on your destiny journey.",
+    "chartTitle": "Free Birth Chart",
+    "chartDesc": "Generate your ZWDS chart instantly",
+    "reportsTitle": "AI Life Reports",
+    "reportsDesc": "Detailed AI analysis of career, love, health",
+    "communityTitle": "Community",
+    "communityDesc": "Join discussions, share insights",
+    "academyTitle": "Academy",
+    "academyDesc": "Structured courses beginner to advanced",
+    "letsGo": "Got it, let's go!",
+    "skip": "Skip"
   },
   "auth": {
     "createAccount": "Create Account",
@@ -245,7 +266,16 @@
     "tierFree": "Free",
     "tierBasic": "Basic",
     "tierPremium": "Premium",
-    "tierSifu": "Sifu Master"
+    "tierSifu": "Sifu Master",
+    "avatar": "Profile Photo",
+    "uploadPhoto": "Upload Photo",
+    "removePhoto": "Remove",
+    "uploading": "Uploading...",
+    "avatarHint": "Max 2MB. JPG, PNG, WebP, or GIF.",
+    "avatarError": "Failed to upload photo",
+    "avatarTooLarge": "Image must be under 2MB",
+    "avatarInvalidType": "Only JPG, PNG, WebP, and GIF are supported",
+    "avatarRemoved": "Photo removed"
   },
   "community": {
     "searchPosts": "Search posts",
@@ -436,6 +466,11 @@
     "upgradeNow": "Upgrade Now",
     "fullReport": "Full Report",
     "preview": "Preview"
+  },
+  "theme": {
+    "light": "Light Mode",
+    "dark": "Dark Mode",
+    "toggle": "Toggle theme"
   },
   "language": {
     "en": "EN",

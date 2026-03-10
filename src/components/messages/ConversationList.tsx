@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useConversations } from "@/hooks/useMessages";
 import { useSession } from "next-auth/react";
 import { Loader2, MessageCircle } from "lucide-react";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 interface ConversationListProps {
   activeId: string | null;
@@ -53,9 +54,7 @@ export default function ConversationList({ activeId, onSelect }: ConversationLis
                 : "hover:bg-celestial-800/50"
             )}
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gold-700/30 bg-celestial-700/50 text-sm font-bold text-gold-400">
-              {(other?.name || "?").slice(0, 2).toUpperCase()}
-            </div>
+            <UserAvatar size="lg" src={other?.avatarUrl || other?.image} name={other?.name} />
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
                 <p className={cn("text-sm truncate", isUnread ? "font-semibold text-parchment-200" : "text-parchment-400")}>

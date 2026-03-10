@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Crown, Reply, ChevronUp, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import UserAvatar from "@/components/ui/UserAvatar";
 import { useVote } from "@/hooks/useCommunity";
 import CommentEditor from "./CommentEditor";
 
@@ -39,6 +40,7 @@ function Comment({
     <div className={cn("border-l border-gold-700/10 pl-4", depth > 0 && "ml-4")}>
       <div className="py-3">
         <div className="mb-1.5 flex items-center gap-2 text-xs">
+          <UserAvatar size="sm" src={comment.author.avatarUrl} name={comment.author.name} />
           <span className="flex items-center gap-1 font-medium text-parchment-300">
             {comment.author.tier === "SIFU" && <Crown className="h-3 w-3 text-gold-400" />}
             {comment.author.name || "Anonymous"}

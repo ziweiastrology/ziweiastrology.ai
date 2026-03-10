@@ -28,7 +28,28 @@
     "academy": "学院",
     "pricing": "定价",
     "tagline": "古老紫微斗数智慧结合量子概率建模。解码你的命运。",
-    "copyright": "ziweiastrology.ai — 古老智慧，量子精准。"
+    "copyright": "ziweiastrology.ai — 古老智慧，量子精准。",
+    "productHunt": "在 Product Hunt 找到我们"
+  },
+  "banner": {
+    "phLaunch": "我们刚在 Product Hunt 上线了！来看看并支持我们。",
+    "cta": "免费排盘",
+    "ctaAlt": "在 Product Hunt 支持",
+    "dismiss": "关闭"
+  },
+  "onboarding": {
+    "welcomeTitle": "欢迎来到紫微占星",
+    "welcomeSubtitle": "探索核心功能，开启你的命运之旅。",
+    "chartTitle": "免费命盘",
+    "chartDesc": "即时生成紫微斗数命盘",
+    "reportsTitle": "AI 命途报告",
+    "reportsDesc": "AI 深度分析事业、感情、健康",
+    "communityTitle": "社区",
+    "communityDesc": "参与讨论，分享见解",
+    "academyTitle": "学院",
+    "academyDesc": "从入门到进阶的系统课程",
+    "letsGo": "知道了，开始吧！",
+    "skip": "跳过"
   },
   "auth": {
     "createAccount": "创建账户",
@@ -245,7 +266,16 @@
     "tierFree": "免费",
     "tierBasic": "基础版",
     "tierPremium": "高级版",
-    "tierSifu": "师傅版"
+    "tierSifu": "师傅版",
+    "avatar": "头像",
+    "uploadPhoto": "上传照片",
+    "removePhoto": "移除",
+    "uploading": "上传中...",
+    "avatarHint": "最大 2MB。支持 JPG、PNG、WebP 或 GIF。",
+    "avatarError": "上传照片失败",
+    "avatarTooLarge": "图片不能超过 2MB",
+    "avatarInvalidType": "仅支持 JPG、PNG、WebP 和 GIF 格式",
+    "avatarRemoved": "照片已移除"
   },
   "community": {
     "searchPosts": "搜索帖子",
@@ -436,6 +466,11 @@
     "upgradeNow": "立即升级",
     "fullReport": "完整报告",
     "preview": "预览"
+  },
+  "theme": {
+    "light": "浅色模式",
+    "dark": "深色模式",
+    "toggle": "切换主题"
   },
   "language": {
     "en": "EN",

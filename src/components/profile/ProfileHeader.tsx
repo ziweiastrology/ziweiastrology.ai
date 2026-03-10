@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { MapPin, Crown, UserPlus, UserMinus, MessageCircle, Shield } from "lucide-react";
+import UserAvatar from "@/components/ui/UserAvatar";
 import { Button } from "@/components/ui/Button";
 import { useToggleFollow } from "@/hooks/useFollow";
 import { useSession } from "next-auth/react";
@@ -36,19 +37,12 @@ export default function ProfileHeader({ user, isFollowing }: ProfileHeaderProps)
   const toggleFollow = useToggleFollow();
   const isOwnProfile = session?.user?.id === user.id;
   const avatar = user.avatarUrl || user.image;
-  const initials = (user.name || "?").slice(0, 2).toUpperCase();
 
   return (
     <div className="rounded-lg border border-gold-700/20 bg-celestial-800/30 p-6">
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
         {/* Avatar */}
-        <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full border-2 border-gold-700/30 bg-celestial-700/50 text-2xl font-bold text-gold-400">
-          {avatar ? (
-            <img src={avatar} alt={user.name || ""} className="h-full w-full rounded-full object-cover" />
-          ) : (
-            initials
-          )}
-        </div>
+        <UserAvatar size="xl" src={avatar} name={user.name} className="border-2 border-gold-700/30" />
 
         {/* Info */}
         <div className="flex-1 text-center sm:text-left">
