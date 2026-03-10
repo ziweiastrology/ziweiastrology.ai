@@ -470,16 +470,17 @@ export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps)
               type="submit"
               disabled={!isValid || statusPhase !== "idle"}
               className="group relative w-full py-4 text-sm font-semibold rounded-sm overflow-hidden
-                         transition-all duration-400 ease-out
+                         transition-all duration-400 ease-out bg-celestial-700 text-parchment-500
                          disabled:opacity-30 disabled:cursor-not-allowed
                          enabled:hover:shadow-[0_0_30px_rgba(212,165,40,0.35),0_0_60px_rgba(212,165,40,0.15)]
                          active:scale-[0.98] cursor-pointer"
               style={{
                 background: isValid && statusPhase === "idle"
                   ? "linear-gradient(135deg, #8f6b17, #b8891e, #d4a528, #e6be4a, #d4a528, #b8891e, #8f6b17) 0 0 / 200% 100%"
-                  : "linear-gradient(135deg, #1a1815, #252220, #1a1815) 0 0 / 200% 100%",
-                color: isValid && statusPhase === "idle" ? "#020510" : "#4a4540",
+                  : undefined,
+                color: isValid && statusPhase === "idle" ? "#020510" : undefined,
               }}
+              {...(!(isValid && statusPhase === "idle") ? { "data-disabled-cta": "" } : {})}
             >
               <span className="relative z-10 tracking-[0.25em] uppercase">
                 {isScanning ? "Calibrating..." : "Calibrate Timeline"}
@@ -572,13 +573,14 @@ function GenderButton({
       className={`flex-1 py-2.5 rounded-sm text-sm font-medium transition-all duration-300 border
         ${active
           ? "border-gold-500/50 text-gold-300 shadow-[0_0_15px_rgba(212,165,40,0.1),inset_0_0_15px_rgba(212,165,40,0.05)]"
-          : "border-gold-700/20 text-parchment-400/60 hover:border-gold-700/40 hover:text-parchment-300/70"
+          : "border-gold-700/20 text-parchment-400/60 hover:border-gold-700/40 hover:text-parchment-300/70 bg-celestial-900/40"
         }`}
       style={{
         background: active
           ? "linear-gradient(135deg, rgba(212,165,40,0.12), rgba(212,165,40,0.04))"
-          : "rgba(10,15,46,0.4)",
+          : undefined,
       }}
+      data-gender-btn={active ? undefined : "inactive"}
     >
       <span className="mr-1.5 text-base">{symbol}</span>
       {label}

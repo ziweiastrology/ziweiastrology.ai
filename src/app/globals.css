@@ -5,7 +5,7 @@
    Tailwind CSS v4 Theme Configuration
    ============================================ */
 
-@theme inline {
+@theme {
   /* --- Color Palette --- */
   --color-celestial-900: #0a0515;
   --color-celestial-800: #120826;
