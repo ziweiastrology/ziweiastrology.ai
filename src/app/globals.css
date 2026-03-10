@@ -574,9 +574,9 @@ html:not(.dark) {
 
   --color-parchment-900: #faf7f2;
   --color-parchment-800: #f2ece2;
-  --color-parchment-700: #d8ccb4;
-  --color-parchment-600: #6b6050;
-  --color-parchment-500: #524a3c;
+  --color-parchment-700: #8a7e6a;
+  --color-parchment-600: #5a5245;
+  --color-parchment-500: #4a4135;
   --color-parchment-400: #2e2a24;
   --color-parchment-300: #1f1c17;
   --color-parchment-200: #141210;
@@ -668,8 +668,46 @@ html:not(.dark) input,
 html:not(.dark) select,
 html:not(.dark) textarea {
   background-color: #ffffff !important;
-  border-color: #d4c8e8 !important;
+  border-color: #c4b4db !important;
   color: #1a1610 !important;
+}
+
+/* Light mode — cards and surfaces get subtle shadow instead of transparency */
+html:not(.dark) nav {
+  background-color: #ffffff !important;
+  border-bottom-color: #e0d8ed !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+/* Light mode — logo should not use screen blend */
+html:not(.dark) nav img {
+  mix-blend-mode: normal !important;
+}
+
+/* Light mode — dropdown menus */
+html:not(.dark) nav [class*="bg-celestial-900"] {
+  background-color: #ffffff !important;
+  border-color: #e0d8ed !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Light mode — card containers (community posts, sidebar, editor) */
+html:not(.dark) [class*="bg-celestial-800/"] {
+  background-color: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.03);
+}
+
+/* Light mode — tag pills get visible backgrounds */
+html:not(.dark) [class*="bg-gold-500/10"] {
+  background-color: rgba(153, 107, 0, 0.08) !important;
+}
+html:not(.dark) [class*="bg-gold-500/20"] {
+  background-color: rgba(153, 107, 0, 0.12) !important;
+}
+
+/* Light mode — active nav items */
+html:not(.dark) [class*="bg-celestial-700/60"] {
+  background-color: rgba(123, 82, 201, 0.08) !important;
 }
 
 .prose-ancient hr {
