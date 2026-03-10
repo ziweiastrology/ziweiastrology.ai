@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Lock, FileText, Calendar, Star, TrendingUp, Coins, Loader2 } from "lucide-react";
+import { Lock, FileText, Calendar, Star, TrendingUp, Coins, Loader2, Check, Shield } from "lucide-react";
 import type { PalaceDetail, ChartMeta } from "@/types";
 
 interface Props {
@@ -68,6 +68,12 @@ export default function FullReportPreview({ palaces, chartMeta, credits, onGener
         <p className="text-sm text-parchment-400/70 mt-2 max-w-lg mx-auto">
           {t("completeAnalysisDesc")}
         </p>
+        <div className="flex items-center justify-center gap-2 mt-3">
+          <Shield className="h-3.5 w-3.5 text-gold-500/60 flex-shrink-0" />
+          <p className="text-[11px] text-gold-400/60 italic">
+            {t("sifuTrained")}
+          </p>
+        </div>
       </div>
 
       {/* Section cards */}
@@ -98,22 +104,19 @@ export default function FullReportPreview({ palaces, chartMeta, credits, onGener
         ))}
       </div>
 
-      {/* Palace list preview */}
+      {/* Value checklist */}
       <div className="mb-6 p-4 rounded-lg border border-gold-700/15 bg-celestial-900/30">
         <p className="text-[10px] font-mono tracking-[0.2em] uppercase text-gold-600 mb-3">
-          {t("palacesIncluded")}
+          {t("reportIncludes")}
         </p>
-        <div className="flex flex-wrap gap-2">
-          {palaces.map((p) => (
-            <span
-              key={p.id}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] rounded-sm border border-gold-700/20 bg-celestial-800/50 text-parchment-400"
-            >
-              <span className="text-gold-500">{p.nameCn}</span>
-              <span className="text-parchment-600">{p.name}</span>
-            </span>
+        <ul className="space-y-2">
+          {(["reportBullet1", "reportBullet2", "reportBullet3", "reportBullet4"] as const).map((key) => (
+            <li key={key} className="flex items-center gap-2 text-xs text-parchment-400/80">
+              <Check className="h-3.5 w-3.5 text-quantum-green flex-shrink-0" />
+              {t(key)}
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
 
       {/* Blurred sample */}

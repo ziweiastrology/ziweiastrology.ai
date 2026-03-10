@@ -158,7 +158,8 @@
     "googleSignIn": "Google Sign In"
   },
   "freeReport": {
-    "reportGenerated": "[REPORT GENERATED]",
+    "reportGenerated": "[FREE REPORT GENERATED]",
+    "unlockSection": "Unlock Full Analysis",
     "sovereignReport": "Your Sovereign Life-Path Report",
     "unlockFullReading": "Unlock Your Full Reading",
     "unlockFullReadingDesc": "Create a free account to unlock consciousness readings, pattern analysis, decade overview, and preview premium content.",
@@ -189,7 +190,21 @@
     "sectionLifePath": "Overall Life-Path Assessment",
     "sectionLifePathDesc": "Personality profile, wealth pattern, key timing, and life advice",
     "sectionCareer": "Career & Business Suitability",
-    "sectionCareerDesc": "Which industries and roles align with your chart's energy signature"
+    "sectionCareerDesc": "Which industries and roles align with your chart's energy signature",
+    "sifuBannerTitle": "Chat with ZiWei 師傅",
+    "sifuBannerDesc": "Got questions about your chart? Get real-time answers from our AI Sifu.",
+    "sifuBannerCta": "Ask Sifu →",
+    "sampleLabel": "SAMPLE FROM FULL REPORT",
+    "samplePalaceTitle": "Soul Palace Analysis",
+    "samplePalaceExcerpt": "Your primary star creates a rare double-brightness configuration, amplifying your natural leadership capacity and strategic vision across career and wealth sectors...",
+    "sampleCareerTitle": "Career Suitability Radar",
+    "sampleDecadeTitle": "Life-Path Decade Timeline",
+    "sifuTrained": "Every report is deeply refined by our ZiWei Sifu — decades of master-level expertise powering the AI analysis.",
+    "reportIncludes": "Your report includes:",
+    "reportBullet1": "16 AI-generated deep analysis sections",
+    "reportBullet2": "Career & spouse compatibility radar charts",
+    "reportBullet3": "Decade-by-decade life timeline",
+    "reportBullet4": "Exportable PDF document"
   },
   "reports": {
     "title": "Complete Life Chart Analysis",

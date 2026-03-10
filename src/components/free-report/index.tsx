@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { useMatrixStore } from "@/stores/useMatrixStore";
 import { useVerificationStore } from "@/stores/useVerificationStore";
 import { useDashboardStore } from "@/stores/useDashboardStore";
+import { hasMinTier } from "@/lib/credits";
 import ChartMetaSummary from "./ChartMetaSummary";
 import PalaceGrid from "./PalaceGrid";
 import FourStatesSummary from "./FourStatesSummary";
@@ -14,7 +15,9 @@ import DecadeOverview from "./DecadeOverview";
 import FableStories from "./FableStories";
 import DecadeDeepAnalysis from "./DecadeDeepAnalysis";
 import LiuNianTeaser from "./LiuNianTeaser";
-import { getStatesPalaces, buildInsightNarrative } from "./shared";
+import ReportSampleStrip from "./ReportSampleStrip";
+import SifuCTABanner from "./SifuCTABanner";
+import { getStatesPalaces } from "./shared";
 import FullReportPreview from "./FullReportPreview";
 import { useCredits } from "@/hooks/useCredits";
 
@@ -26,8 +29,6 @@ export default function FreeReport() {
   const palaces = useMatrixStore((s) => s.palaces);
   const chartMeta = useMatrixStore((s) => s.chartMeta);
   const birthDetails = useVerificationStore((s) => s.birthDetails);
-  const deductions = useVerificationStore((s) => s.deductions);
-  const responses = useVerificationStore((s) => s.responses);
   const snapshotExpired = useDashboardStore((s) => s.snapshotExpired);
   const openAuthModal = useDashboardStore((s) => s.openAuthModal);
 
@@ -35,6 +36,7 @@ export default function FreeReport() {
 
   const userTier = (session?.user as { tier?: string } | undefined)?.tier;
   const isLoggedIn = !!session;
+  const isBasicPlus = hasMinTier(userTier, "BASIC");
 
   const { data: creditsData } = useCredits();
   const [reportGenerating, setReportGenerating] = useState(false);
@@ -78,10 +80,6 @@ export default function FreeReport() {
   }, [session, palaces, chartMeta, birthDetails]);
 
   const statesPalaces = useMemo(() => getStatesPalaces(palaces), [palaces]);
-  const narrative = useMemo(
-    () => buildInsightNarrative(deductions, responses),
-    [deductions, responses]
-  );
 
   // Build user display info
   const displayName = birthDetails?.fullName || "Calibrant";
@@ -136,104 +134,110 @@ export default function FreeReport() {
         {/* ─── 1D: Four States Summary ─── */}
         <FourStatesSummary statesPalaces={statesPalaces} />
 
-        {/* ─── 1E: Register CTA (anonymous only) ─── */}
-        {!isLoggedIn && (
-          <div className="relative text-center p-8 sm:p-12 rounded-xl border border-gold-500/30 bg-gradient-to-b from-celestial-900/80 to-celestial-800/40">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-px bg-gradient-to-r from-transparent via-gold-400/50 to-transparent" />
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-40 h-px bg-gradient-to-r from-transparent via-gold-400/30 to-transparent" />
+        {/* ── Zone divider ── */}
+        <div className="relative flex items-center gap-4 py-2">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-quantum-cyan/30 to-transparent" />
+          <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-quantum-cyan/60">
+            {t("unlockSection")}
+          </span>
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-quantum-cyan/30 to-transparent" />
+        </div>
 
-            <h3
-              className="text-2xl sm:text-3xl font-bold gold-gradient-text mb-3"
-              style={{ fontFamily: "var(--font-cinzel)" }}
-            >
-              {t("unlockFullReading")}
-            </h3>
-            <p className="text-sm text-parchment-400/70 max-w-md mx-auto mb-8">
-              {t("unlockFullReadingDesc")}
-            </p>
-            <button
-              onClick={() => openAuthModal("full_reading")}
-              className="inline-flex items-center gap-3 px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-celestial-900 rounded-sm transition-all hover:shadow-[0_0_30px_rgba(212,165,40,0.3)]"
-              style={{
-                background: "linear-gradient(135deg, #8f6b17, #d4a528, #8f6b17)",
-              }}
-            >
-              {t("createFreeAccountCta")}
-            </button>
-          </div>
-        )}
+        {/* ── Zone B: Full Report Preview ── */}
+        <div className="relative rounded-xl border border-quantum-cyan/10 bg-gradient-to-b from-quantum-cyan/[0.03] to-transparent p-6 sm:p-8 space-y-12">
+          {/* subtle left accent */}
+          <div className="absolute left-0 top-8 bottom-8 w-px bg-gradient-to-b from-transparent via-quantum-cyan/20 to-transparent" />
 
-        {/* ─── 1F: Consciousness Panel (FREE+ only) ─── */}
-        {isLoggedIn && palaces.length > 0 && (
-          <ConsciousnessPanel palaces={palaces} />
-        )}
+          {/* ─── 1E: Report Sample Strip (all users) ─── */}
+          {palaces.length > 0 && <ReportSampleStrip palaces={palaces} />}
 
-        {/* ─── 1G: Pattern Analysis (FREE+ only) ─── */}
-        {isLoggedIn && (
-          <div className="relative p-6 rounded-lg border border-gold-700/20 bg-celestial-900/40">
-            <span className="inline-block px-2 py-0.5 text-[10px] font-mono tracking-[0.3em] uppercase text-quantum-cyan/70 border border-quantum-cyan/20 rounded-sm mb-4">
-              {t("patternAnalysis")}
-            </span>
-            <p className="text-sm text-parchment-300/80 leading-relaxed">
-              {narrative}
-            </p>
-          </div>
-        )}
+          {/* ─── 1F: Register CTA (anonymous only) ─── */}
+          {!isLoggedIn && (
+            <div className="relative text-center p-8 sm:p-12 rounded-xl border border-gold-500/30 bg-gradient-to-b from-celestial-900/80 to-celestial-800/40">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-px bg-gradient-to-r from-transparent via-gold-400/50 to-transparent" />
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-40 h-px bg-gradient-to-r from-transparent via-gold-400/30 to-transparent" />
 
-        {/* ─── 1H: Decade Overview (FREE+ only) ─── */}
-        {isLoggedIn && chartMeta && (
-          <DecadeOverview palaces={palaces} chartMeta={chartMeta} />
-        )}
+              <h3
+                className="text-2xl sm:text-3xl font-bold gold-gradient-text mb-3"
+                style={{ fontFamily: "var(--font-cinzel)" }}
+              >
+                {t("unlockFullReading")}
+              </h3>
+              <p className="text-sm text-parchment-400/70 max-w-md mx-auto mb-8">
+                {t("unlockFullReadingDesc")}
+              </p>
+              <button
+                onClick={() => openAuthModal("full_reading")}
+                className="inline-flex items-center gap-3 px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-celestial-900 rounded-sm transition-all hover:shadow-[0_0_30px_rgba(212,165,40,0.3)]"
+                style={{
+                  background: "linear-gradient(135deg, #8f6b17, #d4a528, #8f6b17)",
+                }}
+              >
+                {t("createFreeAccountCta")}
+              </button>
+            </div>
+          )}
 
-        {/* ─── 1I: Full Report Preview (logged in only) ─── */}
-        {isLoggedIn && palaces.length > 0 && chartMeta && (
-          <FullReportPreview
-            palaces={palaces}
-            chartMeta={chartMeta}
-            credits={creditsData?.credits ?? 0}
-            onGenerate={handleGenerateReport}
-            generating={reportGenerating}
-          />
-        )}
+          {/* ─── 1G: Sifu CTA Banner (logged-in only) ─── */}
+          {isLoggedIn && <SifuCTABanner />}
 
-        {/* ─── 1J: Fable Stories (BASIC+ only, blurred for FREE) ─── */}
-        {isLoggedIn && palaces.length > 0 && (
-          <FableStories palaces={palaces} userTier={userTier} />
-        )}
+          {/* ─── 1H: Full Report Preview (logged-in only) ─── */}
+          {isLoggedIn && palaces.length > 0 && chartMeta && (
+            <FullReportPreview
+              palaces={palaces}
+              chartMeta={chartMeta}
+              credits={creditsData?.credits ?? 0}
+              onGenerate={handleGenerateReport}
+              generating={reportGenerating}
+            />
+          )}
 
-        {/* ─── 1K: Decade Deep Analysis (BASIC+ only, blurred for FREE) ─── */}
-        {isLoggedIn && chartMeta && (
-          <DecadeDeepAnalysis palaces={palaces} chartMeta={chartMeta} userTier={userTier} />
-        )}
+          {/* ─── 1I: Liu Nian Teaser (logged-in only) ─── */}
+          {isLoggedIn && palaces.length > 0 && (
+            <LiuNianTeaser palaces={palaces} />
+          )}
 
-        {/* ─── 1L: Liu Nian Teaser (logged in only) ─── */}
-        {isLoggedIn && palaces.length > 0 && (
-          <LiuNianTeaser palaces={palaces} />
-        )}
+          {/* ─── 1J: Upgrade CTA (FREE only) ─── */}
+          {isLoggedIn && !isBasicPlus && (
+            <div className="relative text-center p-8 sm:p-10 rounded-xl border border-gold-500/20 bg-gradient-to-b from-celestial-900/80 to-celestial-800/40">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-gold-400/40 to-transparent" />
+              <h3
+                className="text-xl sm:text-2xl font-bold gold-gradient-text mb-3"
+                style={{ fontFamily: "var(--font-cinzel)" }}
+              >
+                {t("goDeeper")}
+              </h3>
+              <p className="text-sm text-parchment-400/70 max-w-md mx-auto mb-6">
+                {t("goDeeperDesc")}
+              </p>
+              <a
+                href="/pricing"
+                className="inline-flex items-center gap-3 px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-celestial-900 rounded-sm transition-all hover:shadow-[0_0_30px_rgba(212,165,40,0.3)]"
+                style={{
+                  background: "linear-gradient(135deg, #8f6b17, #d4a528, #8f6b17)",
+                }}
+              >
+                {t("viewPlans")}
+              </a>
+            </div>
+          )}
+        </div>
 
-        {/* ─── 1M: Upgrade CTA (FREE only, not for BASIC+) ─── */}
-        {isLoggedIn && userTier !== "BASIC" && userTier !== "PREMIUM" && userTier !== "SIFU" && (
-          <div className="relative text-center p-8 sm:p-10 rounded-xl border border-gold-500/20 bg-gradient-to-b from-celestial-900/80 to-celestial-800/40">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-gold-400/40 to-transparent" />
-            <h3
-              className="text-xl sm:text-2xl font-bold gold-gradient-text mb-3"
-              style={{ fontFamily: "var(--font-cinzel)" }}
-            >
-              {t("goDeeper")}
-            </h3>
-            <p className="text-sm text-parchment-400/70 max-w-md mx-auto mb-6">
-              {t("goDeeperDesc")}
-            </p>
-            <a
-              href="/pricing"
-              className="inline-flex items-center gap-3 px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-celestial-900 rounded-sm transition-all hover:shadow-[0_0_30px_rgba(212,165,40,0.3)]"
-              style={{
-                background: "linear-gradient(135deg, #8f6b17, #d4a528, #8f6b17)",
-              }}
-            >
-              {t("viewPlans")}
-            </a>
-          </div>
+        {/* ─── BASIC+ Bonus Content ─── */}
+        {isLoggedIn && isBasicPlus && (
+          <>
+            {/* ─── 1K: Consciousness Panel (BASIC+ only) ─── */}
+            {palaces.length > 0 && <ConsciousnessPanel palaces={palaces} />}
+
+            {/* ─── 1L: Decade Overview (BASIC+ only) ─── */}
+            {chartMeta && <DecadeOverview palaces={palaces} chartMeta={chartMeta} />}
+
+            {/* ─── 1M: Decade Deep Analysis (BASIC+ unlocked) ─── */}
+            {chartMeta && <DecadeDeepAnalysis palaces={palaces} chartMeta={chartMeta} userTier={userTier} />}
+
+            {/* ─── 1N: Fable Stories (BASIC+ unlocked) ─── */}
+            {palaces.length > 0 && <FableStories palaces={palaces} userTier={userTier} />}
+          </>
         )}
       </div>
     </section>

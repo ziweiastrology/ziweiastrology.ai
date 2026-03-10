@@ -158,7 +158,8 @@
     "googleSignIn": "Google 登录"
   },
   "freeReport": {
-    "reportGenerated": "[报告已生成]",
+    "reportGenerated": "[免费报告已生成]",
+    "unlockSection": "解锁完整分析",
     "sovereignReport": "你的主权命途报告",
     "unlockFullReading": "解锁完整解读",
     "unlockFullReadingDesc": "创建免费账户以解锁意识解读、模式分析、十年概览，并预览高级内容。",
@@ -189,7 +190,21 @@
     "sectionLifePath": "总体命途评估",
     "sectionLifePathDesc": "性格画像、财富模式、关键时机和人生建议",
     "sectionCareer": "事业与商业适配",
-    "sectionCareerDesc": "哪些行业和角色与你命盘的能量特征相匹配"
+    "sectionCareerDesc": "哪些行业和角色与你命盘的能量特征相匹配",
+    "sifuBannerTitle": "与紫微師傅对话",
+    "sifuBannerDesc": "对你的命盘有疑问？AI 师傅实时为你解答。",
+    "sifuBannerCta": "咨询师傅 →",
+    "sampleLabel": "完整报告范本",
+    "samplePalaceTitle": "命宫深度分析",
+    "samplePalaceExcerpt": "你的主星形成罕见的双亮格局，放大了你在事业和财富领域的天然领导力和战略眼光...",
+    "sampleCareerTitle": "事业适配雷达图",
+    "sampleDecadeTitle": "人生大限时间轴",
+    "sifuTrained": "每份报告均由紫微师傅深度优化训练 — 数十年实战经验驱动 AI 分析。",
+    "reportIncludes": "你的报告包含：",
+    "reportBullet1": "16 个 AI 深度分析章节",
+    "reportBullet2": "事业与配偶适配雷达图",
+    "reportBullet3": "逐十年人生时间轴",
+    "reportBullet4": "可导出 PDF 文档"
   },
   "reports": {
     "title": "完整人生命盘分析",
