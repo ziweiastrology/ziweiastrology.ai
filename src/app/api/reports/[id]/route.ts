@@ -27,6 +27,23 @@ export async function GET(
       return NextResponse.json({ error: "not_found" }, { status: 404 });
     }
 
+    // Auto-fail reports stuck in GENERATING for >10 minutes
+    if (report.status === "GENERATING") {
+      const ageMs = Date.now() - new Date(report.createdAt).getTime();
+      if (ageMs > 10 * 60 * 1000) {
+        const updatedReport = await prisma.chartReport.update({
+          where: { id },
+          data: { status: "FAILED" },
+          include: {
+            sections: {
+              orderBy: { orderIndex: "asc" },
+            },
+          },
+        });
+        return NextResponse.json({ report: updatedReport });
+      }
+    }
+
     return NextResponse.json({ report });
   } catch (error) {
     console.error("Report fetch error:", error);

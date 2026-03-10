@@ -69,53 +69,57 @@ async function generatePalaceAnalyses(
 ): Promise<void> {
   const chartContext = buildChartContext(palaces, meta);
 
-  // Split 12 palaces into 3 batches of 4
-  for (let batch = 0; batch < 3; batch++) {
-    const batchPalaces = palaces.slice(batch * 4, (batch + 1) * 4);
-    const palaceNames = batchPalaces.map((p) => `${p.nameCn} ${p.name}`).join(", ");
+  // Run all 3 batches of 4 palaces in parallel
+  await Promise.all(
+    Array.from({ length: 3 }, (_, batch) => {
+      const batchPalaces = palaces.slice(batch * 4, (batch + 1) * 4);
+      const palaceNames = batchPalaces.map((p) => `${p.nameCn} ${p.name}`).join(", ");
 
-    const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 4096,
-      system: getReportSystemPrompt(locale),
-      messages: [
-        {
-          role: "user",
-          content: getPalaceAnalysisPrompt(locale, chartContext, palaceNames),
-        },
-      ],
-    });
+      return (async () => {
+        const response = await anthropic.messages.create({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 4096,
+          system: getReportSystemPrompt(locale),
+          messages: [
+            {
+              role: "user",
+              content: getPalaceAnalysisPrompt(locale, chartContext, palaceNames),
+            },
+          ],
+        });
 
-    const content =
-      response.content[0].type === "text" ? response.content[0].text : "";
+        const content =
+          response.content[0].type === "text" ? response.content[0].text : "";
 
-    // Split by --- and save each palace section
-    const sections = content.split(/\n---\n/).filter((s) => s.trim());
+        // Split by --- and save each palace section
+        const sections = content.split(/\n---\n/).filter((s) => s.trim());
 
-    for (let i = 0; i < batchPalaces.length && i < sections.length; i++) {
-      const palace = batchPalaces[i];
-      const sectionContent = sections[i].trim();
-      const orderIndex = batch * 4 + i;
+        for (let i = 0; i < batchPalaces.length && i < sections.length; i++) {
+          const palace = batchPalaces[i];
+          const sectionContent = sections[i].trim();
+          const orderIndex = batch * 4 + i;
 
-      await prisma.reportSection.upsert({
-        where: {
-          reportId_key: { reportId, key: `palace_${palace.name.toLowerCase().replace(/\s+/g, "_")}` },
-        },
-        create: {
-          reportId,
-          type: "PALACE_ANALYSIS",
-          key: `palace_${palace.name.toLowerCase().replace(/\s+/g, "_")}`,
-          title: `${palace.nameCn} ${palace.name}`,
-          content: sectionContent,
-          orderIndex,
-        },
-        update: {
-          content: sectionContent,
-          title: `${palace.nameCn} ${palace.name}`,
-        },
-      });
-    }
-  }
+          await prisma.reportSection.upsert({
+            where: {
+              reportId_key: { reportId, key: `palace_${palace.name.toLowerCase().replace(/\s+/g, "_")}` },
+            },
+            create: {
+              reportId,
+              type: "PALACE_ANALYSIS",
+              key: `palace_${palace.name.toLowerCase().replace(/\s+/g, "_")}`,
+              title: `${palace.nameCn} ${palace.name}`,
+              content: sectionContent,
+              orderIndex,
+            },
+            update: {
+              content: sectionContent,
+              title: `${palace.nameCn} ${palace.name}`,
+            },
+          });
+        }
+      })();
+    })
+  );
 }
 
 async function generateDecadeAnalysis(
@@ -353,19 +357,18 @@ export async function generateFullReport(reportId: string, locale: string = "en"
     const palaces = report.palacesJson as unknown as PalaceData[];
     const meta = report.metaJson as unknown as ChartMeta;
 
-    // Phase 1: Palace analyses (must complete first — others depend on it)
-    await generatePalaceAnalyses(palaces, meta, reportId, locale);
-
-    // Phase 2: Decade + Narrative in parallel (both independent)
+    // Phase 1: All independent sections in parallel
+    // Palace batches, decade analysis, and life narrative are all independent
     await Promise.all([
+      generatePalaceAnalyses(palaces, meta, reportId, locale),
       generateDecadeAnalysis(palaces, meta, reportId, locale),
       generateLifeNarrative(palaces, meta, reportId, locale),
     ]);
 
-    // Phase 3: Overall assessment (reads palace analyses from DB)
+    // Phase 2: Overall assessment (reads palace analyses from DB)
     await generateOverallAssessment(palaces, meta, reportId, locale);
 
-    // Phase 4: Simple summary (reads all sections from DB)
+    // Phase 3: Simple summary (reads all sections from DB)
     await generateSimpleSummary(palaces, meta, reportId, locale);
 
     // Mark complete

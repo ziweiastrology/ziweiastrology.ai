@@ -47,6 +47,7 @@ export default function ReportViewer({ reportId }: Props) {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"simple" | "detailed">("detailed");
   const [cancelling, setCancelling] = useState(false);
+  const [timedOut, setTimedOut] = useState(false);
 
   const handleCancel = useCallback(async () => {
     if (cancelling) return;
@@ -69,8 +70,17 @@ export default function ReportViewer({ reportId }: Props) {
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
+    const pollingStartTime = Date.now();
+    const POLLING_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
 
     async function fetchReport() {
+      // Stop polling after 10 minutes
+      if (Date.now() - pollingStartTime > POLLING_TIMEOUT_MS) {
+        clearInterval(interval);
+        setTimedOut(true);
+        return;
+      }
+
       try {
         const res = await fetch(`/api/reports/${reportId}`);
         if (!res.ok) return;
@@ -249,12 +259,39 @@ export default function ReportViewer({ reportId }: Props) {
 
           {/* Status bar */}
           <ReportStatusBar
-            status={report.status}
+            status={timedOut ? "FAILED" : report.status}
             totalSections={expectedTotal}
             completedSections={report.sections.length}
-            onCancel={report.status === "GENERATING" || report.status === "FAILED" ? handleCancel : undefined}
+            onCancel={report.status === "GENERATING" || report.status === "FAILED" || timedOut ? handleCancel : undefined}
             cancelling={cancelling}
           />
+
+          {/* Timeout message */}
+          {timedOut && report.status === "GENERATING" && (
+            <div className="rounded-xl border border-quantum-red/30 bg-quantum-red/5 p-6 text-center space-y-3">
+              <p className="text-sm text-quantum-red font-medium">
+                {t("generationTimeout")}
+              </p>
+              <p className="text-xs text-parchment-500">
+                {t("generationTimeoutDesc")}
+              </p>
+              <div className="flex items-center justify-center gap-3">
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-4 py-2 text-sm rounded-lg border border-gold-700/30 text-gold-400 hover:bg-gold-500/10 transition-colors"
+                >
+                  {t("retry")}
+                </button>
+                <button
+                  onClick={handleCancel}
+                  disabled={cancelling}
+                  className="px-4 py-2 text-sm rounded-lg border border-quantum-red/30 text-quantum-red hover:bg-quantum-red/10 transition-colors disabled:opacity-50"
+                >
+                  {cancelling ? t("cancelling") : t("cancelAndRefund")}
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Simple view */}
           {viewMode === "simple" && simpleSummary ? (
