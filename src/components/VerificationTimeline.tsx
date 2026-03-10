@@ -385,7 +385,7 @@ function DeductionCard({
 
   return (
     <motion.div
-      className={`relative rounded-sm overflow-hidden transition-all duration-500 ${borderClass}`}
+      className={`deduction-card relative rounded-sm overflow-hidden transition-all duration-500 ${borderClass}`}
       style={{ background: bgStyle }}
       initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
       animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -500,6 +500,7 @@ function DeductionCard({
                            hover:border-quantum-red/40 hover:text-quantum-red/80
                            active:scale-95"
                 style={{ background: "rgba(10,15,46,0.5)" }}
+                data-dark-btn
               >
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -515,6 +516,7 @@ function DeductionCard({
                            hover:border-parchment-400/40 hover:text-parchment-300/80
                            active:scale-95"
                 style={{ background: "rgba(10,15,46,0.5)" }}
+                data-dark-btn
               >
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01" />

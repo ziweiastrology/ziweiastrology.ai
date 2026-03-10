@@ -97,7 +97,7 @@ export default function HeroSection({ onBeginCalibration }: HeroSectionProps) {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="hero-section relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background: Deep navy-to-black radial + ancient paper texture overlay */}
       <div className="absolute inset-0 hero-dark-bg" />
       {/* Constellation particle network — deferred until browser idle */}

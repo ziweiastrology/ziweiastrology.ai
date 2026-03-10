@@ -763,6 +763,103 @@ html:not(.dark) footer img.rounded-full {
   mix-blend-mode: normal !important;
 }
 
+/* ============================================
+   Light mode — Hero section text
+   ============================================ */
+
+/* Hero h1 gold gradient — darken for light bg */
+html:not(.dark) .hero-section h1 {
+  background: linear-gradient(135deg, #7a5500 0%, #996b00 40%, #6b4d00 70%, #7a5500 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  filter: none !important;
+}
+
+/* Hero subtitle text — make readable on light */
+html:not(.dark) .hero-section p[style*="rgba(212,165,40"] {
+  color: #7a5500 !important;
+  text-shadow: none !important;
+}
+html:not(.dark) .hero-section p[style*="rgba(255,215,0"] {
+  color: #7a5500 !important;
+  text-shadow: none !important;
+}
+html:not(.dark) .hero-section p[style*="rgba(100,180,255"] {
+  color: #5a35a8 !important;
+  text-shadow: none !important;
+}
+html:not(.dark) .hero-section p[style*="rgba(200,210,230"] {
+  color: #4a4135 !important;
+}
+html:not(.dark) .hero-section span[style*="rgba(212,165,40"] {
+  color: #996b00 !important;
+}
+
+/* Hero status widget — readable on light */
+html:not(.dark) .hero-section .bg-celestial-800\/40 {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Hero ticker bar */
+html:not(.dark) .hero-section .bg-celestial-900\/60 {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Green terminal text — darken for light mode */
+html:not(.dark) .text-quantum-green\/70 {
+  color: #047857 !important;
+}
+
+/* ============================================
+   Light mode — Birth form status log
+   ============================================ */
+html:not(.dark) span[style*="rgba(0,230,140"],
+html:not(.dark) span[style*="rgba(0,220,130"] {
+  color: #047857 !important;
+}
+
+/* ============================================
+   Light mode — Verification cards (DeductionCard)
+   ============================================ */
+html:not(.dark) .deduction-card {
+  background: #ffffff !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Description text inside cards */
+html:not(.dark) .deduction-card p[style*="rgba(200,210,230"] {
+  color: #4a4135 !important;
+}
+
+/* NO / UNSURE buttons */
+html:not(.dark) [data-dark-btn] {
+  background: rgba(240, 236, 247, 0.8) !important;
+}
+
+/* SVG confidence ring — darken stroke */
+html:not(.dark) .deduction-card circle[style*="rgba(212,165,40,0.1)"] {
+  stroke: rgba(122, 85, 0, 0.15) !important;
+}
+html:not(.dark) .deduction-card text[style*="rgba(212,165,40"] {
+  fill: #7a5500 !important;
+}
+
+/* ============================================
+   Light mode — Destiny Matrix header
+   ============================================ */
+html:not(.dark) .section-dark-bg h2[style*="#FFD700"] {
+  color: #7a5500 !important;
+  text-shadow: none !important;
+}
+html:not(.dark) .section-dark-bg p[style*="rgba(200,210,230"] {
+  color: #4a4135 !important;
+}
+html:not(.dark) .section-dark-bg p[style*="rgba(0,220,130"] {
+  color: #047857 !important;
+}
+
 .prose-ancient hr {
   border: none;
   border-top: 1px solid rgba(143, 107, 23, 0.2);
