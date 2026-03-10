@@ -32,6 +32,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid tier" }, { status: 400 });
     }
 
+    // Derive base URL from request (works in both dev and production)
+    const origin =
+      process.env.AUTH_URL ||
+      process.env.NEXTAUTH_URL ||
+      new URL(request.url).origin;
+
     // Get or create Stripe customer
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
@@ -57,8 +63,8 @@ export async function POST(request: Request) {
       customer: customerId,
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${process.env.AUTH_URL}/thank-you?tier=${tier}`,
-      cancel_url: `${process.env.AUTH_URL}/pricing?canceled=true`,
+      success_url: `${origin}/thank-you?tier=${tier}`,
+      cancel_url: `${origin}/pricing?canceled=true`,
       metadata: { userId: session.user.id, tier },
     });
 

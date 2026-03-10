@@ -3,12 +3,17 @@ import { auth } from "@/lib/auth";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 
-export async function POST() {
+export async function POST(request: Request) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const origin =
+      process.env.AUTH_URL ||
+      process.env.NEXTAUTH_URL ||
+      new URL(request.url).origin;
 
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
@@ -23,7 +28,7 @@ export async function POST() {
 
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: user.stripeCustomerId,
-      return_url: `${process.env.AUTH_URL}/community`,
+      return_url: `${origin}/community`,
     });
 
     return NextResponse.json({ url: portalSession.url });
