@@ -546,6 +546,132 @@ body {
   padding: 0;
 }
 
+/* ============================================
+   LIGHT MODE — Palette Override
+   Redefines CSS custom properties when .dark is absent
+   ============================================ */
+
+html:not(.dark) {
+  --color-celestial-900: #ffffff;
+  --color-celestial-800: #f9f7fc;
+  --color-celestial-700: #f0ecf7;
+  --color-celestial-600: #e0d8ed;
+  --color-celestial-500: #c4b4db;
+  --color-celestial-400: #7b52c9;
+  --color-celestial-300: #5a35a8;
+  --color-celestial-200: #3d2278;
+  --color-celestial-100: #2a1654;
+
+  --color-gold-900: #faf1d0;
+  --color-gold-800: #f0dfa0;
+  --color-gold-700: #c9950f;
+  --color-gold-600: #9a7a08;
+  --color-gold-500: #996b00;
+  --color-gold-400: #7a5500;
+  --color-gold-300: #5c4804;
+  --color-gold-200: #4a3a03;
+  --color-gold-100: #3d2e0a;
+
+  --color-parchment-900: #faf7f2;
+  --color-parchment-800: #f2ece2;
+  --color-parchment-700: #d8ccb4;
+  --color-parchment-600: #6b6050;
+  --color-parchment-500: #524a3c;
+  --color-parchment-400: #2e2a24;
+  --color-parchment-300: #1f1c17;
+  --color-parchment-200: #141210;
+  --color-parchment-100: #1a1610;
+
+  --color-quantum-red: #dc2626;
+  --color-quantum-orange: #ea580c;
+  --color-quantum-cyan: #0891b2;
+  --color-quantum-green: #059669;
+}
+
+/* Light mode scrollbar */
+html:not(.dark) ::-webkit-scrollbar-track {
+  background: var(--color-celestial-900);
+}
+html:not(.dark) ::-webkit-scrollbar-thumb {
+  background: var(--color-celestial-500);
+}
+html:not(.dark) ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-celestial-400);
+}
+
+/* Light mode prose code */
+html:not(.dark) .prose-ancient code {
+  background: rgba(90, 53, 168, 0.08);
+}
+html:not(.dark) .prose-ancient pre {
+  background: rgba(90, 53, 168, 0.06);
+}
+html:not(.dark) .prose-ancient th {
+  background: rgba(90, 53, 168, 0.06);
+}
+
+/* Light mode celestial-bg (non-hero) */
+html:not(.dark) .celestial-bg {
+  background:
+    radial-gradient(ellipse at 20% 15%, rgba(123, 82, 201, 0.06) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 85%, rgba(90, 53, 168, 0.04) 0%, transparent 35%),
+    linear-gradient(175deg, #ffffff 0%, #f9f7fc 40%, #ffffff 100%);
+}
+
+/* Light mode gold-frame (softer glow) */
+html:not(.dark) .gold-frame {
+  border-color: rgba(135, 107, 6, 0.25);
+  box-shadow:
+    0 0 10px rgba(135, 107, 6, 0.05),
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    inset 0 0 15px rgba(135, 107, 6, 0.03),
+    inset 0 1px 0 rgba(135, 107, 6, 0.1);
+}
+html:not(.dark) .gold-frame:hover {
+  border-color: rgba(135, 107, 6, 0.4);
+  box-shadow:
+    0 0 15px rgba(135, 107, 6, 0.08),
+    0 4px 16px rgba(0, 0, 0, 0.06),
+    inset 0 0 25px rgba(135, 107, 6, 0.05),
+    inset 0 1px 0 rgba(135, 107, 6, 0.15);
+}
+
+/* Light mode glow-text (reduced intensity) */
+html:not(.dark) .glow-text {
+  text-shadow:
+    0 0 4px rgba(135, 107, 6, 0.2),
+    0 0 10px rgba(135, 107, 6, 0.1);
+}
+html:not(.dark) .glow-text-blue {
+  text-shadow:
+    0 0 4px rgba(90, 53, 168, 0.2),
+    0 0 10px rgba(90, 53, 168, 0.1);
+}
+
+/* Light mode inner-glow */
+html:not(.dark) .inner-glow {
+  box-shadow:
+    inset 0 0 20px rgba(135, 107, 6, 0.03),
+    inset 0 0 40px rgba(90, 53, 168, 0.02);
+}
+
+/* Light mode gold-gradient-text — darker gradient for white backgrounds */
+html:not(.dark) .gold-gradient-text {
+  background: linear-gradient(135deg, #7a5500, #996b00, #7a5500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Light mode form inputs — clean white with visible borders */
+html:not(.dark) input,
+html:not(.dark) select,
+html:not(.dark) textarea {
+  background-color: #ffffff !important;
+  border-color: #d4c8e8 !important;
+  color: #1a1610 !important;
+}
+
 .prose-ancient hr {
   border: none;
   border-top: 1px solid rgba(143, 107, 23, 0.2);
