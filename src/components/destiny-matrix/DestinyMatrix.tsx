@@ -2,6 +2,7 @@
 
 import { useCallback } from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useMatrixStore } from "@/stores/useMatrixStore";
 import { useDashboardStore } from "@/stores/useDashboardStore";
@@ -24,6 +25,7 @@ export default function DestinyMatrix() {
   const selectPalace = useMatrixStore((s) => s.selectPalace);
 
   const { data: session } = useSession();
+  const router = useRouter();
 
   const handleLockedClick = useCallback(() => {}, []);
 
@@ -267,7 +269,7 @@ export default function DestinyMatrix() {
         {!hasMinTier(session?.user?.tier, "BASIC") && (
           <div className="mt-12 text-center">
             <button
-              onClick={() => openAuthModal("full_reading")}
+              onClick={() => session ? router.push("/pricing") : openAuthModal("full_reading")}
               className="inline-flex items-center gap-3 px-10 py-4 text-sm font-semibold uppercase tracking-[0.25em]
                          text-celestial-900 rounded-sm cursor-pointer
                          transition-all duration-400 ease-out

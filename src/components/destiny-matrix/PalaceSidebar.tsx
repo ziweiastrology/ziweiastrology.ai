@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useMatrixStore } from "@/stores/useMatrixStore";
 import { useDashboardStore } from "@/stores/useDashboardStore";
@@ -40,6 +41,7 @@ export default function PalaceSidebar() {
   const palaces = useMatrixStore((s) => s.palaces);
 
   const { data: session } = useSession();
+  const router = useRouter();
   const openAuthModal = useDashboardStore((s) => s.openAuthModal);
 
   const palace = palaces.find((p) => p.id === selectedPalaceId);
@@ -237,7 +239,7 @@ export default function PalaceSidebar() {
               {!hasMinTier(session?.user?.tier, "BASIC") && (
               <motion.div variants={childVariants}>
                 <button
-                  onClick={() => openAuthModal("full_reading")}
+                  onClick={() => session ? router.push("/pricing") : openAuthModal("full_reading")}
                   className="w-full flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-semibold
                              uppercase tracking-[0.2em] text-celestial-900 rounded-sm cursor-pointer
                              transition-all duration-300
