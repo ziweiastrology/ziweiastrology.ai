@@ -38,6 +38,28 @@ export default function ClaimWizard() {
   const [authError, setAuthError] = useState("");
   const [authLoading, setAuthLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [prefill, setPrefill] = useState<Partial<BirthDetails> | undefined>();
+
+  // Fetch user's stored birth data for prefill
+  useEffect(() => {
+    if (sessionStatus !== "authenticated") return;
+    fetch("/api/user/birth-info")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (!data?.birthDate) return;
+        const d = new Date(data.birthDate);
+        setPrefill({
+          gender: data.birthGender === "M" ? "male" : data.birthGender === "F" ? "female" : "",
+          birthYear: String(d.getFullYear()),
+          birthMonth: String(d.getMonth() + 1),
+          birthDay: String(d.getDate()),
+          birthHour: data.birthHour != null ? String(data.birthHour) : "",
+          birthMinute: data.birthMinute != null ? String(data.birthMinute) : "",
+          birthLocation: data.birthLocation || "",
+        });
+      })
+      .catch(() => {});
+  }, [sessionStatus]);
 
   // Step 1: Verify purchase
   const verifyPurchase = useCallback(async () => {
@@ -370,7 +392,7 @@ export default function ClaimWizard() {
           <p className="mb-6 text-center text-sm text-muted">
             We need your birth information to compute your ZiWei Astrology AI chart.
           </p>
-          <BirthDetailsForm onCalibrate={handleCalibrate} />
+          <BirthDetailsForm onCalibrate={handleCalibrate} initialData={prefill} />
         </div>
       )}
 

@@ -3,6 +3,30 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { computeMatchesForUser } from "@/lib/computeMatchesForUser";
 
+export async function GET() {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        birthDate: true,
+        birthHour: true,
+        birthMinute: true,
+        birthLocation: true,
+        birthGender: true,
+      },
+    });
+
+    return NextResponse.json(user);
+  } catch {
+    return NextResponse.json({ error: "Failed to fetch birth info" }, { status: 500 });
+  }
+}
+
 export async function PUT(request: Request) {
   try {
     const session = await auth();

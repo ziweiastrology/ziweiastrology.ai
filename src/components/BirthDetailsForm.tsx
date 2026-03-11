@@ -8,6 +8,7 @@ import { playTerminalBeep } from "@/lib/sounds";
 
 interface BirthDetailsFormProps {
   onCalibrate: (details: BirthDetails) => void;
+  initialData?: Partial<BirthDetails>;
 }
 
 const INITIAL: BirthDetails = {
@@ -55,8 +56,8 @@ const STATUS_LINES_TEMPLATE = [
   "[SYS] NATAL CHART COORDINATES LOCKED \u2713",
 ];
 
-export default function BirthDetailsForm({ onCalibrate }: BirthDetailsFormProps) {
-  const [form, setForm] = useState<BirthDetails>(INITIAL);
+export default function BirthDetailsForm({ onCalibrate, initialData }: BirthDetailsFormProps) {
+  const [form, setForm] = useState<BirthDetails>({ ...INITIAL, ...initialData });
   const [statusPhase, setStatusPhase] = useState<StatusPhase>("idle");
   const [visibleLogLines, setVisibleLogLines] = useState<string[]>([]);
 
