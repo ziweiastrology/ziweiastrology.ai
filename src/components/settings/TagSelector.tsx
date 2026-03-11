@@ -16,6 +16,7 @@ import {
   X,
   Check,
 } from "lucide-react";
+import { useLocale } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { useAvailableTags, useUpdateTags, useMyProfile } from "@/hooks/useProfile";
 
@@ -90,6 +91,8 @@ function countSelectedInGroup(node: TagNode, selected: Set<string>): number {
 // ─── Main Component ───
 
 export default function TagSelector() {
+  const locale = useLocale();
+  const isZh = locale === "zh";
   const { data: tree, isLoading: tagsLoading } = useAvailableTags();
   const { data: profile } = useMyProfile();
   const updateTags = useUpdateTags();
@@ -192,6 +195,7 @@ export default function TagSelector() {
             groups={groups}
             selected={selected}
             onSelect={goToGroup}
+            isZh={isZh}
           />
         )}
         {step === 1 && activeGroup && (
@@ -202,6 +206,7 @@ export default function TagSelector() {
             onToggle={toggleTag}
             onBack={goBack}
             maxReached={selected.size >= maxTags}
+            isZh={isZh}
           />
         )}
         {step === 2 && activeSub && (
@@ -212,6 +217,7 @@ export default function TagSelector() {
             onBack={goBack}
             maxReached={selected.size >= maxTags}
             isGoal={activeGroup?.category === "GOAL"}
+            isZh={isZh}
           />
         )}
       </div>
@@ -225,6 +231,7 @@ export default function TagSelector() {
         onSave={handleSave}
         isSaving={updateTags.isPending}
         saved={saved}
+        isZh={isZh}
       />
     </div>
   );
@@ -236,10 +243,12 @@ function CategoryOverview({
   groups,
   selected,
   onSelect,
+  isZh,
 }: {
   groups: TagNode[];
   selected: Set<string>;
   onSelect: (g: TagNode) => void;
+  isZh: boolean;
 }) {
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -257,7 +266,7 @@ function CategoryOverview({
             <Icon className={`h-7 w-7 ${meta.color}`} />
             <div className="text-center">
               <div className="text-sm font-medium text-parchment-200">{group.name}</div>
-              <div className="text-xs text-parchment-600">{group.nameCn}</div>
+              {isZh && <div className="text-xs text-parchment-600">{group.nameCn}</div>}
             </div>
             {count > 0 && (
               <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-gold-500 px-1 text-[10px] font-bold text-celestial-900">
@@ -281,6 +290,7 @@ function SubcategoryList({
   onToggle,
   onBack,
   maxReached,
+  isZh,
 }: {
   group: TagNode;
   selected: Set<string>;
@@ -288,6 +298,7 @@ function SubcategoryList({
   onToggle: (id: string) => void;
   onBack: () => void;
   maxReached: boolean;
+  isZh: boolean;
 }) {
   const meta = CATEGORY_META[group.category] || CATEGORY_META.GOAL;
 
@@ -300,8 +311,8 @@ function SubcategoryList({
         <ChevronLeft className="h-3 w-3" /> All Categories
       </button>
       <h3 className={`mb-3 text-sm font-semibold ${meta.color}`}>
-        {group.name}{" "}
-        <span className="text-parchment-600">{group.nameCn}</span>
+        {group.name}
+        {isZh && <span className="text-parchment-600"> {group.nameCn}</span>}
       </h3>
       <div className="space-y-2">
         {(group.children || []).map((sub) => {
@@ -333,7 +344,7 @@ function SubcategoryList({
                 </button>
                 <div>
                   <span className="text-sm text-parchment-300">{sub.name}</span>
-                  <span className="ml-1.5 text-xs text-parchment-600">{sub.nameCn}</span>
+                  {isZh && <span className="ml-1.5 text-xs text-parchment-600">{sub.nameCn}</span>}
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -368,6 +379,7 @@ function LeafPicker({
   onBack,
   maxReached,
   isGoal,
+  isZh,
 }: {
   sub: TagNode;
   selected: Set<string>;
@@ -375,6 +387,7 @@ function LeafPicker({
   onBack: () => void;
   maxReached: boolean;
   isGoal: boolean;
+  isZh: boolean;
 }) {
   const leaves = sub.children || [];
 
@@ -387,8 +400,8 @@ function LeafPicker({
         <ChevronLeft className="h-3 w-3" /> {isGoal ? "All Categories" : "Back"}
       </button>
       <h3 className="mb-3 text-sm font-semibold text-parchment-300">
-        {sub.name}{" "}
-        <span className="text-parchment-600">{sub.nameCn}</span>
+        {sub.name}
+        {isZh && <span className="text-parchment-600"> {sub.nameCn}</span>}
       </h3>
       <div className="flex flex-wrap gap-2">
         {leaves.map((tag) => {
@@ -404,7 +417,7 @@ function LeafPicker({
                   : "border border-gold-700/20 text-parchment-500 hover:border-gold-700/40 hover:text-parchment-300 disabled:opacity-40"
               }`}
             >
-              {tag.nameCn} {tag.name}
+              {isZh ? tag.nameCn : tag.name}
             </button>
           );
         })}
@@ -423,6 +436,7 @@ function SelectionSummary({
   onSave,
   isSaving,
   saved,
+  isZh,
 }: {
   selected: Set<string>;
   maxTags: number;
@@ -431,6 +445,7 @@ function SelectionSummary({
   onSave: () => void;
   isSaving: boolean;
   saved: boolean;
+  isZh: boolean;
 }) {
   // Build id→tag lookup from tree
   const tagMap = new Map<string, TagNode>();
@@ -472,7 +487,7 @@ function SelectionSummary({
               key={tag.id}
               className="inline-flex items-center gap-1 rounded-full border border-gold-500/30 bg-gold-500/10 px-2 py-0.5 text-[11px] text-gold-400"
             >
-              {tag.nameCn}
+              {isZh ? tag.nameCn : tag.name}
               <button
                 onClick={() => onRemove(tag.id)}
                 className="ml-0.5 rounded-full p-0.5 hover:bg-gold-500/20"

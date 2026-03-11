@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Sparkles, Star } from "lucide-react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useMatrixStore } from "@/stores/useMatrixStore";
 import { useDashboardStore } from "@/stores/useDashboardStore";
 
@@ -26,6 +26,8 @@ export default function ChartSnapshotCard({
   birthGender,
 }: ChartSnapshotCardProps) {
   const t = useTranslations("dashboard");
+  const locale = useLocale();
+  const isZh = locale === "zh";
   const [chartData, setChartData] = useState<MiniChartData | null>(null);
   const [loading, setLoading] = useState(false);
   const [chartReady, setChartReady] = useState(false);
@@ -124,7 +126,7 @@ export default function ChartSnapshotCard({
             </span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-xs text-parchment-600">{chartData.mingGongCn} ({chartData.mingGong})</span>
+            <span className="text-xs text-parchment-600">{isZh ? `${chartData.mingGongCn} (${chartData.mingGong})` : chartData.mingGong}</span>
             <span className="text-xs text-parchment-500">
               {t("starsMapped", { count: chartData.starCount })}
             </span>
