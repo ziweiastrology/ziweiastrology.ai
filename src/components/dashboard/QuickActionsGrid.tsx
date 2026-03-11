@@ -8,7 +8,7 @@ import {
   BookOpen,
   FileText,
   Users,
-  Bookmark,
+  DollarSign,
 } from "lucide-react";
 
 const QUICK_ACTIONS = [
@@ -17,7 +17,7 @@ const QUICK_ACTIONS = [
   { key: "academyAction", href: "/academy", icon: BookOpen, color: "text-quantum-green" },
   { key: "resourcesAction", href: "/resources", icon: FileText, color: "text-quantum-orange" },
   { key: "groupsAction", href: "/community/groups", icon: Users, color: "text-celestial-300" },
-  { key: "bookmarksAction", href: "/dashboard#bookmarks", icon: Bookmark, color: "text-parchment-300" },
+  { key: "affiliateAction", href: "/settings/affiliates", icon: DollarSign, color: "text-quantum-green" },
 ];
 
 export default function QuickActionsGrid() {

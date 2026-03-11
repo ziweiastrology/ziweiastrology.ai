@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { LogOut, Settings, LayoutDashboard } from "lucide-react";
+import { LogOut, Settings, LayoutDashboard, DollarSign } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UserAvatar from "@/components/ui/UserAvatar";
 
@@ -70,6 +70,15 @@ export default function UserMenu() {
           >
             <Settings className="h-4 w-4" />
             {t("settings")}
+          </Link>
+
+          <Link
+            href="/settings/affiliates"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-2 px-4 py-2 text-sm text-parchment-400 transition-colors hover:bg-celestial-700/50 hover:text-parchment-200"
+          >
+            <DollarSign className="h-4 w-4" />
+            {t("affiliates")}
           </Link>
 
           <div className="my-1 border-t border-gold-700/20" />

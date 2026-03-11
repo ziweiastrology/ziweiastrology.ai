@@ -12,6 +12,8 @@ import CourseProgressWidget from "./CourseProgressWidget";
 import QuickActionsGrid from "./QuickActionsGrid";
 import NotificationCard from "./NotificationCard";
 import WelcomeInsightCard from "./WelcomeInsightCard";
+import OnboardingOverlay from "./OnboardingOverlay";
+import AffiliateCard from "./AffiliateCard";
 
 function ReportHistoryCard() {
   const t = useTranslations("dashboard");
@@ -98,6 +100,7 @@ export default function DashboardOverview() {
 
   return (
     <div className="space-y-6">
+      <OnboardingOverlay />
       {/* Welcome */}
       <div>
         <h1 className="font-heading text-2xl text-gold-400">
@@ -137,6 +140,9 @@ export default function DashboardOverview() {
 
         {/* Report History */}
         <ReportHistoryCard />
+
+        {/* Affiliate Program */}
+        <AffiliateCard />
 
         {/* Activity Feed — spans 2 cols, hide if empty */}
         {(recentPosts.length > 0 || recentComments.length > 0) && (
