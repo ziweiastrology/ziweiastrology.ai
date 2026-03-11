@@ -68,6 +68,12 @@ model User {
   dailyInsights    DailyInsight[]
   reports          ChartReport[]
 
+  // Affiliate & ClickBank
+  clickBankPurchases ClickBankPurchase[]
+  affiliate          Affiliate?
+  referredBy         Referral?            @relation("ReferredBy")
+  referredByCode     String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -223,6 +229,27 @@ enum NotificationType {
   COMMENT
   FOLLOW
   MATCH
+}
+
+enum AffiliateStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+}
+
+enum CommissionStatus {
+  PENDING
+  APPROVED
+  PAID
+  REFUNDED
+}
+
+enum ClickBankPurchaseStatus {
+  PENDING
+  CLAIMED
+  REPORT_GENERATED
+  REFUNDED
+  CHARGEBACK
 }
 
 // ========================
@@ -767,4 +794,102 @@ model ReportSection {
 
   @@unique([reportId, key])
   @@index([reportId, type])
+}
+
+// ========================
+// ClickBank Purchases
+// ========================
+
+model ClickBankPurchase {
+  id              String                  @id @default(cuid())
+  cbTransactionId String                  @unique
+  cbReceipt       String                  @unique
+  email           String
+  amount          Float
+  productId       String
+  affiliateId     String?                 // ClickBank affiliate handle
+  status          ClickBankPurchaseStatus @default(PENDING)
+  ipnPayload      Json
+
+  userId    String?
+  user      User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  reportId  String?
+  claimedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([userId])
+}
+
+// ========================
+// Internal Affiliate Program
+// ========================
+
+model Affiliate {
+  id          String          @id @default(cuid())
+  userId      String          @unique
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  code        String          @unique
+  status      AffiliateStatus @default(PENDING)
+  payoutEmail String?
+  bio         String?
+  website     String?
+
+  referrals   Referral[]
+  commissions Commission[]
+  clicks      AffiliateClick[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Referral {
+  id             String   @id @default(cuid())
+  affiliateId    String
+  affiliate      Affiliate @relation(fields: [affiliateId], references: [id], onDelete: Cascade)
+  referredUserId String   @unique
+  referredUser   User     @relation("ReferredBy", fields: [referredUserId], references: [id], onDelete: Cascade)
+  source         String?
+
+  commissions Commission[]
+
+  createdAt DateTime @default(now())
+
+  @@index([affiliateId])
+}
+
+model Commission {
+  id              String           @id @default(cuid())
+  affiliateId     String
+  affiliate       Affiliate        @relation(fields: [affiliateId], references: [id], onDelete: Cascade)
+  referralId      String
+  referral        Referral         @relation(fields: [referralId], references: [id], onDelete: Cascade)
+  stripeInvoiceId String?
+  amount          Float
+  percentage      Float            @default(30)
+  status          CommissionStatus @default(PENDING)
+  paidAt          DateTime?
+  approvedAt      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([affiliateId, status])
+  @@index([referralId])
+}
+
+model AffiliateClick {
+  id          String    @id @default(cuid())
+  affiliateId String
+  affiliate   Affiliate @relation(fields: [affiliateId], references: [id], onDelete: Cascade)
+  ip          String?
+  userAgent   String?
+  referer     String?
+  landingPage String?
+
+  createdAt DateTime @default(now())
+
+  @@index([affiliateId, createdAt])
 }
