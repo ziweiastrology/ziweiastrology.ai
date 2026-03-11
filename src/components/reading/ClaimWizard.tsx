@@ -116,14 +116,18 @@ export default function ClaimWizard() {
       })
         .then((res) => res.json())
         .then((data) => {
-          if (data.status === "CLAIMED" || data.authenticated) {
+          if (data.authenticated && data.reportId) {
+            router.push(`/reading/report/${data.reportId}`);
+          } else if (data.status === "CLAIMED" || data.authenticated) {
             setPurchase((p) => ({ ...p, status: "CLAIMED" }));
             setStep("birth");
+          } else if (data.error) {
+            setPurchase((p) => ({ ...p, error: data.error }));
           }
         })
         .catch(console.error);
     }
-  }, [sessionStatus, step, purchase.purchaseId, cbReceipt, cbEmail]);
+  }, [sessionStatus, step, purchase.purchaseId, cbReceipt, cbEmail, router]);
 
   // Auth handlers
   const handleRegister = async (e: React.FormEvent) => {
