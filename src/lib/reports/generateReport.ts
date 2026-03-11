@@ -78,7 +78,7 @@ async function generatePalaceAnalyses(
       return (async () => {
         const response = await anthropic.messages.create({
           model: "claude-sonnet-4-20250514",
-          max_tokens: 4096,
+          max_tokens: 3000,
           system: getReportSystemPrompt(locale),
           messages: [
             {
@@ -153,7 +153,7 @@ async function generateDecadeAnalysis(
 
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
-    max_tokens: 3000,
+    max_tokens: 2500,
     system: getReportSystemPrompt(locale),
     messages: [
       {
@@ -210,7 +210,7 @@ async function generateLifeNarrative(
 
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
-    max_tokens: 2500,
+    max_tokens: 2000,
     system: getReportSystemPrompt(locale),
     messages: [
       {
@@ -316,8 +316,8 @@ async function generateSimpleSummary(
     .join("\n\n");
 
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-20250514",
-    max_tokens: 2000,
+    model: "claude-haiku-4-5-20251001",
+    max_tokens: 1500,
     system: getSimpleSummarySystemPrompt(locale),
     messages: [
       {
@@ -357,19 +357,19 @@ export async function generateFullReport(reportId: string, locale: string = "en"
     const palaces = report.palacesJson as unknown as PalaceData[];
     const meta = report.metaJson as unknown as ChartMeta;
 
-    // Phase 1: All independent sections in parallel
-    // Palace batches, decade analysis, and life narrative are all independent
+    // Phase 1: All independent sections in parallel (5 concurrent API calls)
     await Promise.all([
       generatePalaceAnalyses(palaces, meta, reportId, locale),
       generateDecadeAnalysis(palaces, meta, reportId, locale),
       generateLifeNarrative(palaces, meta, reportId, locale),
     ]);
 
-    // Phase 2: Overall assessment (reads palace analyses from DB)
-    await generateOverallAssessment(palaces, meta, reportId, locale);
-
-    // Phase 3: Simple summary (reads all sections from DB)
-    await generateSimpleSummary(palaces, meta, reportId, locale);
+    // Phase 2: Overall assessment + simple summary in parallel
+    // Both read from DB but are independent of each other
+    await Promise.all([
+      generateOverallAssessment(palaces, meta, reportId, locale),
+      generateSimpleSummary(palaces, meta, reportId, locale),
+    ]);
 
     // Mark complete
     await prisma.chartReport.update({
