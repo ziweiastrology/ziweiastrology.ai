@@ -4,16 +4,16 @@ import { useEffect, useRef, useState } from "react";
 import { Save, Loader2, Globe, Lock, Upload, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import UserAvatar from "@/components/ui/UserAvatar";
-import { useMyProfile, useUpdateProfile, useUploadAvatar, useDeleteAvatar } from "@/hooks/useProfile";
+import { useUpdateProfile, useUploadAvatar, useDeleteAvatar } from "@/hooks/useProfile";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
-const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
-const MAX_SIZE = 2 * 1024 * 1024;
+const MAX_SIZE = 10 * 1024 * 1024; // allow large originals — will be compressed client-side
+const AVATAR_SIZE = 512;
 
-export default function ProfileForm() {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export default function ProfileForm({ profile }: { profile: any }) {
   const t = useTranslations("settings");
-  const { data: profile, isLoading } = useMyProfile();
   const updateProfile = useUpdateProfile();
   const uploadAvatar = useUploadAvatar();
   const deleteAvatar = useDeleteAvatar();
@@ -48,10 +48,16 @@ export default function ProfileForm() {
     setSaved(true);
   }
 
-  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!ALLOWED_TYPES.has(file.type)) {
+    // Reset input so same file can be re-selected
+    e.target.value = "";
+
+    // Accept by mime OR by extension (HEIC on Chrome has empty mime)
+    const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
+    const isImage = file.type.startsWith("image/") || ["heic", "heif", "jpg", "jpeg", "png", "webp", "gif"].includes(ext);
+    if (!isImage) {
       toast.error(t("avatarInvalidType"));
       return;
     }
@@ -59,21 +65,74 @@ export default function ProfileForm() {
       toast.error(t("avatarTooLarge"));
       return;
     }
-    uploadAvatar.mutate(file, {
-      onError: () => toast.error(t("avatarError")),
+
+    // Client-side resize: render to canvas → export as JPEG
+    try {
+      const converted = await resizeToJpeg(file);
+      uploadAvatar.mutate(converted, {
+        onError: (err) => toast.error(err instanceof Error ? err.message : t("avatarError")),
+      });
+    } catch (err) {
+      console.error("Avatar client-side conversion error:", err);
+      // Fallback: upload original file without client-side conversion
+      uploadAvatar.mutate(file, {
+        onError: (err2) => toast.error(err2 instanceof Error ? err2.message : t("avatarError")),
+      });
+    }
+  }
+
+  async function resizeToJpeg(file: File): Promise<File> {
+    // Try createImageBitmap first (fastest)
+    try {
+      const bitmap = await createImageBitmap(file);
+      const blob = drawToCanvas(bitmap);
+      bitmap.close();
+      return new File([await blob], "avatar.jpg", { type: "image/jpeg" });
+    } catch {
+      // Fallback: load via <img> tag (handles more formats on some browsers)
+    }
+
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = async () => {
+        try {
+          const blob = await drawToCanvas(img);
+          resolve(new File([blob], "avatar.jpg", { type: "image/jpeg" }));
+        } catch (err) {
+          reject(err);
+        } finally {
+          URL.revokeObjectURL(url);
+        }
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error("Cannot decode image"));
+      };
+      img.src = url;
     });
-    // Reset input so same file can be re-selected
-    e.target.value = "";
+  }
+
+  function drawToCanvas(source: ImageBitmap | HTMLImageElement): Promise<Blob> {
+    const sw = source instanceof HTMLImageElement ? source.naturalWidth : source.width;
+    const sh = source instanceof HTMLImageElement ? source.naturalHeight : source.height;
+    const canvas = document.createElement("canvas");
+    canvas.width = AVATAR_SIZE;
+    canvas.height = AVATAR_SIZE;
+    const ctx = canvas.getContext("2d")!;
+    const scale = Math.max(AVATAR_SIZE / sw, AVATAR_SIZE / sh);
+    const w = sw * scale;
+    const h = sh * scale;
+    ctx.drawImage(source, (AVATAR_SIZE - w) / 2, (AVATAR_SIZE - h) / 2, w, h);
+    return new Promise((resolve, reject) =>
+      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Canvas export failed"))), "image/jpeg", 0.85)
+    );
   }
 
   function handleRemoveAvatar() {
     deleteAvatar.mutate(undefined, {
       onSuccess: () => toast.success(t("avatarRemoved")),
     });
-  }
-
-  if (isLoading) {
-    return <div className="h-48 animate-pulse rounded-lg bg-celestial-800/30" />;
   }
 
   const avatarSrc = profile?.avatarUrl || profile?.image;
@@ -123,7 +182,7 @@ export default function ProfileForm() {
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/gif"
+              accept="image/*"
               className="hidden"
               onChange={handleFileSelect}
             />

@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { useLocale } from "next-intl";
 import { Button } from "@/components/ui/Button";
-import { useAvailableTags, useUpdateTags, useMyProfile } from "@/hooks/useProfile";
+import { useUpdateTags } from "@/hooks/useProfile";
 
 // ─── Types ───
 
@@ -90,11 +90,10 @@ function countSelectedInGroup(node: TagNode, selected: Set<string>): number {
 
 // ─── Main Component ───
 
-export default function TagSelector() {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export default function TagSelector({ tagTree, profile }: { tagTree: any[]; profile: any }) {
   const locale = useLocale();
   const isZh = locale === "zh";
-  const { data: tree, isLoading: tagsLoading } = useAvailableTags();
-  const { data: profile } = useMyProfile();
   const updateTags = useUpdateTags();
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -164,12 +163,8 @@ export default function TagSelector() {
     }
   }
 
-  if (tagsLoading) {
-    return <div className="h-48 animate-pulse rounded-lg bg-celestial-800/30" />;
-  }
-
   // Filter to only new categories (exclude deprecated INDUSTRY, INTEREST, ASTRO)
-  const groups: TagNode[] = (tree || []).filter(
+  const groups: TagNode[] = (tagTree || []).filter(
     (g: TagNode) => !["INDUSTRY", "INTEREST", "ASTRO"].includes(g.category)
   );
 

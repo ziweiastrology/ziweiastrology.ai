@@ -2,18 +2,23 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { User, Mail, Crown, CreditCard, ExternalLink, Star, Save, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import PageHeader from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/Button";
 import ProfileForm from "@/components/settings/ProfileForm";
 import TagSelector from "@/components/settings/TagSelector";
+import { useSettingsData } from "@/hooks/useProfile";
 
 export default function SettingsPage() {
   const t = useTranslations("settings");
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { data, isLoading: settingsLoading } = useSettingsData();
+
+  const profile = data?.profile;
+  const tagTree = data?.tagTree;
 
   const TIER_LABELS: Record<string, { name: string; color: string }> = {
     FREE: { name: t("tierFree"), color: "text-parchment-400" },
@@ -22,7 +27,7 @@ export default function SettingsPage() {
     SIFU: { name: t("tierSifu"), color: "text-gold-400" },
   };
 
-  // Birth info state — must be declared before any early returns
+  // Birth info state
   const [birthDate, setBirthDate] = useState("");
   const [birthHour, setBirthHour] = useState("");
   const [birthMinute, setBirthMinute] = useState("");
@@ -30,38 +35,31 @@ export default function SettingsPage() {
   const [birthGender, setBirthGender] = useState("");
   const [birthLoading, setBirthLoading] = useState(false);
   const [birthSaved, setBirthSaved] = useState(false);
-  const [birthLoaded, setBirthLoaded] = useState(false);
+  const [birthHydrated, setBirthHydrated] = useState(false);
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/auth/login?callbackUrl=/settings");
-    }
-  }, [status, router]);
+  // Hydrate birth fields from profile (once)
+  if (profile && !birthHydrated) {
+    if (profile.birthDate) setBirthDate(profile.birthDate.slice(0, 10));
+    if (profile.birthHour != null) setBirthHour(String(profile.birthHour));
+    if (profile.birthMinute != null) setBirthMinute(String(profile.birthMinute));
+    if (profile.birthLocation) setBirthLocation(profile.birthLocation);
+    if (profile.birthGender) setBirthGender(profile.birthGender);
+    setBirthHydrated(true);
+  }
 
-  // Load existing birth info
-  useEffect(() => {
-    if (birthLoaded || status !== "authenticated") return;
-    fetch("/api/dashboard")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.user) {
-          if (data.user.birthDate) setBirthDate(data.user.birthDate.slice(0, 10));
-          if (data.user.birthHour != null) setBirthHour(String(data.user.birthHour));
-          if (data.user.birthMinute != null) setBirthMinute(String(data.user.birthMinute));
-          if (data.user.birthLocation) setBirthLocation(data.user.birthLocation);
-          if (data.user.birthGender) setBirthGender(data.user.birthGender);
-        }
-        setBirthLoaded(true);
-      })
-      .catch(() => setBirthLoaded(true));
-  }, [birthLoaded, status]);
+  if (status === "unauthenticated") {
+    router.push("/auth/login?callbackUrl=/settings");
+    return null;
+  }
 
-  if (status === "loading") {
+  if (status === "loading" || settingsLoading) {
     return (
       <div className="mx-auto max-w-2xl px-4 pb-16 sm:px-6">
         <PageHeader title={t("title")} />
         <div className="animate-pulse space-y-4">
           <div className="h-32 rounded-lg bg-celestial-800/30" />
+          <div className="h-48 rounded-lg bg-celestial-800/30" />
+          <div className="h-48 rounded-lg bg-celestial-800/30" />
           <div className="h-24 rounded-lg bg-celestial-800/30" />
         </div>
       </div>
@@ -251,12 +249,12 @@ export default function SettingsPage() {
 
       {/* Profile Editor */}
       <div className="mb-6">
-        <ProfileForm />
+        <ProfileForm profile={profile} />
       </div>
 
       {/* Tags */}
       <div className="mb-6">
-        <TagSelector />
+        <TagSelector tagTree={tagTree} profile={profile} />
       </div>
 
       {/* Membership Management */}

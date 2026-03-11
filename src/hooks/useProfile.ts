@@ -8,6 +8,15 @@ export function useMyProfile() {
   });
 }
 
+/** Single query for the /settings page — profile + tag tree in one request */
+export function useSettingsData() {
+  return useQuery({
+    queryKey: ["settings-data"],
+    queryFn: () => fetch("/api/settings").then((r) => r.json()),
+    staleTime: 60_000,
+  });
+}
+
 export function useUserProfile(userId: string) {
   return useQuery({
     queryKey: ["user-profile", userId],
@@ -25,7 +34,10 @@ export function useUpdateProfile() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       }).then((r) => r.json()),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["my-profile"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["my-profile"] });
+      qc.invalidateQueries({ queryKey: ["settings-data"] });
+    },
   });
 }
 
@@ -42,7 +54,10 @@ export function useUploadAvatar() {
       }
       return res.json();
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["my-profile"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["my-profile"] });
+      qc.invalidateQueries({ queryKey: ["settings-data"] });
+    },
   });
 }
 
@@ -54,7 +69,10 @@ export function useDeleteAvatar() {
       if (!res.ok) throw new Error("Delete failed");
       return res.json();
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["my-profile"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["my-profile"] });
+      qc.invalidateQueries({ queryKey: ["settings-data"] });
+    },
   });
 }
 
@@ -75,6 +93,9 @@ export function useUpdateTags() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tagIds }),
       }).then((r) => r.json()),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["my-profile"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["my-profile"] });
+      qc.invalidateQueries({ queryKey: ["settings-data"] });
+    },
   });
 }
