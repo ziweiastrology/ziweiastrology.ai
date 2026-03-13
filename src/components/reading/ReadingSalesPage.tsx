@@ -3,6 +3,7 @@
 import { Check, ArrowRight, Sparkles } from "lucide-react";
 
 const VENDOR = process.env.NEXT_PUBLIC_CLICKBANK_VENDOR || "ziweidouai";
+const PRODUCT_ITEM = "1"; // ClickBank product item number
 
 const discoveries = [
   {
@@ -59,11 +60,19 @@ const faqs = [
   },
   {
     q: "How fast will I receive my reading?",
-    a: "Instantly after purchase. Your personalized destiny report is generated in seconds.",
+    a: "Immediately after purchase. You will be redirected to create an account and enter your birth details. Your personalized destiny report is then generated in seconds and viewable in your browser. You can also download it as a PDF.",
   },
   {
     q: "What information do I need?",
-    a: "Just your birth date, birth time, and birthplace.",
+    a: "Just your birth date, approximate birth time, and gender.",
+  },
+  {
+    q: "What format is the report?",
+    a: "Your report is a digital document viewable directly in your web browser. You can also download it as a PDF file. No special software is required — just a modern web browser on any device.",
+  },
+  {
+    q: "What is the refund policy?",
+    a: "ClickBank offers a 60-day money-back guarantee on all purchases. If you are not satisfied with your reading for any reason, you can request a full refund within 60 days of purchase through ClickBank's order support.",
   },
 ];
 
@@ -75,7 +84,7 @@ const upsellItems = [
 ];
 
 export default function ReadingSalesPage() {
-  const orderUrl = `https://${VENDOR}.pay.clickbank.net/`;
+  const orderUrl = `https://${VENDOR}.pay.clickbank.net/?cbitems=${PRODUCT_ITEM}`;
 
   const CtaButton = () => (
     <a
@@ -272,11 +281,11 @@ export default function ReadingSalesPage() {
         </p>
       </section>
 
-      {/* 7. Limited-Time Offer */}
+      {/* 7. Offer + Guarantee */}
       <section className="mt-16 rounded-xl border-2 border-gold-700 bg-surface/80 backdrop-blur-sm p-8 text-center">
         <h2 className="font-heading text-3xl text-foreground">Only $27</h2>
         <p className="mx-auto mt-2 text-parchment-400">
-          Your complete destiny reading includes:
+          One-time payment. Your complete destiny reading includes:
         </p>
         <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
           {includes.map((item) => (
@@ -286,9 +295,13 @@ export default function ReadingSalesPage() {
             </span>
           ))}
         </div>
-        <p className="mt-4 text-sm text-muted">
-          Instant delivery after purchase.
+        <p className="mt-4 text-sm text-parchment-400">
+          Digital report delivered instantly after purchase. Viewable in browser, downloadable as PDF.
         </p>
+        <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-quantum-green/30 bg-quantum-green/10 px-4 py-1.5 text-sm text-quantum-green">
+          <Check className="h-4 w-4" />
+          60-Day Money-Back Guarantee
+        </div>
         <div className="mt-6">
           <CtaButton />
         </div>
@@ -348,10 +361,53 @@ export default function ReadingSalesPage() {
         <div className="mt-6">
           <CtaButton />
           <p className="mt-4 text-sm text-muted">
-            One-time reading · Instant report · Only $27
+            One-time payment of $27 · Digital report · Instant delivery · 60-day guarantee
           </p>
         </div>
       </section>
+
+      {/* ClickBank Required Footer */}
+      <footer className="mt-20 border-t border-border/50 pt-8 text-xs text-parchment-600 space-y-4">
+        {/* Contact & Support */}
+        <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-center sm:gap-6">
+          <p>
+            For Product Support, please contact the seller{" "}
+            <a href="mailto:support@ziweiastrology.ai" className="text-gold-400 underline hover:text-gold-300">
+              HERE
+            </a>.
+          </p>
+          <p>
+            For Order Support, please contact ClickBank{" "}
+            <a href="https://www.clkbank.com" target="_blank" rel="noopener noreferrer" className="text-gold-400 underline hover:text-gold-300">
+              HERE
+            </a>.
+          </p>
+        </div>
+
+        {/* ClickBank Disclaimer */}
+        <p className="mx-auto max-w-3xl text-center leading-relaxed">
+          ClickBank is the retailer of products on this site. CLICKBANK® is a
+          registered trademark of Click Sales, Inc., a Delaware corporation
+          located at 1444 S. Entertainment Ave., Suite 410 Boise, ID 83709, USA
+          and used by permission. ClickBank&apos;s role as retailer does not
+          constitute an endorsement, approval or review of these products or any
+          claim, statement or opinion used in promotion of these products.
+        </p>
+
+        {/* Product & Refund Info */}
+        <p className="mx-auto max-w-3xl text-center leading-relaxed">
+          This is a digital product. After purchase, you will be redirected to
+          create an account and enter your birth details. Your personalized
+          destiny report is generated instantly and is viewable in your web
+          browser. You may also download it as a PDF. No physical product will be
+          shipped. ClickBank&apos;s 60-day money-back guarantee applies to all
+          purchases.
+        </p>
+
+        <p className="text-center text-parchment-700">
+          © {new Date().getFullYear()} ZiWeiAstrology.ai · All rights reserved
+        </p>
+      </footer>
     </div>
   );
 }
