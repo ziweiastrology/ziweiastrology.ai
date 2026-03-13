@@ -75,7 +75,7 @@ export default function PalaceNode({
   const badgeRef = useRef<HTMLDivElement>(null);
 
   // Current age for 小限 highlighting
-  const currentAge = birthYear ? new Date().getFullYear() - birthYear : null;
+  const currentAge = birthYear ? new Date().getFullYear() - birthYear + 1 : null;
 
   const IconComponent = PALACE_ICON_MAP[palace.icon];
   const isSelected = selectedPalaceId === palace.id;

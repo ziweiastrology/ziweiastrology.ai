@@ -131,7 +131,7 @@ async function generateDecadeAnalysis(
   const chartContext = buildChartContext(palaces, meta);
   const currentYear = new Date().getFullYear();
   const birthYear = meta.birthYear || currentYear - 30;
-  const currentAge = currentYear - birthYear;
+  const currentAge = currentYear - birthYear + 1; // 虚岁: nominal age for iztro compatibility
 
   // Find relevant decades (current ± 2)
   const decadePalaces = palaces

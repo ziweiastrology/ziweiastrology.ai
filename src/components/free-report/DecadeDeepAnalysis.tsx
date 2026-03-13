@@ -14,7 +14,7 @@ export default function DecadeDeepAnalysis({
   chartMeta,
   userTier,
 }: DecadeDeepAnalysisProps) {
-  const currentAge = new Date().getFullYear() - chartMeta.birthYear;
+  const currentAge = new Date().getFullYear() - chartMeta.birthYear + 1; // 虚岁
   const currentDecade = palaces.find(
     (p) => p.decadeRange && currentAge >= p.decadeRange[0] && currentAge <= p.decadeRange[1]
   );

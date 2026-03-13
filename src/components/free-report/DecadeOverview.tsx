@@ -8,7 +8,7 @@ interface DecadeOverviewProps {
 }
 
 export default function DecadeOverview({ palaces, chartMeta }: DecadeOverviewProps) {
-  const currentAge = new Date().getFullYear() - chartMeta.birthYear;
+  const currentAge = new Date().getFullYear() - chartMeta.birthYear + 1; // 虚岁
   const currentDecade = palaces.find(
     (p) => p.decadeRange && currentAge >= p.decadeRange[0] && currentAge <= p.decadeRange[1]
   );
@@ -36,7 +36,7 @@ export default function DecadeOverview({ palaces, chartMeta }: DecadeOverviewPro
           <div className="flex items-center gap-3 text-[11px] font-mono text-gold-500/60">
             <span>Age {currentDecade.decadeRange![0]}–{currentDecade.decadeRange![1]}</span>
             <span>·</span>
-            <span>Current age: {currentAge}</span>
+            <span>Current age: {currentAge - 1}</span>
             {currentDecade.decadeHeavenlyStem && (
               <>
                 <span>·</span>
