@@ -6,7 +6,7 @@ import {
   Font,
   StyleSheet,
 } from "@react-pdf/renderer";
-import { markdownToPdfElements } from "./markdownToPdfElements";
+import { markdownToPdfElements, sanitizeText } from "./markdownToPdfElements";
 
 // ── Font registration ──────────────────────────────────────────────
 // Use absolute URL — relative paths fail in @react-pdf worker context
@@ -38,13 +38,23 @@ Font.register({
 
 Font.register({
   family: "NotoSansSC",
-  src: `${FONT_BASE}/NotoSansSC-Regular.ttf`,
+  fonts: [
+    { src: `${FONT_BASE}/NotoSansSC-Regular.ttf`, fontWeight: "normal" },
+    // Re-use regular for bold — no bold variant available
+    { src: `${FONT_BASE}/NotoSansSC-Regular.ttf`, fontWeight: "bold" },
+  ],
 });
 
 // Enable hyphenation fallback for CJK
 Font.registerHyphenationCallback((word) =>
   word.length === 1 ? [word] : Array.from(word)
 );
+
+// ── CJK detection ─────────────────────────────────────────────────
+const CJK_RE = /[\u4e00-\u9fff\u3400-\u4dbf]/;
+function hasCJK(text: string): boolean {
+  return CJK_RE.test(text);
+}
 
 // ── Styles ─────────────────────────────────────────────────────────
 const PAGE_BG = "#0a0515";
@@ -53,13 +63,15 @@ const PARCHMENT = "#d8ccb4";
 const PARCHMENT_DIM = "#8a7d6b";
 const DIVIDER = "rgba(143,107,23,0.25)";
 
-const s = StyleSheet.create({
+function createStyles(cjk: boolean) {
+  const BODY_FONT = cjk ? "NotoSansSC" : "Merriweather";
+  return StyleSheet.create({
   page: {
     backgroundColor: PAGE_BG,
     paddingTop: 50,
     paddingBottom: 60,
     paddingHorizontal: 50,
-    fontFamily: "Merriweather",
+    fontFamily: BODY_FONT,
     color: PARCHMENT,
   },
   // Cover
@@ -129,14 +141,15 @@ const s = StyleSheet.create({
   footerBrand: {
     fontSize: 7,
     color: "#4a4040",
-    fontFamily: "Merriweather",
+    fontFamily: BODY_FONT,
   },
   footerPage: {
     fontSize: 8,
     color: "#6b6050",
-    fontFamily: "Merriweather",
+    fontFamily: BODY_FONT,
   },
 });
+}
 
 // ── Types ──────────────────────────────────────────────────────────
 interface Section {
@@ -177,6 +190,12 @@ export default function ReportPDFDocument({
     selectedSectionIds.has(sec.id)
   );
 
+  // Detect CJK in any section content to choose the right body font
+  const isCJK = selectedSections.some(
+    (sec) => hasCJK(sec.title) || hasCJK(sec.content)
+  );
+  const s = createStyles(isCJK);
+
   const metaParts = [
     report.metaJson.zodiac,
     report.metaJson.fiveElementsClass,
@@ -200,10 +219,12 @@ export default function ReportPDFDocument({
       <Page size="A4" style={s.page}>
         <View style={s.coverContainer}>
           <Text style={s.coverTitle}>Complete Life-Path Analysis</Text>
-          <Text style={s.coverSubtitle}>紫微斗数 · Zi Wei Dou Shu</Text>
+          <Text style={[s.coverSubtitle, { fontFamily: "NotoSansSC" }]}>
+            紫微斗数 · Zi Wei Dou Shu
+          </Text>
           <View style={s.coverDivider} />
           {metaParts.length > 0 && (
-            <Text style={s.coverMeta}>{metaParts.join("  ·  ")}</Text>
+            <Text style={[s.coverMeta, { fontFamily: "NotoSansSC" }]}>{metaParts.join("  ·  ")}</Text>
           )}
           <Text style={s.coverDate}>Generated: {dateStr}</Text>
         </View>
@@ -216,10 +237,10 @@ export default function ReportPDFDocument({
       {/* Content Pages */}
       {selectedSections.map((section) => (
         <Page key={section.id} size="A4" style={s.page} wrap>
-          <Text style={s.sectionHeader}>{section.title}</Text>
+          <Text style={s.sectionHeader}>{sanitizeText(section.title)}</Text>
           <View style={s.sectionDivider} />
           <View style={s.sectionContent}>
-            {markdownToPdfElements(section.content)}
+            {markdownToPdfElements(section.content, isCJK)}
           </View>
           <View style={s.footer} fixed>
             <Text style={s.footerBrand}>ZiWei Astrology AI</Text>
